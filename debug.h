@@ -25,7 +25,7 @@ inline void _trace(LPCTSTR fmt, ...) { }
 #include <windows.h>
 void _trace(char *fmt, ...)
 {
-char out[1024];
+	char out[1024];
 	va_list body;
 	va_start(body, fmt);
 	vsprintf(out, fmt, body);
