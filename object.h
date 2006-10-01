@@ -34,9 +34,9 @@ void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
 	}
 }
 
-class object{
+class Object{
 public:
-	object(){
+	Object(){
 	xOff = 0; yOff = 0; zOff = 0;
 	rX = 0; rY = 0; rZ = 0;
 	sX = 1; sY = 1; sZ = 1;
@@ -47,7 +47,7 @@ public:
 	texture = 0;
 	};
 	
-	object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
+	Object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
 		float _sX, float _sY, float _sZ){
 		xOff = _xOff; yOff = _yOff;  zOff = _zOff; 
 		rX = _rX; rY = _rY; rZ = _rZ;
@@ -57,7 +57,7 @@ public:
 	}
 
 
-	virtual object * clone(){return new object(*this);};
+	virtual Object * clone(){return new Object(*this);};
 
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 		double wa, wb, wc;
