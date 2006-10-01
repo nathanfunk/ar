@@ -53,17 +53,17 @@ int drawGroundGrid( int divisions, float x, float y, float height)
 
 GLuint LoadGLTextureRepeat( const char *filename );	
 
-class world{
+class World{
 
 public:
-	world(){x = 0; y =0; z= 0;};
-	world(char *scriptFile){
+	World(){x = 0; y =0; z= 0;};
+	World(char *scriptFile){
 	//	loadTextures("blah.txt");
 		loadWorld(scriptFile);
 		x = 0; y =0; z= 0;
 	};
 
-	~world(){ 
+	~World(){ 
 		for (int i = 0; i < (int) objectPtrs.size(); i++){
 		delete objectPtrs[i];
 	}
