@@ -961,37 +961,37 @@ static void   ar_keyEvent( unsigned char key, int x, int y)
  if( key == 'r' ) {
 
 	 std::cout<<"new rectangle"<<std::endl;
-	 w1.objectPtrs.push_back(new rectangle((int) w1.objectPtrs.size(), -10,-10,50, 50, 90));	
+	 w1.objectPtrs.push_back(new RectangleAR((int) w1.objectPtrs.size(), -10,-10,50, 50, 90));	
     }
 if( key == 'e' ) {
 
 	 std::cout<<"new triangle"<<std::endl;
 	 //w1.objectPtrs.push_back(new triangle ((int) w1.objectPtrs.size(), -50,-50,50, -50, 0,50, 90));
-w1.objectPtrs.push_back(new triangle ((int) w1.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
+w1.objectPtrs.push_back(new Triangle ((int) w1.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
 
     }
 
 if( key == 'a' ) {
 
 	 std::cout<<"new arc"<<std::endl;
-	 w1.objectPtrs.push_back(new fillArc ((int) w1.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
+	 w1.objectPtrs.push_back(new FillArc ((int) w1.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
     }
 if( key == 'p' ) {
 
 	 std::cout<<"new partialCylinder"<<std::endl;
-	 w1.objectPtrs.push_back(new partialCylinder ((int) w1.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
+	 w1.objectPtrs.push_back(new PartialCylinder ((int) w1.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
     }
 
  if( key == 's' ) {
 
 	 std::cout<<"new sphere"<<std::endl;
-	 w1.objectPtrs.push_back(new sphere((int) w1.objectPtrs.size(), 0,0,30,30));	
+	 w1.objectPtrs.push_back(new Sphere((int) w1.objectPtrs.size(), 0,0,30,30));	
     }
 
   if( key == 'b' ) {
 
 	 std::cout<<"new cube"<<std::endl;
-	 w1.objectPtrs.push_back(new cube((int) w1.objectPtrs.size(), 0,30,60,30));	
+	 w1.objectPtrs.push_back(new Cube((int) w1.objectPtrs.size(), 0,30,60,30));	
     }
   if( key == 'm' ) {
 
@@ -1001,24 +1001,24 @@ if( key == 'p' ) {
   if( key == 't' ) {
 
 	 std::cout<<"new tube"<<std::endl;
-	 w1.objectPtrs.push_back(new cylinder((int) w1.objectPtrs.size(), 10, 10));	
+	 w1.objectPtrs.push_back(new Cylinder((int) w1.objectPtrs.size(), 10, 10));	
     }
   if( key == 'c' ) {
 
 	 std::cout<<"new cone"<<std::endl;
-	 w1.objectPtrs.push_back(new cone((int) w1.objectPtrs.size(), 0,0,0, 10, 30));	
+	 w1.objectPtrs.push_back(new Cone((int) w1.objectPtrs.size(), 0,0,0, 10, 30));	
     }
   if( key == 'o' ) {
 
 	 std::cout<<"new pyramid"<<std::endl;
-	 w1.objectPtrs.push_back(new pyramid((int) w1.objectPtrs.size(), 0,30,60, 30));	
+	 w1.objectPtrs.push_back(new Pyramid((int) w1.objectPtrs.size(), 0,30,60, 30));	
     }
 
 
   if( key == 'l' ) {
 
 	 std::cout<<"new line"<<std::endl;
-	 w1.objectPtrs.push_back(new line((int) w1.objectPtrs.size(), 0, 0, 30, 30));	
+	 w1.objectPtrs.push_back(new Line((int) w1.objectPtrs.size(), 0, 0, 30, 30));	
     }
 
 
@@ -1026,7 +1026,7 @@ if( key == 'p' ) {
 	 std::cout<<"copy"<<std::endl;
 		
 	int i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<Object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
 		std::cout<<"copying "<<i<<std::endl;
@@ -1046,7 +1046,7 @@ if( key == 8 ) {
 		//for (int i = 0; i< w1.objectPtrs.size(); i++){
 
 	 int i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<Object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
     if ( (*it)->isSelected  == 1)
 	{
 		std::cout<<"deleting "<<i<<std::endl;
