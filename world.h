@@ -73,8 +73,8 @@ public:
 
 
 
-	std::vector<object *> objectPtrs;
-	stdx::ptr_vector<object> objects;
+	std::vector<Object *> objectPtrs;
+	stdx::ptr_vector<Object> objects;
 	//std::vector <myModel> modelVec;
 
 	std::vector <GLuint> textureIndex;
@@ -144,57 +144,57 @@ void loadWorld(char *scriptFile){
 	  else if (type == "RECTANGLE"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>x1>>y1>>x2>>y2;
-			objectPtrs.push_back( new rectangle((int) objectPtrs.size(), 
+			objectPtrs.push_back( new RectangleAR((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2));
 	  }
  else if (type == "SPHERE"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius;
-			objectPtrs.push_back( new sphere((int) objectPtrs.size(), 
+			objectPtrs.push_back( new Sphere((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius));
 	  }
   else if (type == "CUBE"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-			objectPtrs.push_back( new cube((int) objectPtrs.size(), 
+			objectPtrs.push_back( new Cube((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 	  }
   else if (type == "PYRAMID"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-			objectPtrs.push_back( new pyramid((int) objectPtrs.size(), 
+			objectPtrs.push_back( new Pyramid((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 	  }
 
    else if (type == "CONE"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height;
-			objectPtrs.push_back( new cone((int) objectPtrs.size(), 
+			objectPtrs.push_back( new Cone((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius, height));
 	  }
     else if (type == "TRIANGLE"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2, x3, y3;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>x1>>y1>>x2>>y2>>x3>>y3;
-			objectPtrs.push_back( new triangle((int) objectPtrs.size(), 
+			objectPtrs.push_back( new Triangle((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2, x3, y3));
 	  }
 	 else if (type == "CYLINDER"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height;
-			objectPtrs.push_back( new cylinder((int) objectPtrs.size(), 
+			objectPtrs.push_back( new Cylinder((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, height));
 	  }
 
 else if (type == "PARTIALCYLINDER"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height, startAngle, arcAngle;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height>>startAngle>>arcAngle;
-			objectPtrs.push_back( new  partialCylinder((int) objectPtrs.size(), 
+			objectPtrs.push_back( new  PartialCylinder((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, height, startAngle, arcAngle));
 	  }
 else if (type == "FILLARC"){
 		  float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, startAngle, arcAngle;
 		  iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>startAngle>>arcAngle;
-			objectPtrs.push_back( new fillArc((int) objectPtrs.size(), 
+			objectPtrs.push_back( new FillArc((int) objectPtrs.size(), 
 			xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, startAngle, arcAngle));
 	  }
 

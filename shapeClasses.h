@@ -1,7 +1,7 @@
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
-3D shape primitives - Derived Classes from object class in object.h
+3D shape primitives - Derived Classes from Object class in object.h
 
 */
 
@@ -11,8 +11,8 @@ Created by Farooq Ahmad Sept. 2006
 
 
 /*
-class multiShape:public object{
-	multishape(vector<object *> shapePtrs, float _x, float _y,  float _z, float _r1, float _rY, float _r3, float _sx, float _sy, float _sz){};
+class multiShape:public Object{
+	multishape(vector<Object *> shapePtrs, float _x, float _y,  float _z, float _r1, float _rY, float _r3, float _sx, float _sy, float _sz){};
 	void	draw(){
 
 
@@ -23,19 +23,19 @@ class multiShape:public object{
 }
 */
 
-class sphere:public object{
+class Sphere:public Object{
 public:
-	sphere(){ 
+	Sphere(){ 
 	
 	};
-	sphere(int _name, float _x, float _y,  float _z, float _rad)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Sphere(int _name, float _x, float _y,  float _z, float _rad)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z;sX = 1; sY = 1; sZ =1; radius = _rad; isVisible = 1; rY = 0; rX = 0;
 	}
-	sphere(int _name, float _x, float _y,  float _z, float _rX, float _rY, float _rZ, 
+	Sphere(int _name, float _x, float _y,  float _z, float _rX, float _rY, float _rZ, 
 		float _sX, float _sY, float _sZ, float _rad)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z;
 		rX = _rX; rY = _rY; rZ = _rZ;
@@ -44,7 +44,7 @@ public:
 	}
 
 	
-	object* clone()  { return new sphere(*this); }
+	Object* clone()  { return new Sphere(*this); }
 
 	std::string getDataString(){
 		std::ostringstream data;
@@ -83,20 +83,20 @@ public:
 
 
 
-class cube:public object{
+class Cube:public Object{
 public:
-	cube(){ 
+	Cube(){ 
 	
 	};
-	cube(int _name, float _x, float _y,  float _z, float _size)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Cube(int _name, float _x, float _y,  float _z, float _size)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 0.2; size = _size; isVisible = 1; rX = 0; rY = 0;
 	}
-	cube(int _name, float _x, float _y,  float _z, 
+	Cube(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _size)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; 
 		rX = _rX; rY = _rY; rZ = _rZ;
@@ -105,7 +105,7 @@ public:
 	}
 
 
-object* clone()   { return new cube(*this); }
+Object* clone()   { return new Cube(*this); }
 
 
 std::string getDataString(){
@@ -263,20 +263,20 @@ glDisable( GL_TEXTURE_2D );
 
 
 
-class pyramid:public object{
+class Pyramid:public Object{
 public:
-	pyramid(){ 
+	Pyramid(){ 
 	
 	};
-	pyramid(int _name, float _x, float _y,  float _z, float _size)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Pyramid(int _name, float _x, float _y,  float _z, float _size)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 5; sZ= 5; size = _size; isVisible = 1; rX = 0; rY = 0;
 	}
-	pyramid(int _name, float _x, float _y,  float _z, 
+	Pyramid(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _size)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; 
 		rX = _rX; rY = _rY; rZ = _rZ;
@@ -285,7 +285,7 @@ public:
 	}
 
 
-object* clone()   { return new pyramid(*this); }
+Object* clone()   { return new Pyramid(*this); }
 
 
 std::string getDataString(){
@@ -434,21 +434,21 @@ glDisable( GL_TEXTURE_2D );
 
 
 
-class cone:public object{
+class Cone:public Object{
 public:
-	cone(){ 
+	Cone(){ 
 	
 	};
-	cone(int _name, float _x, float _y,  float _z, float _rad, float _height)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Cone(int _name, float _x, float _y,  float _z, float _rad, float _height)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 1;sY = 1; sZ= 1; rad= _rad; height = _height; isVisible = 1; rX = 0; rY = 0;rZ = 0;
 			
 	}
-cone(int _name, float _x, float _y,  float _z,
+Cone(int _name, float _x, float _y,  float _z,
 	 	float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 	 float _rad, float _height)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; 
 	rX = _rX; rY = _rY; rZ = _rZ;
@@ -459,7 +459,7 @@ cone(int _name, float _x, float _y,  float _z,
 
 
 
-object* clone()   { return new cone(*this); }
+Object* clone()   { return new Cone(*this); }
 std::string getDataString(){
 		std::ostringstream data;
 		data<<"CONE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
@@ -541,21 +541,21 @@ glColor3f(0.85, 0.1, 0.1);
 
 
 
-class rectangle:public object{
+class RectangleAR:public Object{
 public:
-	rectangle(){ 
+	RectangleAR(){ 
 	
 	};
-	rectangle(int _name, float _x1, float _y1,  float _x2,float _y2,float _r)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	RectangleAR(int _name, float _x1, float _y1,  float _x2,float _y2,float _r)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		xOff = 0; yOff = 0; zOff = 0;
 	}
-	rectangle(int _name, float _xOff, float _yOff, float _zOff, 
+	RectangleAR(int _name, float _xOff, float _yOff, float _zOff, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _x1, float _y1,  float _x2,float _y2)//:
-		//object(_xOff, _yOff,_zOff, _rX, _rY, _rZ, _sX, _sY, _sZ)
+		//Object(_xOff, _yOff,_zOff, _rX, _rY, _rZ, _sX, _sY, _sZ)
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
 		rX = _rX; rY = _rY; rZ = _rZ;
@@ -566,7 +566,7 @@ public:
 
 
 
-	rectangle* clone()   { std::cout<<"rect clone"<<std::endl; return new rectangle(*this); }
+	RectangleAR* clone()   { std::cout<<"RectangleAR clone"<<std::endl; return new RectangleAR(*this); }
 
 std::string getDataString(){
 		std::ostringstream data;
@@ -628,32 +628,32 @@ glDisable(GL_TEXTURE_2D);
 	float x1, y1,  x2, y2;
 };
 
-class triangle:public object{
+class Triangle:public Object{
 public:
-	triangle(){ 
+	Triangle(){ 
 	
 	};
-	triangle(int _name, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Triangle(int _name, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
 		x3 = _x3; y3 = _y3;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		xOff = 0; yOff = 0; zOff = 0; rZ = 0;
 	}
-	triangle(int _name, float _xOff, float _yOff, float _zOff, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Triangle(int _name, float _xOff, float _yOff, float _zOff, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
 		x3 = _x3; y3 = _y3;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		xOff = _xOff; yOff = _yOff; zOff = _zOff; rZ = 0;
 	}
-	triangle(int _name, float _xOff, float _yOff, float _zOff, 
+	Triangle(int _name, float _xOff, float _yOff, float _zOff, 
 		
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; x3 = _x3; y3 = _y3;
 			rX = _rX; rY = _rY; rZ = _rZ;
@@ -667,7 +667,7 @@ public:
 
 
 
-	triangle* clone()   { std::cout<<"triangle clone"<<std::endl; return new triangle(*this); }
+	Triangle* clone()   { std::cout<<"Triangle clone"<<std::endl; return new Triangle(*this); }
 std::string getDataString(){
 		std::ostringstream data;
 		data<<"TRIANGLE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<x3<<" "<<y3;	
@@ -769,13 +769,13 @@ if (texture != 0) {
 	float x1, y1,  x2, y2, x3, y3, rZ;
 };
 
-class fillArc:public object{
+class FillArc:public Object{
 public:
-	fillArc(){ 
+	FillArc(){ 
 	
 	};
-	fillArc(int _name, float _x, float _y,  float _rad, float _startAngle, float _arcAngle, float _r)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	FillArc(int _name, float _x, float _y,  float _rad, float _startAngle, float _arcAngle, float _r)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  radius = _rad;
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
@@ -783,10 +783,10 @@ public:
 		zOff = 0;
 	}
 
-fillArc(int _name, float _xOff, float _yOff,  float _zOff, 
+FillArc(int _name, float _xOff, float _yOff,  float _zOff, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _rad, float _startAngle, float _arcAngle)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _xOff; yOff = _yOff;  zOff  = _zOff; 
 		
@@ -800,7 +800,7 @@ fillArc(int _name, float _xOff, float _yOff,  float _zOff,
 	}
 
 
-	fillArc* clone()   { std::cout<<"fillarc clone"<<std::endl; return new fillArc(*this); }
+	FillArc* clone()   { std::cout<<"FillArc clone"<<std::endl; return new FillArc(*this); }
 std::string getDataString(){
 		std::ostringstream data;
 		data<<"FILLARC "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius<<" "<<startAngle<<" "<<arcAngle;	
@@ -922,23 +922,23 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 };
 
 
-class cylinder:public object{
+class Cylinder:public Object{
 public:
-	cylinder(){ 
+	Cylinder(){ 
 	quadratic =  gluNewQuadric();
 	};
-	cylinder(int _name, float _rad, float _height)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Cylinder(int _name, float _rad, float _height)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; rad = _rad; height = _height; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = 0;
 		quadratic =  gluNewQuadric();
 
 	}
-	cylinder(int _name, 
+	Cylinder(int _name, 
 		float _xOff, float _yOff, float _zOff,
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _rad, float _height)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; 
 		xOff = _xOff; yOff = _yOff; zOff = _zOff;
@@ -952,7 +952,7 @@ public:
 
 
 
-	object* clone()   { return new cylinder(*this); }
+	Object* clone()   { return new Cylinder(*this); }
 
 	std::string getDataString(){
 		std::ostringstream data;
@@ -991,23 +991,23 @@ public:
 
 
 
-class partialCylinder:public object{
+class PartialCylinder:public Object{
 public:
-	partialCylinder(){ 
+	PartialCylinder(){ 
 	
 	};
-	partialCylinder(int _name, float _x, float _y,  float _rad,float _height, float _startAngle, float _arcAngle, float _r)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	PartialCylinder(int _name, float _x, float _y,  float _rad,float _height, float _startAngle, float _arcAngle, float _r)//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  radius= _rad; height = _height;
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		zOff = 0; rZ = 0;
 	}
-	partialCylinder(int _name, float _xOff, float _yOff,float _zOff,  
+	PartialCylinder(int _name, float _xOff, float _yOff,float _zOff,  
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _rad,float _height, float _startAngle, float _arcAngle)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; 
 		xOff = _xOff; yOff = _yOff;  zOff = _zOff;
@@ -1020,7 +1020,7 @@ public:
 
 
 
-	partialCylinder* clone()   { std::cout<<"partialCylinder clone"<<std::endl; return new partialCylinder(*this); }
+	PartialCylinder* clone()   { std::cout<<"PartialCylinder clone"<<std::endl; return new PartialCylinder(*this); }
 
 std::string getDataString(){
 		std::ostringstream data;
@@ -1199,14 +1199,14 @@ for (pheta = startAngle; pheta - (startAngle + arcAngle)
 
 
 /*
-class partialSphere:public object{
+class partialSphere:public Object{
 public:
-	partialCylinder(){ 
+	PartialCylinder(){ 
 	
 	};
-	partialCylinder(int _name, float _x, float _y,  float _rad,float _height, float _startAngle1, float _arcAngle1, 
+	PartialCylinder(int _name, float _x, float _y,  float _rad,float _height, float _startAngle1, float _arcAngle1, 
 		float _startAngle2, float _arcAngle2, float _r)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  radius= _rad; height = _height;
 		startAngle2 = PI/180*_startAngle1; arcAngle1 = PI/180*_arcAngle1;
@@ -1356,18 +1356,18 @@ for (zeta = startAngle2; zeta - (startAngle2 + arcAngle2)
 
 
 
-class line:public object{
+class Line:public Object{
 public:
-	line(){ 
+	Line(){ 
 	
 	};
-	line(int _name, float _x1,float _y1, float _x2, float _y2 )//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+	Line(int _name, float _x1,float _y1, float _x2, float _y2 )//:
+		//Object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name;x1 = _x1; x2 = _x2; y1 = _y1; y2 = _y2; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = 0;
 	}
 
-	object* clone()   { return new line(*this); }
+	Object* clone()   { return new Line(*this); }
 	void move(double patt_trans[3][4],int but, int key, int x, int y){
 		//int specialKey = glutGetModifiers();
 		if (key == GLUT_ACTIVE_ALT){
