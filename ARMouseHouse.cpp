@@ -76,7 +76,7 @@ static void ar_draw( void );
 #pragma comment( lib, "glaux.lib" )									// Search For GLaux.lib While Linking    ( NEW )
 
 using namespace std;
-world w1("myworld.txt");
+World w1("myworld.txt");
 
 
 
