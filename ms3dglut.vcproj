@@ -182,93 +182,39 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\ARMouseHouse.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\glbmp.c"
+				RelativePath=".\src\ARMouseHouse.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Matrix.cpp"
+				RelativePath=".\src\glbmp.c"
 				>
 			</File>
 			<File
-				RelativePath=".\MilkshapeModel.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Model.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Quaternion.cpp"
+				RelativePath=".\src\Matrix.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Timer.cpp"
+				RelativePath=".\src\MilkshapeModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Vector.cpp"
+				RelativePath=".\src\Model.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Win32Timer.cpp"
+				RelativePath=".\src\Quaternion.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Timer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Vector.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Win32Timer.cpp"
 				>
 			</File>
 		</Filter>
@@ -278,59 +224,75 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\debug.h"
+				RelativePath=".\src\animal.h"
 				>
 			</File>
 			<File
-				RelativePath=".\glbmp.h"
+				RelativePath=".\src\brain.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Lesson31.h"
+				RelativePath=".\src\debug.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Matrix.h"
+				RelativePath=".\src\glbmp.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MilkshapeModel.h"
+				RelativePath=".\src\Lesson31.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Model.h"
+				RelativePath=".\src\Matrix.h"
 				>
 			</File>
 			<File
-				RelativePath=".\myModel.h"
+				RelativePath=".\src\MilkshapeModel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\object.h"
+				RelativePath=".\src\Model.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Quaternion.h"
+				RelativePath=".\src\myModel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\shapeClasses.h"
+				RelativePath=".\src\object.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Timer.h"
+				RelativePath=".\src\ptr_vector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Vector.h"
+				RelativePath=".\src\Quaternion.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Win32Timer.h"
+				RelativePath=".\src\scene.h"
 				>
 			</File>
 			<File
-				RelativePath=".\world.h"
+				RelativePath=".\src\shapeClasses.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Timer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Vector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Win32Timer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world.h"
 				>
 			</File>
 		</Filter>
