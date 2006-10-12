@@ -1,5 +1,10 @@
+Oct 12 fa - updated dragging
+		added init menu
+		reverted capitalization
+
 Oct  1 nf - Renamed lower-case classes to upper-case to conform with
                common C++ conventions
 Nov 30 nf - Initial import
           - made some changes to the project file to allow compiling
             the Release version (unset the character type from Unicode)
+           
