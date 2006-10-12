@@ -34,9 +34,9 @@ void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
 	}
 }
 
-class Object{
+class object{
 public:
-	Object(){
+	object(){
 	xOff = 0; yOff = 0; zOff = 0;
 	rX = 0; rY = 0; rZ = 0;
 	sX = 1; sY = 1; sZ = 1;
@@ -47,7 +47,7 @@ public:
 	texture = 0;
 	};
 	
-	Object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
+	object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
 		float _sX, float _sY, float _sZ){
 		xOff = _xOff; yOff = _yOff;  zOff = _zOff; 
 		rX = _rX; rY = _rY; rZ = _rZ;
@@ -57,7 +57,7 @@ public:
 	}
 
 
-	virtual Object * clone(){return new Object(*this);};
+	virtual object * clone(){return new object(*this);};
 
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 		double wa, wb, wc;
@@ -74,6 +74,30 @@ public:
 		//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
 	return 1;
 	}
+
+
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, 
+		float _rZ, double &xNew, double &yNew){
+		double wa, wb, wc;
+		double rotMat[3][3];
+		getRotFromTrans(patt_trans, rotMat);
+		arGetAngle(rotMat, &wa, &wb, &wc);
+
+		float rzRad = RADIANS(_rZ);
+
+
+		std::cout<<"Total angle :"<<180/PI*wc<< " + "<<_rZ<< " = "<<180/PI*wc + _rZ;
+		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
+		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
+
+		//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
+		xNew = 1*(x*cos(wc+rzRad) - y * sin(wc+rzRad));
+		yNew = 1*(x*sin(wc+rzRad) + y * cos(wc+rzRad));
+		std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
+	return 1;
+	}
+
+
 
 	void setColors(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4){
 		mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3; mat_ambient[3] = c4;
@@ -146,6 +170,9 @@ glScalef(2,0.5,2);
 
 	}
 
+	virtual void initSelection(int but, int key, int x, int y){
+
+	}
 
 	virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
 		//int specialKey = glutGetModifiers();
