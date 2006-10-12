@@ -51,7 +51,14 @@ public:
 		data<<"SPHERE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius;	
 		return data.str(); 
 	}
-
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"3\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
+		data<<"<size x=\""<<radius*sX/100<<"\" y=\""<<radius*sY/100<<"\" z=\""<<radius*sZ/100<<"\">"<<std::endl;
+		return data.str(); 
+	}
 
 
 
@@ -114,7 +121,14 @@ std::string getDataString(){
 		return data.str(); 
 	}
 
-
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"0\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\" s =\"1.0\""<<">"<<std::endl;
+		data<<"<size x=\""<<size*sX/100<<"\" y=\""<<size*sY/100<<"\" z=\""<<size*sZ/100<<"\">"<<std::endl;
+		return data.str(); 
+	}
 
 
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
@@ -294,7 +308,14 @@ std::string getDataString(){
 		return data.str(); 
 	}
 
-
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"2\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
+		data<<"<size x=\""<<size*sX/100<<"\" y=\""<<size*sY/100<<"\" z=\""<<size*sZ/100<<"\">"<<std::endl;
+		return data.str(); 
+	}
 
 
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
@@ -574,6 +595,14 @@ std::string getDataString(){
 		return data.str(); 
 	}
 
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"0\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
+		data<<"<size x=\""<<(x2-x1)*sX/100<<"\" y=\""<<(y2-y1)*sY/100<<"\" z=\""<<0.0001<<"\">"<<std::endl;
+		return data.str(); 
+	}
 
 void initSelection(int but, int key, int x, int y){
 
@@ -1165,6 +1194,15 @@ public:
 		data<<"CYLINDER "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
 		return data.str(); 
 	}
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"1\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
+		data<<"<size x=\""<<rad*sX/100<<"\" y=\""<<rad*sY/100<<"\" z=\""<<height*sZ/100<<"\">"<<std::endl;
+		return data.str(); 
+	}
+
 
 	void	draw(){
 	if (isVisible == 1){
@@ -1234,6 +1272,17 @@ std::string getDataString(){
 		//data<<"PARTIALCYLINDER "<<getGlobalDataString<<"LOCAL "<<radius<<" "<<height<<" "<<startAngle<<" "<<arcAngle;	
 		return data.str(); 
 	}
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"6\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
+		data<<"<size x=\""<<radius*sX/100<<"\" y=\""<<radius*sY/100<<"\" z=\""<<height*sZ/100<<"\">"<<std::endl;
+		return data.str(); 
+	}
+
+
+
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -1305,7 +1354,7 @@ glRotatef(rZ,0,0,1);
 		
 		
 
-int stack,slice;
+int stack;
 int stacks = 100;
 int slices = 100;
 
