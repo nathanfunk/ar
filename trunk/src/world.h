@@ -1,5 +1,7 @@
 #include "ptr_vector.h"
 
+void loadTextures(char *textureFile);
+
 int drawGroundGrid( int divisions, float x, float y, float height)
 {
 //	double        gl_para[16];
@@ -53,14 +55,19 @@ int drawGroundGrid( int divisions, float x, float y, float height)
 
 GLuint LoadGLTextureRepeat( const char *filename );	
 
+//void loadTextures(char *textureFile);
+
 class world{
 
 public:
-	world(){x = 0; y =0; z= 0;};
+	world(){xOff = 0; yOff =0; zOff= 0;rX = 0; rY = 0; rZ = 0;
+	sX = 1; sY = 1; sZ = 1;
+	isSelected = 0;};
 	world(char *scriptFile){
-	//	loadTextures("blah.txt");
+	//loadTextures("blah.txt");
 		loadWorld(scriptFile);
-		x = 0; y =0; z= 0;
+		xOff = 0; yOff =0; zOff= 0; rX = 0; rY = 0; rZ = 0;
+	sX = 1; sY = 1; sZ = 1;isSelected = 0;
 	};
 
 	~world(){ 
@@ -80,12 +87,75 @@ public:
 	std::vector <GLuint> textureIndex;
 
 
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
+		double wa, wb, wc;
+		double rotMat[3][3];
+		getRotFromTrans(patt_trans, rotMat);
+		arGetAngle(rotMat, &wa, &wb, &wc);
+
+		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
+		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
+
+		//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
+		xNew = 1*(x*cos(wc) - y * sin(wc));
+		yNew = 1*(x*sin(wc) + y * cos(wc));
+		//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
+	return 1;
+	}
+
+
+virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
+		
+		double xNew, yNew;
+			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
+
+
+
+		if (key == GLUT_ACTIVE_ALT){
+		if (but == GLUT_LEFT_BUTTON){
+		sX += (float)x / 25; 
+		 sY -= (float)y / 25;
+		////sZ -= (float)y / 25; 
+		}
+	
+		else if (but == GLUT_MIDDLE_BUTTON){
+		 sZ -= (float)y / 25; 
+		 ///sY -= (float)y / 25;
+		}
+		}
+	else if (key == GLUT_ACTIVE_CTRL){
+		if (but == GLUT_LEFT_BUTTON){
+		//rZ += x; 
+		}
+		else if (but == GLUT_MIDDLE_BUTTON){
+		//rX-=y;
+		}
+		}
+
+
+		else{
+
+
+		if (but == GLUT_LEFT_BUTTON){
+		xOff += xNew; yOff -= yNew;
+		}
+		else if (but == GLUT_MIDDLE_BUTTON){
+		 zOff -= y;
+		}
+		}
+
+	}
 
 
 void loadTextures(char *textureFile){
-//textureIndex.push_back(LoadGLTextureRepeat("steel01.bmp"));
 
-//std::cout<<"texindex at 0 "<<(int) textureIndex[0]<<std::endl;
+
+textureIndex.push_back(LoadGLTextureRepeat("steel01.bmp"));
+
+	GLuint blah = LoadGLTextureRepeat("cement.bmp");
+	std::cout<<"blah "<<blah<<std::endl;
+textureIndex.push_back(blah);
+std::cout<<"texindex at 1 "<<textureIndex[1]<<std::endl;
 
 	//std::cout<<LoadGLTextureRepeat("steel01.bmp")<<std::endl;
 
@@ -238,7 +308,47 @@ void saveWorld(char *scriptFile){
   }
 
 
+}
 
+
+void exportSL(char *scriptFile){
+
+	std::ofstream outfile(scriptFile);
+	  if (outfile.is_open())
+  {
+
+	  
+
+
+	for (int i = 0; i< (int) objectPtrs.size(); i++){
+	outfile<< "<primitive name=\"Object\" description=\"\" key=\"Num_231670488\" version=\"1\"> "<<std::endl;
+	  outfile<< "<states> "<< std::endl;
+		  outfile<<"<physics params=\"\">FALSE</physics> "<< std::endl;
+		  outfile<<"<temporary params=\"\">FALSE</temporary>"<<std::endl;
+		  outfile << "<phantom params=\"\">FALSE</phantom> "<<std::endl;
+		  outfile<< "</states>"<<std::endl;
+
+
+		 outfile<<  "<properties>"<<std::endl;
+ outfile<<"<levelofdetail val=\"9\">"<<std::endl;
+
+		outfile << objectPtrs[i]->getSLDataString();
+
+		outfile<<"<textures params=\"\">"<<std::endl;
+outfile<<"</textures>"<<std::endl;
+outfile<<"<scripts params=\"\">"<<std::endl;
+outfile<<"</scripts>"<<std::endl;
+outfile<<"</properties>"<<std::endl;
+outfile<<"</primitive>"<<std::endl;
+
+	 }
+
+
+
+
+
+    outfile.close();
+  }
 
 
 }
@@ -246,9 +356,17 @@ void saveWorld(char *scriptFile){
 
 
 void draw(){
-
+glTranslatef(xOff,yOff,zOff);
+		glRotatef(rX,0,1,0);
+		glRotatef(rY,1,0,0);
+		glRotatef(rZ,0,0,1);
+		glScalef(sX, sY, sZ);
 //draw the floor
 	glPushMatrix();
+
+	
+
+
 	glPushName(-100);
 
 	//glTranslatef(0,0,-20);
@@ -277,10 +395,6 @@ void draw(){
 
 	}
 
-
-
-
-
 	//draw the models
 	for (int i = 0; i < (int) objectPtrs.size(); i++){
 		//push i onto namestack
@@ -293,8 +407,8 @@ void draw(){
 
 }
 
-	float x, y, z, rx, ry, rz, sx, sy, sz;
-
+	float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
+	int isSelected;
 
 
 };
