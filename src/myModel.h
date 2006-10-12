@@ -7,7 +7,7 @@ Farooq Ahmad 2006
 
 
 
-class myModel:public Object{
+class myModel:public object{
 public:
 	myModel(){		
 		pModel = new MilkshapeModel();
@@ -83,7 +83,7 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 
 
 	}
-	Object* clone()   { return new myModel(*this); }
+	object* clone()   { return new myModel(*this); }
 
 	
 	std::string getDataString(){
