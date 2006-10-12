@@ -120,6 +120,15 @@ public:
 		//std::string 
 		return std::string("OBJECT ") + "DERIVED CLASS DATA UNDEFINED";
 	}
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"0\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<">"<<std::endl;
+		data<<"<size x=\""<<sX<<"\" y=\""<<sY<<"\" z=\""<<sZ<<">"<<std::endl;
+		return data.str(); 
+	}
+
 
 	std::string getGlobalDataString(){
 		std::ostringstream data;
