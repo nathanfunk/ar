@@ -34,7 +34,9 @@ Created by Farooq Ahmad Sept. 2006
 void menuCB(int item);
 void colorMenuCB(int item);
 static void motion(int x, int y);
+static void initMenu();
 
+//void loadTextures(char *textureFile);
 //GLUI *glui;
 
 
@@ -178,7 +180,7 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 	}
 	else std::cout<<"Could not load texture"<<std::endl;
 
-
+	std::cout<<"texture is "<<texture<<std::endl;
 	return texture;													// Return The Status
 }
 
@@ -197,6 +199,7 @@ void InitGL ( GLvoid )     // Create Some Everyday Functions
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glInitNames(); //init the name stack for selection
+
 
 }
 
@@ -246,7 +249,8 @@ void arrow_keys ( int a_keys, int x, int y )  // Create Special Function (requir
   }
 }
 
-static void initMenu();
+
+
 
 
 int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
@@ -255,8 +259,11 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 	//w1.loadWorld();
 	glutInit            ( &argc, argv ); // Erm Just Write It =)
 	InitGL();
-	ar_init();
 
+	w1.loadTextures("blah.txt");
+
+	ar_init();
+	
 	initMenu();
 
 	//the motion callback for dragging stuff
@@ -271,10 +278,6 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 	//glutKeyboardFunc    ( keyboard );
 	glutSpecialFunc     ( arrow_keys );
 	//glutIdleFunc		  ( display );
-
-
-
-
 
 
     arVideoCapStart();
@@ -533,17 +536,26 @@ int selection(int key, int mouse_x, int mouse_y) {
 
 
  if ((selected >= 0) && (selected < (int) w1.objectPtrs.size())){
-
+	w1.isSelected = 0;
 	 if (key != GLUT_ACTIVE_SHIFT){
 	 for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
 		 //w1.objectPtrs[i]->deselect();
 		///w1.objectPtrs[i]->isSelected = 0;
 		 w1.objectPtrs[i]->isSelected = 0;
 	 }
+	
 	 }
 	// w1.objectPtrs[selected]->select();
 	w1.objectPtrs[selected]->isSelected = 1;
 
+ }
+ else if (selected == -100){
+	  for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
+		 //w1.objectPtrs[i]->deselect();
+		///w1.objectPtrs[i]->isSelected = 0;
+		 w1.objectPtrs[i]->isSelected = 0;
+	 }
+	w1.isSelected = 1;
  }
 
 
@@ -624,10 +636,10 @@ void menuCB(int item)
 			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
 			break;
   case 4:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "haus.ms3d", 50,0,-50,0,1));
+			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
 			break;//was toilet3.ms3d
  case 5:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "terrain.ms3d", 50,0,-50,0,10));
+			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
 			break;//was sink
 case 6:
 			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
@@ -794,6 +806,11 @@ void fileMenuCB(int item)
       case 1:
 		 	w1.saveWorld("myworld.txt");
             break;
+      case 2:
+		 	w1.exportSL("SLFile.txt");
+            break;
+
+
 	  default:
 			break;
 
@@ -889,6 +906,10 @@ static void motion(int x, int y)
 //		std::cout<<"3dPos: "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]/MAX_INT<<std::endl;
 //}
 
+		if (w1.isSelected == 1){
+			w1.move(patt_trans, lastButton, specialKey, xMove, yMove);
+		}
+
 	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
 		if (w1.objectPtrs[i]->isSelected == 1){
 			std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
@@ -896,6 +917,8 @@ static void motion(int x, int y)
 		}
 		
 	}
+
+
 
 }
 
@@ -926,7 +949,7 @@ int submenu1, submenu2, submenu3, submenu4, mainMenu;
 		
 			submenu3 = glutCreateMenu(fileMenuCB);
 			glutAddMenuEntry("Save", 1);//
-		//glutAddMenuEntry("Blue", 2);//
+		glutAddMenuEntry("Export to SL", 2);//
 		//glutAddMenuEntry("Green", 3);//
 
 		submenu4 = glutCreateMenu(textureMenuCB);
