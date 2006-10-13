@@ -8,6 +8,6 @@ Oct  1 nf
 	common C++ conventions
 
 Nov 30 nf
-	- Initial import
+	- Initial import 
 	- made some changes to the project file to allow compiling
 	the Release version (unset the character type from Unicode)
