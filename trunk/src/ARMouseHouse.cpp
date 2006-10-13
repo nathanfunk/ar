@@ -5,6 +5,7 @@ Created by Farooq Ahmad Sept. 2006
 */
 #include <stdlib.h>
 #include <math.h>
+#include <conio.h>
 
 #include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
 #include <gl/glaux.h>
@@ -295,43 +296,37 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 static void ar_init( void )
 {
     ARParam  wparam;
-		char blah;
     /* open the video path */
 	if( arVideoOpen( vconf ) < 0 ){
-		
-		//cin>>blah;	
+        printf("arVideoOpen failed!! Press any key to exit...\n");
+		_getch();
 		exit(0);
-
 	}
+
     /* find the size of the window */
     if( arVideoInqSize(&xsize, &ysize) < 0 ) exit(0);
     printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
 
-
-
     /* set the initial camera parameters */
     if( arParamLoad(cparam_name, 1, &wparam) < 0 ) {
-        printf("Camera parameter load error !!\n");
-		
-		cin>>blah;
+        printf("Camera parameter load error!! Press any key to exit...\n");
+		_getch();
         exit(0);
     }
+
     arParamChangeSize( &wparam, xsize, ysize, &cparam );
     arInitCparam( &cparam );
     printf("*** Camera Parameter ***\n");
     arParamDisp( &cparam );
 
     if( (patt_id=arLoadPatt(patt_name)) < 0 ) {
-        printf("pattern load error !!\n");
-		cin>>blah;
+        printf("Pattern load error!! Press any key to exit...\n");
+		_getch();
         exit(0);
     }
 
     /* open the graphics window */
     argInit( &cparam, 1.0, 0, 0, 0, 0 );
-
-
-
 }
 
 
@@ -368,10 +363,7 @@ static void startLighting(GLfloat (&mat_ambient)[4]){
     //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
     //glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-
-
-
+	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
 
 }
 static void startLighting2(void){
