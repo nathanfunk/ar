@@ -10,4 +10,4 @@ Oct  1 nf
 Nov 30 nf
 	- Initial import
 	- made some changes to the project file to allow compiling
-	the Release version (unset the character type from Unicode)           
+	the Release version (unset the character type from Unicode)         
