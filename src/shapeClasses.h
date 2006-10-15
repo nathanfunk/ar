@@ -198,12 +198,78 @@ glVertex3f( -size/2, -size/2, 0.0f );
 
 }
 
+void highlightCorners(){
+glPushMatrix();
+glTranslatef(xOff,yOff,zOff);
+		glRotatef(rX,0,1,0);
+		glRotatef(rY,1,0,0);
+		glScalef(sX, sY, sZ);
+
+		glDisable(GL_LIGHTING);
+		glColor3f(0.85, 0.1, 0.1);
+glPushMatrix();
+glTranslatef(-size/2, -size/2, -size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+glPushMatrix();
+glTranslatef(-size/2, -size/2, size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+
+glPushMatrix();
+glTranslatef(-size/2, size/2, -size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+glPushMatrix();
+glTranslatef(-size/2, size/2, size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+glPushMatrix();
+glTranslatef(size/2, -size/2, -size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+glPushMatrix();
+glTranslatef(size/2, -size/2, size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+glPushMatrix();
+glTranslatef(size/2, size/2, -size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+glPushMatrix();
+glTranslatef(size/2, size/2, size/2);
+glScalef(1/sX, 1/sY, 1/sZ);
+glutSolidCube(5);
+glPopMatrix();
+
+
+
+
+
+glPopMatrix();
+}
+
 
 
 	void	draw(){
 	if (isVisible == 1){
 	if (isSelected == 1){
 		highlight();
+		highlightCorners();
 	}
 	//glPushName(name);
 	glPushMatrix();		
@@ -757,10 +823,45 @@ void setWinCoords(){
 
 	}
 
+
+	void highlightCorners(){
+glPushMatrix();		
+	glTranslatef(xOff, yOff, zOff);
+	glRotatef(rX,0,1,0);
+	glRotatef(rY,1,0,0);
+	glScalef(sX, sZ, 1);
+	//setWinCoords();
+glDisable(GL_LIGHTING);
+glColor3f(0.85, 0.1, 0.1);
+glPushMatrix();
+glTranslatef(x1,y1, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(x1,y2, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(x2,y1, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(x2,y2, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPopMatrix();
+};
+
+
 	void	draw(){
 	if (isVisible == 1){
 	if (isSelected == 1){
 		highlight();
+		highlightCorners();
 	}
 	//glPushName(name);
 	glPushMatrix();		
@@ -774,11 +875,40 @@ void setWinCoords(){
 		glRotatef(rX,0,1,0);
 		glRotatef(rY,1,0,0);
 
+
+
+
+
 		glScalef(sX, sZ, 1);
 
 
 //initSelection();
 		setWinCoords();
+
+/*
+glDisable(GL_LIGHTING);
+glColor3f(0.85, 0.1, 0.1);
+glPushMatrix();
+glTranslatef(x1,y1, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(x1,y2, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(x2,y1, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(x2,y2, 0.0f);
+glScalef(1/sX,1/sZ,1);
+glutSolidCube(5);
+glPopMatrix();
+*/
 
 
 		startLighting(mat_ambient);
@@ -789,9 +919,6 @@ if (texture != 0) {
 	glBindTexture( GL_TEXTURE_2D, texture);
 
 }
-
-
-
 
 glBegin( GL_POLYGON );
 //first face   
