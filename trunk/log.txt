@@ -1,3 +1,11 @@
+Oct 19 nf
+	- added MainWindow and OpenGLControl classes for initial GUI
+	- added switch to main function to allow selecting GUI or non-GUI
+
+Oct 13 nf
+	- enabled common language runtime compiling /clr for managed c++ support (for GUI)
+	- renamed glbmp.c to glbmp.cpp to allow compiling with /clr
+
 Oct 12 fa
 	- updated dragging
 	- added init menu
