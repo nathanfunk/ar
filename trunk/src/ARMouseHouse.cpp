@@ -1132,6 +1132,85 @@ if( key == 'p' ) {
     }
 
 
+  if( key == 'g' ) {
+	 std::cout<<"group"<<std::endl;
+		
+
+	 std::vector<object *> newGroup;
+
+	 //ungroup all grouped objects that are selected
+	int i = 0;
+	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+		std::cout<<"ungrouping "<<i<<std::endl;
+			std::vector<object *> group = (*it)->ungroup();
+			if (!group.empty()){
+				//std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs)
+				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs));
+				it = w1.objectPtrs.erase(it++);
+			}
+			else ++it;
+		}
+		else ++it;
+	 }
+
+
+
+	i = 0;
+	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+		std::cout<<"Adding to group "<<i<<std::endl;
+		newGroup.push_back((*it)->clone());
+		//++it;
+		it = w1.objectPtrs.erase(it++);
+		}
+		else ++it;
+	 }
+		
+
+	//multiShape * myMulti = new multiShape(newGroup);
+	 w1.objectPtrs.push_back(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+
+
+    }
+
+  if( key == 'u' ) {
+	 std::cout<<"ungroup"<<std::endl;
+		//if any of the selected objects is a multiShape
+	 //take the objects from the shapePtrs vector and put into the world vector
+		//then destroy the multishape
+
+		int i = 0;
+	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+		std::cout<<"ungrouping "<<i<<std::endl;
+			std::vector<object *> group = (*it)->ungroup();
+			if (!group.empty()){
+
+				//std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs)
+				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs));
+				it = w1.objectPtrs.erase(it++);
+			}
+			else ++it;
+		}
+		else ++it;
+	 }
+		
+
+
+
+
+
+    }
+
+
+
+
+
+
 
 if( key == 8 ) {
 	 std::cout<<"deleting"<<std::endl;
