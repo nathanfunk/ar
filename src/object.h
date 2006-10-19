@@ -1,3 +1,6 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
@@ -26,6 +29,15 @@ static void startLighting(GLfloat (&mat_ambient)[4]);
 static void startLighting2(void);
 
 
+
+struct vertex{
+	float x;
+	float y;
+	float z;
+};
+
+
+
 void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
 	for (int i = 0; i < 3; i++){
 		for (int j = 0; j < 3; j++){
@@ -41,6 +53,12 @@ public:
 	rX = 0; rY = 0; rZ = 0;
 	sX = 1; sY = 1; sZ = 1;
 
+std::cout<<"Object constructor 1"<<std::endl;
+pxOff = 0; pyOff = 0; pzOff = 0;
+prX = 0; prY =0; prZ = 0;
+psX = 1; psY = 1; psZ = 1;
+
+
 	isVisible = 1; isSelected = 0;
 	setColors(0.2, 0.3, 0.5, 1);
 	quadratic =  gluNewQuadric();
@@ -52,12 +70,31 @@ public:
 		xOff = _xOff; yOff = _yOff;  zOff = _zOff; 
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ;
+
+
+		std::cout<<"Object constructor 2"<<std::endl;
+pxOff = 0; pyOff = 0; pzOff = 0;
+prX = 0; prY =0; prZ = 0;
+psX = 1; psY = 1; psZ = 1;
+
+
 		texture = 0;
 
 	}
 
+	object(GLfloat _objTrans[16]){
+		//objTrans = _objTrans;
 
-	virtual object * clone(){return new object(*this);};
+		std::memcpy(&objTrans, &_objTrans, sizeof(objTrans));
+	}
+
+
+
+
+	virtual object * clone(){
+		
+		std::cout<<" OBJECT CLONE "<<std::endl;
+		return new object(*this);};
 
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 		double wa, wb, wc;
@@ -74,6 +111,9 @@ public:
 		//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
 	return 1;
 	}
+
+
+	virtual std::vector<object *> ungroup(){std::vector<object *> emptyVec; return emptyVec;};
 
 
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, 
@@ -112,6 +152,19 @@ public:
 		texture = _texture;
 		//glBindTexture( GL_TEXTURE_2D, texture );
 	
+	}
+
+	void drawTopLevel(){
+
+		glPushMatrix();		
+		glTranslatef(pxOff,pyOff,pzOff);
+		glRotatef(prX,0,1,0);
+		glRotatef(prY,1,0,0);
+		glScalef(psX, psY, psZ);
+
+		draw();
+
+		glPopMatrix();
 	}
 
 	virtual void draw() {};
@@ -183,6 +236,22 @@ glScalef(2,0.5,2);
 
 	}
 
+	virtual void transform(float _x, float _y, float _z, float _rX, float _rY, float _rZ,
+		float _sX, float _sY, float _sZ){
+
+			std::cout<<"transforming object"<<std::endl;
+		pxOff += _x;
+		pyOff += _y;
+		pzOff += _z;
+		prX += _rX;
+		prY += _rY;
+		prZ += _rZ;
+		psX *= _sX;
+		psY *= _sY;
+		psZ *= _sZ;
+	}
+
+
 	virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
 		//int specialKey = glutGetModifiers();
 		double xNew, yNew;
@@ -229,10 +298,22 @@ glScalef(2,0.5,2);
 		}
 
 	}
-	
+
+
+		//used by shapes to find closest corner to mouse click
+	float distance(float x1, float y1, float x2, float y2){
+	return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+	}
+
+
 	int name;
 	int isSelected; int isVisible;
 	//float xo, yo, x1, y1,  x2, y2, z,r;
+
+GLfloat  objTrans[16];
+
+	float pxOff, pyOff, pzOff, prX, prY, prZ, psX, psY, psZ; 
+
 	float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ; //x1, y1, x2, y2;
 	GLfloat   mat_ambient[4];   //  = {0.2, 0.3, 0.5, 1.0};
 	GLUquadricObj *quadratic;
@@ -241,6 +322,10 @@ glScalef(2,0.5,2);
 	GLuint texture;
 	std::string textureFilename;
 
+	std::vector<vertex> Vertices;
+	int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
 
 
 };
+
+#endif
