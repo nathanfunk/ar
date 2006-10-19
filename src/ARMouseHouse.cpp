@@ -6,28 +6,26 @@ Created by Farooq Ahmad Sept. 2006
 #include <stdlib.h>
 #include <math.h>
 #include <conio.h>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
 #include <gl/glaux.h>
-
-//#include <GL/glui.h>
-#include "Timer.h"
-#include "MilkshapeModel.h"
-#include <iostream>
-#include "glbmp.h"
 
 #include <AR/gsub.h>
 #include <AR/video.h>
 #include <AR/param.h>
 #include <AR/ar.h>
 
-
-#include <vector>
-#include <fstream>
-
-#include <sstream>
+//#include <GL/glui.h>
+#include "Timer.h"
+#include "MilkshapeModel.h"
+#include "glbmp.h"
 #include "myModel.h"
 #include "world.h"
+#include "MainWindow.h" // uses System::... causes ambiguities for myModel calling MessageBox
 
 //#include <GL/glui.h>
 
@@ -236,18 +234,18 @@ void reshape ( int width , int height )   // Create The Reshape Function (the vi
 
 void arrow_keys ( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
 {
-  switch ( a_keys ) {
-    case GLUT_KEY_UP:     // When Up Arrow Is Pressed...
-      //glutFullScreen ( ); // Go Into Full Screen Mode
-   glutReshapeWindow ( 352, 288 );
-		
+	switch ( a_keys ) {
+	case GLUT_KEY_UP:     // When Up Arrow Is Pressed...
+		//glutFullScreen ( ); // Go Into Full Screen Mode
+		glutReshapeWindow ( 352, 288 );
+
 		break;
-    case GLUT_KEY_DOWN:               // When Down Arrow Is Pressed...
-      glutReshapeWindow ( 320, 240 ); // Go Into A 500 By 500 Window
-      break;
-    default:
-      break;
-  }
+	case GLUT_KEY_DOWN:               // When Down Arrow Is Pressed...
+		glutReshapeWindow ( 320, 240 ); // Go Into A 500 By 500 Window
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -256,41 +254,54 @@ void arrow_keys ( int a_keys, int x, int y )  // Create Special Function (requir
 
 int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
 {
+	bool gui = false;
 
-	//w1.loadWorld();
-	glutInit            ( &argc, argv ); // Erm Just Write It =)
-	InitGL();
+	if (gui)
+	{
+		// Enabling Windows XP visual effects before any controls are created
+		Application::EnableVisualStyles();
+		Application::SetCompatibleTextRenderingDefault(false); 
 
-	w1.loadTextures("blah.txt");
+		// Create the main window and run it
+		Application::Run(gcnew ms3dglut::MainWindow());
 
-	ar_init();
-	
-	initMenu();
+		return 0;
+	}
+	else
+	{
+		//w1.loadWorld();
+		glutInit            ( &argc, argv ); // Erm Just Write It =)
+		InitGL();
 
-	//the motion callback for dragging stuff
-	glutMotionFunc(motion);
-	//glutInitDisplayMode ( GLUT_RGBA | GLUT_DOUBLE ); // Display Mode
-	//glutInitWindowSize  ( 500, 500 ); // If glutFullScreen wasn't called this is the window size
-	//glutCreateWindow    ( "NeHe's OpenGL Framework" ); // Window Title (argv[0] for current directory as title)
-	//glutFullScreen      ( );          // Put Into Full Screen
-	//InitGL ();
-	//glutDisplayFunc     ( display );  // Matching Earlier Functions To Their Counterparts
-	//glutReshapeFunc     ( reshape );
-	//glutKeyboardFunc    ( keyboard );
-	glutSpecialFunc     ( arrow_keys );
-	//glutIdleFunc		  ( display );
+		w1.loadTextures("blah.txt");
+
+		ar_init();
+
+		initMenu();
+
+		//the motion callback for dragging stuff
+		glutMotionFunc(motion);
+		//glutInitDisplayMode ( GLUT_RGBA | GLUT_DOUBLE ); // Display Mode
+		//glutInitWindowSize  ( 500, 500 ); // If glutFullScreen wasn't called this is the window size
+		//glutCreateWindow    ( "NeHe's OpenGL Framework" ); // Window Title (argv[0] for current directory as title)
+		//glutFullScreen      ( );          // Put Into Full Screen
+		//InitGL ();
+		//glutDisplayFunc     ( display );  // Matching Earlier Functions To Their Counterparts
+		//glutReshapeFunc     ( reshape );
+		//glutKeyboardFunc    ( keyboard );
+		glutSpecialFunc     ( arrow_keys );
+		//glutIdleFunc		  ( display );
+
+		arVideoCapStart();
 
 
-    arVideoCapStart();
+		argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop );
 
+		char ch = getchar();
 
-    argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop );
-
-
-	char ch = getchar();
-
-	ar_cleanup();
-	return 0;
+		ar_cleanup();
+		return 0;
+	}
 }
 
 static void ar_init( void )
