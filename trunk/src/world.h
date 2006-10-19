@@ -390,7 +390,7 @@ glTranslatef(xOff,yOff,zOff);
 	for (int i = 0; i < (int) objects.size(); i++){
 		//push i onto namestack
 		//glPushName(i);
-		objects[i].draw();
+		objects[i].drawTopLevel();
 		//glPopName();
 
 	}
@@ -399,7 +399,7 @@ glTranslatef(xOff,yOff,zOff);
 	for (int i = 0; i < (int) objectPtrs.size(); i++){
 		//push i onto namestack
 		glPushName(i);
-		objectPtrs[i]->draw();
+		objectPtrs[i]->drawTopLevel();
 		glPopName();
 
 	}
