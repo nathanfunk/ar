@@ -13,30 +13,19 @@ Created by Farooq Ahmad Sept. 2006
 
 #include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
 #include <gl/glaux.h>
+//#include <GL/glui.h>
 
-#include <AR/gsub.h>
+#include <AR/gsub_lite.h>
 #include <AR/video.h>
 #include <AR/param.h>
 #include <AR/ar.h>
 
-//#include <GL/glui.h>
 #include "Timer.h"
 #include "MilkshapeModel.h"
 #include "glbmp.h"
 #include "myModel.h"
 #include "world.h"
 #include "MainWindow.h" // uses System::... causes ambiguities for myModel calling MessageBox
-
-//#include <GL/glui.h>
-
-
-void menuCB(int item);
-void colorMenuCB(int item);
-static void motion(int x, int y);
-static void initMenu();
-
-//void loadTextures(char *textureFile);
-//GLUI *glui;
 
 
 //ARToolkit stuff
@@ -46,39 +35,33 @@ char			*vconf = "Data\\WDM_camera_flipV.xml";
 char			*vconf = "";
 #endif
 
-int             xsize, ysize;
-int             thresh = 100;
-int             ar_count = 0;
+int			xsize, ysize;
+int			thresh = 100;
+int			ar_count = 0;
 
-char           *cparam_name    = "Data/camera_para.dat";
-ARParam         cparam;
+static ARUint8	*gARTImage = NULL; // current image
+char		*gCparam_name    = "Data/camera_para.dat";
+ARParam		gCparam;			// camera parameters
+static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
-ARParam			gCparam;
-
-char           *patt_name      = "Data/patt.triangle";
-int             patt_id;
-double          patt_width     = 80.0;
-double          patt_center[2] = {0.0, 0.0};
-double          patt_trans[3][4];
-
-static void   ar_init(void);
-static void   ar_cleanup(void);
+char		*gPatt_name		= "Data/patt.triangle";
+double		gPatt_width		= 80.0;
+double		gPatt_center[2]	= {0.0, 0.0};
+double		gPatt_trans[3][4];
+int			gPatt_id;
+int			gPatt_found		= false;
 
 
-static void ar_mouseEvent(int button, int state, int x, int y);
-static void   ar_keyEvent( unsigned char key, int x, int y);
-static void   ar_mainLoop(void);
-static void ar_draw( void );
-//static void   ar_draw_augmented( void );
+int lastButton;
+int specialKey;
 
-
-#pragma comment( lib, "opengl32.lib" )								// Search For OpenGL32.lib While Linking ( NEW )
-#pragma comment( lib, "glu32.lib" )									// Search For GLu32.lib While Linking    ( NEW )
-#pragma comment( lib, "glaux.lib" )									// Search For GLaux.lib While Linking    ( NEW )
-
+/*
+#pragma comment( lib, "opengl32.lib" )	// Search For OpenGL32.lib While Linking ( NEW )
+#pragma comment( lib, "glu32.lib" )		// Search For GLu32.lib While Linking    ( NEW )
+#pragma comment( lib, "glaux.lib" )		// Search For GLaux.lib While Linking    ( NEW )
+*/
 using namespace std;
 world w1("myworld.txt");
-
 
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
@@ -90,7 +73,7 @@ AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 		return NULL;												// If Not Return NULL
 	}
 
-	File=fopen(Filename,"r");										// Check To See If The File Exists
+	fopen_s(&File, Filename,"r");									// Check To See If The File Exists
 
 	if (File)														// Does The File Exist?
 	{
@@ -187,6 +170,15 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 
 
 
+static void ar_cleanup(void)
+{
+    arVideoCapStop();
+    arVideoClose();
+//    argCleanup(); //gsub.h dependent
+	arglCleanup(gArglSettings);
+}
+
+
 void InitGL ( GLvoid )     // Create Some Everyday Functions
 {	
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
@@ -211,7 +203,147 @@ void display ( void )   // Create The Display Function
 	w1.draw();		
 }
 
-void reshape ( int width , int height )   // Create The Reshape Function (the viewport)
+static void ar_draw( void )
+{
+	double    m[16];
+	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
+	GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
+	GLfloat   mat_flash_shiny[] = {50.0};
+	GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
+	GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
+	GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
+
+	//argDrawMode3D(); // gsub.h dependent
+	//argDraw3dCamera( 0, 0 ); // gsub.h dependent
+	glClearDepth( 1.0 );
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	/* load the camera transformation matrix */
+	//argConvGlpara(gPatt_trans, m); //gsub.h dependent
+	arglCameraView(gPatt_trans, m, 1.0); //gsub_lite.h - TODO: check scale factor
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(m);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+	glMatrixMode(GL_MODELVIEW);
+	// glTranslatef( 0.0, 0.0, 25.0 );
+
+	// Display the world
+	display();
+
+	glDisable( GL_LIGHTING );
+	glDisable( GL_DEPTH_TEST );
+}
+void idleCB()
+{
+/*	static int ms_prev;
+	int ms;
+	float s_elapsed;
+	ARUint8 *image;
+
+	ARMarkerInfo    *marker_info;					// Pointer to array holding the details of detected markers.
+    int             marker_num;						// Count of number of markers detected.
+    int             j, k;
+	
+	// Find out how long since Idle() last ran.
+	ms = glutGet(GLUT_ELAPSED_TIME);
+	s_elapsed = (float)(ms - ms_prev) * 0.001;
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	ms_prev = ms;
+	
+	// Grab a video frame.
+	if ((image = arVideoGetImage()) != NULL) {
+		gARTImage = image;	// Save the fetched image.
+		gPatt_found = FALSE;	// Invalidate any previous detected markers.
+		
+		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
+		
+		// Detect the markers in the video frame.
+		if (arDetectMarker(gARTImage, gARTThreshhold, &marker_info, &marker_num) < 0) {
+			exit(-1);
+		}
+		
+		// Check through the marker_info array for highest confidence
+		// visible marker matching our preferred pattern.
+		k = -1;
+		for (j = 0; j < marker_num; j++) {
+			if (marker_info[j].id == gPatt_id) {
+				if (k == -1) k = j; // First marker detected.
+				else if(marker_info[j].cf > marker_info[k].cf) k = j; // Higher confidence marker detected.
+			}
+		}
+		
+		if (k != -1) {
+			// Get the transformation between the marker and the real camera into gPatt_trans.
+			arGetTransMat(&(marker_info[k]), gPatt_centre, gPatt_width, gPatt_trans);
+			gPatt_found = TRUE;
+		}
+		
+		// Tell GLUT the display has changed.
+		glutPostRedisplay();
+	}
+*/
+	static int ms_prev;
+	int ms;
+	float s_elapsed;
+    ARUint8         *dataPtr;
+    ARMarkerInfo    *marker_info;
+    int             marker_num;
+    int             j, k;
+
+	// Find out how long since Idle() last ran.
+	ms = glutGet(GLUT_ELAPSED_TIME);
+	s_elapsed = (float)(ms - ms_prev) * 0.001;
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	ms_prev = ms;
+
+    // try to grab a new frame
+	// return if none is available
+    if( (dataPtr = (ARUint8 *)arVideoGetImage()) == NULL ) return;
+	gARTImage = dataPtr;	// Save the fetched image.
+	gPatt_found = FALSE;	// Invalidate any previous detected markers.
+
+	if( ar_count == 0 ) arUtilTimerReset();
+    ar_count++;
+
+    // detect the markers in the video frame
+    if( arDetectMarker(dataPtr, thresh, &marker_info, &marker_num) < 0 ) {
+		printf("arDetectMarker failed! Exiting. Press any key to continue.");
+		getchar();
+        ar_cleanup();
+        exit(0);
+	}
+	// Check through the marker_info array for highest confidence
+	// visible marker matching our preferred pattern.
+	k = -1;
+	for (j = 0; j < marker_num; j++) {
+		if (marker_info[j].id == gPatt_id) {
+			if (k == -1) k = j; // First marker detected.
+			else if(marker_info[j].cf > marker_info[k].cf) k = j; // Higher confidence marker detected.
+		}
+	}
+
+	if (k != -1) {
+		// Get the transformation between the marker and the real camera into gPatt_trans.
+		arGetTransMat(&(marker_info[k]), gPatt_center, gPatt_width, gPatt_trans);
+		gPatt_found = TRUE;
+	}
+
+	// Tell GLUT the display has changed.
+	glutPostRedisplay();
+}
+
+
+void reshapeCB( int width , int height )   // Create The Reshape Function (the viewport)
 {
 	if (height==0)													// Prevent A Divide By Zero By
 	{
@@ -232,7 +364,7 @@ void reshape ( int width , int height )   // Create The Reshape Function (the vi
 
 
 
-void arrow_keys ( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
+void arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
 {
 	switch ( a_keys ) {
 	case GLUT_KEY_UP:     // When Up Arrow Is Pressed...
@@ -252,57 +384,6 @@ void arrow_keys ( int a_keys, int x, int y )  // Create Special Function (requir
 
 
 
-int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
-{
-	bool gui = false;
-
-	if (gui)
-	{
-		// Enabling Windows XP visual effects before any controls are created
-		Application::EnableVisualStyles();
-		Application::SetCompatibleTextRenderingDefault(false); 
-
-		// Create the main window and run it
-		Application::Run(gcnew ms3dglut::MainWindow());
-
-		return 0;
-	}
-	else
-	{
-		//w1.loadWorld();
-		glutInit            ( &argc, argv ); // Erm Just Write It =)
-		InitGL();
-
-		w1.loadTextures("blah.txt");
-
-		ar_init();
-
-		initMenu();
-
-		//the motion callback for dragging stuff
-		glutMotionFunc(motion);
-		//glutInitDisplayMode ( GLUT_RGBA | GLUT_DOUBLE ); // Display Mode
-		//glutInitWindowSize  ( 500, 500 ); // If glutFullScreen wasn't called this is the window size
-		//glutCreateWindow    ( "NeHe's OpenGL Framework" ); // Window Title (argv[0] for current directory as title)
-		//glutFullScreen      ( );          // Put Into Full Screen
-		//InitGL ();
-		//glutDisplayFunc     ( display );  // Matching Earlier Functions To Their Counterparts
-		//glutReshapeFunc     ( reshape );
-		//glutKeyboardFunc    ( keyboard );
-		glutSpecialFunc     ( arrow_keys );
-		//glutIdleFunc		  ( display );
-
-		arVideoCapStart();
-
-
-		argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop );
-
-		char ch = getchar();
-
-		ar_cleanup();
-		return 0;
-	}
-}
 
 static void ar_init( void )
 {
@@ -319,37 +400,47 @@ static void ar_init( void )
     printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
 
     /* set the initial camera parameters */
-    if( arParamLoad(cparam_name, 1, &wparam) < 0 ) {
+    if( arParamLoad(gCparam_name, 1, &wparam) < 0 ) {
         printf("Camera parameter load error!! Press any key to exit...\n");
 		_getch();
         exit(0);
     }
 
-    arParamChangeSize( &wparam, xsize, ysize, &cparam );
-    arInitCparam( &cparam );
+    arParamChangeSize( &wparam, xsize, ysize, &gCparam );
+    arInitCparam( &gCparam );
     printf("*** Camera Parameter ***\n");
-    arParamDisp( &cparam );
+    arParamDisp( &gCparam );
 
-    if( (patt_id=arLoadPatt(patt_name)) < 0 ) {
+    if( (gPatt_id=arLoadPatt(gPatt_name)) < 0 ) {
         printf("Pattern load error!! Press any key to exit...\n");
 		_getch();
         exit(0);
     }
 
     /* open the graphics window */
-    argInit( &cparam, 1.0, 0, 0, 0, 0 );
+//    argInit( &cparam, 1.0, 0, 0, 0, 0 ); //gsub.h dependent
+	// ----------------------------------------------------------------------------
+	// Library setup.
+	//
+
+	// Set up GL context(s) for OpenGL to draw into.
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitWindowSize(gCparam.xsize, gCparam.ysize);
+	glutCreateWindow("AR Window");
+
+	// Setup argl library for current context.
+	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
+		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
+		exit(-1);
+	}
+	glEnable(GL_DEPTH_TEST);
+	arUtilTimerReset();
+
+	// ----------------------------------------------------------------------------
 }
 
 
 /* cleanup function called when program exits */
-static void ar_cleanup(void)
-{
-    arVideoCapStop();
-    arVideoClose();
-    argCleanup();
-}
-
-
 static void startLighting(GLfloat (&mat_ambient)[4]){
 //GLfloat   mat_ambient[]     = {0.2, 0.3, 0.5, 1.0};
     GLfloat   mat_flash[]       = {0.3, 0.3, 0.8, 1.0};
@@ -399,62 +490,9 @@ static void startLighting2(void){
 
 
 
-static void ar_draw( void )
-{
-    double    gl_para[16];
-    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny[] = {50.0};
-    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-    
-    argDrawMode3D();
-    argDraw3dCamera( 0, 0 );
-    glClearDepth( 1.0 );
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    
-
-
-    /* load the camera transformation matrix */
-    argConvGlpara(patt_trans, gl_para);
-    glMatrixMode(GL_MODELVIEW);
-
-
-    glLoadMatrixd( gl_para );
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-    glMatrixMode(GL_MODELVIEW);
-   // glTranslatef( 0.0, 0.0, 25.0 );
-
-
-	//glutSolidCube(10);
-	display();
-
-	
-	
-	glDisable( GL_LIGHTING );
-
-
-    glDisable( GL_DEPTH_TEST );
-
-}
-
-
-
-
-/*Allow picking with the mouse */
-
-
+/* Allow picking with the mouse
+ picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
+ */
 int selection(int key, int mouse_x, int mouse_y) { 
     GLuint   buffer[512];	// Set Up A Selection Buffer 
     GLint   hits;	  // The Number Of Objects That We Selected 
@@ -474,8 +512,8 @@ int selection(int key, int mouse_x, int mouse_y) {
 	glInitNames();   // Initializes The Name Stack 
     ///glPushName(-1);   // Push 0 (At Least One Entry) Onto The Stack 
   
-	argDrawMode3D();
-    argDraw3dCamera( 0, 0 );
+	//argDrawMode3D(); //gsub.h dependent
+    //argDraw3dCamera( 0, 0 ); //gsub.h dependent
 
 	glMatrixMode(GL_PROJECTION);    // Selects The Projection Matrix 
 	glGetIntegerv(GL_VIEWPORT, viewport); 
@@ -495,8 +533,9 @@ int selection(int key, int mouse_x, int mouse_y) {
 
 	glPushMatrix();
     /* load the camera transformation matrix */
-	 argConvGlpara(patt_trans, gl_para);
-	 glLoadMatrixd( (GLdouble *) gl_para );
+	//argConvGlpara(gPatt_trans, gl_para); //gsub.h dependent
+	arglCameraView(gPatt_trans, gl_para, 1.0);
+	glLoadMatrixd( (GLdouble *) gl_para );
 
 
 //print out gl_para
@@ -570,58 +609,23 @@ int selection(int key, int mouse_x, int mouse_y) {
 	return selected;
 
  } 
- 
 
-
-
-
-/* main loop */
-static void ar_mainLoop(void)
+static void displayCB(void)
 {
-    ARUint8         *dataPtr;
-    ARMarkerInfo    *marker_info;
-    int             marker_num;
-    int             j, k;
+	// Select correct buffer for this context.
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
 
-    /* grab a vide frame */
-    if( (dataPtr = (ARUint8 *)arVideoGetImage()) == NULL ) {
-        arUtilSleep(2);
-        return;
-    }
-    if( ar_count == 0 ) arUtilTimerReset();
-    ar_count++;
-
-    argDrawMode2D();
-    argDispImage( dataPtr, 0,0 );
-
-    /* detect the markers in the video frame */
-    if( arDetectMarker(dataPtr, thresh, &marker_info, &marker_num) < 0 ) {
-        ar_cleanup();
-        exit(0);
-    }
-
+    //argDrawMode2D(); //gsub.h dependent
+    //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
+	arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
     arVideoCapNext();
+	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 
-    /* check for object visibility */
-    k = -1;
-    for( j = 0; j < marker_num; j++ ) {
-        if( patt_id == marker_info[j].id ) {
-            if( k == -1 ) k = j;
-            else if( marker_info[k].cf < marker_info[j].cf ) k = j;
-        }
-    }
-    if( k == -1 ) {
-        argSwapBuffers();
-        return;
-    }
-
-    /* get the transformation between the marker and the real camera */
-    arGetTransMat(&marker_info[k], patt_center, patt_width, patt_trans);
-
-///// picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
-
-	ar_draw();
-    argSwapBuffers();
+	if (gPatt_found) {
+		ar_draw();
+	}
+	glutSwapBuffers();
 }
 
 
@@ -847,11 +851,6 @@ int GetOGLPos(int x, int y, float pos[])
 }
 
 
-//int lastX; int lastY; 
-int lastButton;
-int specialKey;
-
-
 
 
 int initDrag(int button, int x, int y){
@@ -879,9 +878,9 @@ for (int i =0; i < (int) w1.objectPtrs.size(); i++){
 }
 
 
-/*mouse motion callback - for dragging */
 
-static void motion(int x, int y)
+/*mouse motion callback - for dragging */
+static void motionCB(int x, int y)
 {
 	//if an object is being dragged, move the object
 
@@ -892,7 +891,7 @@ static void motion(int x, int y)
 
 	double wa, wb, wc;
 		double rotMat[3][3];
-		getRotFromTrans(patt_trans, rotMat);
+		getRotFromTrans(gPatt_trans, rotMat);
 		arGetAngle(rotMat, &wa, &wb, &wc);
 
 		std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc<<std::endl;
@@ -910,18 +909,16 @@ static void motion(int x, int y)
 //}
 
 		if (w1.isSelected == 1){
-			w1.move(patt_trans, lastButton, specialKey, xMove, yMove);
+			w1.move(gPatt_trans, lastButton, specialKey, xMove, yMove);
 		}
 
 	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
 		if (w1.objectPtrs[i]->isSelected == 1){
 			std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
-			w1.objectPtrs[i]->move(patt_trans, lastButton, specialKey, xMove, yMove);
+			w1.objectPtrs[i]->move(gPatt_trans, lastButton, specialKey, xMove, yMove);
 		}
 		
 	}
-
-
 
 }
 
@@ -978,7 +975,7 @@ glutAddMenuEntry("Road", 8);//
 }
 
 
-static void ar_mouseEvent(int button, int state, int x, int y) {
+static void mouseCB(int button, int state, int x, int y) {
 
 specialKey = glutGetModifiers();
 
@@ -1040,7 +1037,7 @@ if (state == GLUT_DOWN){
 }
 
 
-static void   ar_keyEvent( unsigned char key, int x, int y)
+static void keyboardCB( unsigned char key, int x, int y)
 {
     /* quit if the ESC key is pressed */
     if( key == 0x1b ) {
@@ -1233,3 +1230,52 @@ if( key == 8 ) {
 
 }
 
+
+
+int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
+{
+	bool gui = false;
+
+	if (gui)
+	{
+		// Enabling Windows XP visual effects before any controls are created
+		Application::EnableVisualStyles();
+		Application::SetCompatibleTextRenderingDefault(false); 
+
+		// Create the main window and run it
+		Application::Run(gcnew ms3dglut::MainWindow());
+
+		return 0;
+	}
+	else
+	{
+		//w1.loadWorld();
+		glutInit(&argc, argv); // Erm Just Write It =)
+		InitGL();
+
+		w1.loadTextures("blah.txt");
+
+		ar_init();
+
+		initMenu();
+
+		//GLUT callbacks
+		glutMotionFunc(motionCB);
+		glutSpecialFunc(arrowKeysCB);
+		glutKeyboardFunc(keyboardCB);
+		glutMouseFunc(mouseCB);
+		glutDisplayFunc(displayCB);
+		glutReshapeFunc(reshapeCB);
+		glutIdleFunc(idleCB);
+
+		arVideoCapStart();
+
+//		argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop ); //gsub.h dependent
+		glutMainLoop();
+
+		char ch = getchar();
+
+		ar_cleanup();
+		return 0;
+	}
+}
