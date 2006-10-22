@@ -1,4 +1,8 @@
-
+/*
+The code in this file is was adapted to Windows Forms from an MFC
+tutorial at 
+http://www.codeguru.com/cpp/g-m/opengl/openfaq/article.php/c10975/
+*/
 #include "OpenGLControl.h"
 
 using namespace ms3dglut;
@@ -221,6 +225,7 @@ void COpenGLControl::OnSizeChanged(System::EventArgs ^e)
 	updateModelView();
 }
 
+/* Event handler for timer ticks */
 void COpenGLControl::OnTick(Object ^sender, EventArgs ^e)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
