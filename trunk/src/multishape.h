@@ -85,7 +85,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 		for (int i = 0; i < shapePtrs.size(); i++){
-				shapePtrs[i]->drawTopLevel();			
+				shapePtrs[i]->drawTopLevel(5,5,5);			
 		}
 
 		glPopMatrix();
