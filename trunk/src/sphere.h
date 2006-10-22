@@ -1,3 +1,6 @@
+#ifndef SPHERE_H
+#define SPHERE_H
+
 class sphere:public object{
 public:
 	sphere(){ 
@@ -61,3 +64,5 @@ public:
 	}
 	float radius;
 };
+
+#endif
