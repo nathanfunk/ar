@@ -1,3 +1,11 @@
+Oct 22 nf
+	- capitalized world class to World
+	- added loading projection matrix in ar_draw() and selection() with gsub_lite
+	  (was missing in last commit)
+
+Oct 21 nf
+	- started conversion to gsub_lite.h from gsub.h (incomplete)
+
 Oct 19 nf
 	- added MainWindow and OpenGLControl classes for initial GUI
 	- added switch to main function to allow selecting GUI or non-GUI
