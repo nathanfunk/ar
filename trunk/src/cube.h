@@ -105,21 +105,28 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 				std::cout<<"rX : "<<rX<<std::endl;
 				
+//after scaling, center of cube must be moved so that only one corner is dragged
+//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+				//of the new larger/smaller shape, and convert back to world coordinates
+				//(rotation matrix with r = -rotation of object
 
+			float xOffInc = xGrow*size/40*cos(-rzRad) - yGrow*size/40*sin(-rzRad);
+			float yOffInc = xGrow*size/40*sin(-rzRad) + yGrow*size/40*cos(-rzRad);
 
 		if (min == d1||min == d5){
 			
-			sX -= xGrow/20; xOff += xGrow*size/40; 
-			sZ-= yGrow/20; zOff+= yGrow*size/40;
+			sX -= xGrow/20; xOff += xOffInc; 
+			sZ-= yGrow/20; zOff+= yOffInc;
 		}
 		
-		else if (min == d2|| min == d6){sX += xGrow/20; xOff += xGrow*size/40; 
-						sZ-= yGrow/20; zOff+= yGrow*size/40;}
+		else if (min == d2|| min == d6){sX += xGrow/20; 
+						xOff += xOffInc; 
+						sZ-= yGrow/20; zOff+= yOffInc;}
 	
-		else if (min == d3||min == d7){ sX += xGrow/20; xOff += xGrow*size/40; 
-						sZ+= yGrow/20; zOff+= yGrow*size/40;}
-		else if (min == d4||min == d8){sX -= xGrow/20; xOff += xGrow*size/40; 
-						sZ+= yGrow/20; zOff+= yGrow*size/40; }
+		else if (min == d3||min == d7){ sX += xGrow/20; xOff += xOffInc; 
+						sZ+= yGrow/20; zOff+= yOffInc;}
+		else if (min == d4||min == d8){sX -= xGrow/20; xOff += xOffInc; 
+						sZ+= yGrow/20; zOff+= yOffInc; }
 		
 
 
@@ -165,7 +172,7 @@ void initSelection(int but, int key, int x, int y){
 		d8 = distance ( (float) mouseX, (float) mouseY, (float) winX8, (float) winY8);
 	if (d8 < min ) min = d8;
 
-/*
+
 	std::cout<<" Point 1 projected to "<<winX1<<" "<<winY1<<" "<<std::endl;
 	std::cout<<" dist from "<<lastX<<" "<<lastY<<": "<<d1<<std::endl;
 	std::cout<<" Point 2 projected to "<<winX2<<" "<<winY2<<" "<<std::endl;
@@ -187,7 +194,7 @@ void initSelection(int but, int key, int x, int y){
 
 
 	std::cout<<" closest is "<<min<<std::endl;
-*/
+
 	std::cout<<"Current pos: "<<getDataString();
 
 
