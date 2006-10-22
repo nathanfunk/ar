@@ -11,6 +11,9 @@ Created by Farooq Ahmad Sept. 2006
 #include <iostream>
 #include <sstream>
 
+class GLUquadric {};// avoids "warning LNK4248: unresolved typeref token (01000030) for 'GLUquadric'; image may not run"
+struct _ARGL_CONTEXT_SETTINGS {}; // avoids "warning LNK4248: unresolved typeref token (01000031) for '_ARGL_CONTEXT_SETTINGS'; image may not run"
+
 #include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
 #include <gl/glaux.h>
 //#include <GL/glui.h>
