@@ -154,7 +154,7 @@ psX = 1; psY = 1; psZ = 1;
 	
 	}
 
-	void drawTopLevel(){
+	void drawTopLevel(float snapPos, float snapRot, float snapScale){
 
 		glPushMatrix();		
 		glTranslatef(pxOff,pyOff,pzOff);
@@ -164,10 +164,34 @@ psX = 1; psY = 1; psZ = 1;
 
 		draw();
 
+		//if (snap_to_grid == 1)
+		snap(snapPos, snapRot, snapScale);
 		glPopMatrix();
 	}
 
-	virtual void draw() {};
+
+	virtual void snap(float snapPos, float snapRot, float snapScale){
+		//if (snapPos >0){
+		//xOff = (int) (xOff / snapPos) * snapPos;
+		//yOff = (int) (yOff / snapPos) * snapPos;
+		//zOff = (int) (zOff / snapPos) * snapPos;
+		//}
+
+
+	}
+
+
+	virtual void draw() {
+	
+		for (int i = 0; i < vertices.size(); i++){
+			
+
+
+		}
+	
+	
+	
+	};
 
 	virtual std::string getDataString(){ 
 		//std::string 
@@ -194,6 +218,8 @@ psX = 1; psY = 1; psZ = 1;
 		return data.str(); 
 	}
 
+
+	
 
 
 	virtual void highlight(){
@@ -322,7 +348,8 @@ GLfloat  objTrans[16];
 	GLuint texture;
 	std::string textureFilename;
 
-	std::vector<vertex> Vertices;
+	std::vector<vertex> vertices;
+	std::vector<vertex> handles;
 	int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
 
 
