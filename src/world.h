@@ -352,7 +352,7 @@ public:
 		for (int i = 0; i < (int) objects.size(); i++){
 			//push i onto namestack
 			//glPushName(i);
-			objects[i].drawTopLevel();
+			objects[i].drawTopLevel(5,5,5);
 			//glPopName();
 
 		}
@@ -361,7 +361,7 @@ public:
 		for (int i = 0; i < (int) objectPtrs.size(); i++){
 			//push i onto namestack
 			glPushName(i);
-			objectPtrs[i]->drawTopLevel();
+			objectPtrs[i]->drawTopLevel(5,5,5);
 			glPopName();
 
 		}
