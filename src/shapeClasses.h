@@ -4,6 +4,10 @@ Created by Farooq Ahmad Sept. 2006
 3D shape primitives - Derived Classes from object class in object.h
 
 */
+
+#ifndef SHAPECLASSES_H
+#define SHAPECLASSES_H
+
 int lastX; int lastY; 
 
 #include "object.h"
@@ -180,3 +184,4 @@ for (zeta = startAngle2; zeta - (startAngle2 + arcAngle2)
 */
 
 
+#endif
