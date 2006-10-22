@@ -8,7 +8,7 @@ public:
 	cube(int _name, float _x, float _y,  float _z, float _size)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 0.2; size = _size; isVisible = 1; rX = 0; rY = 0;
+		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; size = _size; isVisible = 1; rX = 0; rY = 0;
 	}
 	cube(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -56,10 +56,12 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		double xNew, yNew;
 			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
 
-
+			double xGrow, yGrow;
+getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 		if (key == GLUT_ACTIVE_ALT){
 		if (but == GLUT_LEFT_BUTTON){
+
 		sX += (float)x / 25; 
 		 sY -= (float)y / 25;
 		////sZ -= (float)y / 25; 
@@ -88,8 +90,42 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 		if (but == GLUT_LEFT_BUTTON){
-		
+		if (min > 10){
 			xOff += xNew; zOff += yNew;
+			}
+
+			else{
+
+		//float oldXSize = sX * size;
+		//float oldYSize = sY * size;
+		//float oldZSize = sZ * size;
+
+
+				float rzRad = RADIANS(rX);
+
+				std::cout<<"rX : "<<rX<<std::endl;
+				
+
+
+		if (min == d1||min == d5){
+			
+			sX -= xGrow/20; xOff += xGrow*size/40; 
+			sZ-= yGrow/20; zOff+= yGrow*size/40;
+		}
+		
+		else if (min == d2|| min == d6){sX += xGrow/20; xOff += xGrow*size/40; 
+						sZ-= yGrow/20; zOff+= yGrow*size/40;}
+	
+		else if (min == d3||min == d7){ sX += xGrow/20; xOff += xGrow*size/40; 
+						sZ+= yGrow/20; zOff+= yGrow*size/40;}
+		else if (min == d4||min == d8){sX -= xGrow/20; xOff += xGrow*size/40; 
+						sZ+= yGrow/20; zOff+= yGrow*size/40; }
+		
+
+
+
+			}
+			//xOff += xNew; zOff += yNew;
 
 
 
@@ -129,7 +165,7 @@ void initSelection(int but, int key, int x, int y){
 		d8 = distance ( (float) mouseX, (float) mouseY, (float) winX8, (float) winY8);
 	if (d8 < min ) min = d8;
 
-
+/*
 	std::cout<<" Point 1 projected to "<<winX1<<" "<<winY1<<" "<<std::endl;
 	std::cout<<" dist from "<<lastX<<" "<<lastY<<": "<<d1<<std::endl;
 	std::cout<<" Point 2 projected to "<<winX2<<" "<<winY2<<" "<<std::endl;
@@ -151,6 +187,8 @@ void initSelection(int but, int key, int x, int y){
 
 
 	std::cout<<" closest is "<<min<<std::endl;
+*/
+	std::cout<<"Current pos: "<<getDataString();
 
 
 }
@@ -258,14 +296,14 @@ void setWinCoords(){
 
 
 	gluProject(-size/2,-size/2,-size/2, mMatrix, pMatrix, vPort,&winX1, &winY1, &winZ1);
-gluProject(-size/2,-size/2,size/2, mMatrix, pMatrix, vPort,&winX2, &winY2, &winZ2);
-gluProject(-size/2,size/2,-size/2, mMatrix, pMatrix, vPort,&winX3, &winY3, &winZ3);
-gluProject(-size/2,size/2,size/2, mMatrix, pMatrix, vPort,&winX4, &winY4, &winZ4);
+gluProject(-size/2,-size/2,size/2, mMatrix, pMatrix, vPort,&winX4, &winY4, &winZ4);
+gluProject(-size/2,size/2,-size/2, mMatrix, pMatrix, vPort,&winX5, &winY5, &winZ5);
+gluProject(-size/2,size/2,size/2, mMatrix, pMatrix, vPort,&winX8, &winY8, &winZ8);
 
-gluProject(size/2,-size/2,-size/2, mMatrix, pMatrix, vPort,&winX5, &winY5, &winZ5);
-gluProject(size/2,-size/2,size/2, mMatrix, pMatrix, vPort,&winX6, &winY6, &winZ6);
-gluProject(size/2,size/2,-size/2, mMatrix, pMatrix, vPort,&winX7, &winY7, &winZ7);
-gluProject(size/2,size/2,size/2, mMatrix, pMatrix, vPort,&winX8, &winY8, &winZ8);
+gluProject(size/2,-size/2,-size/2, mMatrix, pMatrix, vPort,&winX2, &winY2, &winZ2);
+gluProject(size/2,-size/2,size/2, mMatrix, pMatrix, vPort,&winX3, &winY3, &winZ3);
+gluProject(size/2,size/2,-size/2, mMatrix, pMatrix, vPort,&winX6, &winY6, &winZ6);
+gluProject(size/2,size/2,size/2, mMatrix, pMatrix, vPort,&winX7, &winY7, &winZ7);
 
 
 
