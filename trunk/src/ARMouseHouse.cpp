@@ -30,30 +30,33 @@ Created by Farooq Ahmad Sept. 2006
 
 //ARToolkit stuff
 #ifdef _WIN32
-char			*vconf = "Data\\WDM_camera_flipV.xml";
+char		*vconf = "Data\\WDM_camera_flipV.xml";
 #else
-char			*vconf = "";
+char		*vconf = "";
 #endif
+
+#define VIEW_SCALEFACTOR		1.0			// 1.0 ARToolKit unit becomes 0.025 of my OpenGL units.
+#define VIEW_DISTANCE_MIN		0.1			// Objects closer to the camera than this will not be displayed.
+#define VIEW_DISTANCE_MAX		10000.0		// Objects further away from the camera than this will not be displayed.
 
 int			xsize, ysize;
 int			thresh = 100;
 int			ar_count = 0;
 
-static ARUint8	*gARTImage = NULL; // current image
-char		*gCparam_name    = "Data/camera_para.dat";
-ARParam		gCparam;			// camera parameters
-static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
+static ARUint8					*gARTImage		= NULL; // current image
+char							*gCparam_name	= "Data/camera_para.dat";
+ARParam							 gCparam;				// camera parameters
+static ARGL_CONTEXT_SETTINGS_REF gArglSettings	= NULL;
 
-char		*gPatt_name		= "Data/patt.triangle";
-double		gPatt_width		= 80.0;
-double		gPatt_center[2]	= {0.0, 0.0};
-double		gPatt_trans[3][4];
-int			gPatt_id;
-int			gPatt_found		= false;
+char	*gPatt_name		= "Data/patt.triangle";
+double	gPatt_width		= 80.0;
+double	gPatt_center[2]	= {0.0, 0.0};
+double	gPatt_trans[3][4];
+int		gPatt_id;
+int		gPatt_found		= false;
 
-
-int lastButton;
-int specialKey;
+int		lastButton;
+int		specialKey;
 
 /*
 #pragma comment( lib, "opengl32.lib" )	// Search For OpenGL32.lib While Linking ( NEW )
@@ -61,7 +64,8 @@ int specialKey;
 #pragma comment( lib, "glaux.lib" )		// Search For GLaux.lib While Linking    ( NEW )
 */
 using namespace std;
-world w1("myworld.txt");
+World w1("myworld.txt");
+//World w1;
 
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
@@ -200,11 +204,12 @@ void InitGL ( GLvoid )     // Create Some Everyday Functions
 
 void display ( void )   // Create The Display Function
 {
-	w1.draw();		
+	w1.draw();
 }
 
 static void ar_draw( void )
 {
+	double    p[16];
 	double    m[16];
 	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
 	GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
@@ -215,6 +220,15 @@ static void ar_draw( void )
 
 	//argDrawMode3D(); // gsub.h dependent
 	//argDraw3dCamera( 0, 0 ); // gsub.h dependent
+
+	// Projection transformation.
+	arglCameraFrustum(&gCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(p);
+	glMatrixMode(GL_MODELVIEW);
+	// Viewing transformation.
+	glLoadIdentity();
+
 	glClearDepth( 1.0 );
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -222,7 +236,7 @@ static void ar_draw( void )
 
 	/* load the camera transformation matrix */
 	//argConvGlpara(gPatt_trans, m); //gsub.h dependent
-	arglCameraView(gPatt_trans, m, 1.0); //gsub_lite.h - TODO: check scale factor
+	arglCameraView(gPatt_trans, m, VIEW_SCALEFACTOR); //gsub_lite.h - TODO: check scale factor
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(m);
 
@@ -243,6 +257,26 @@ static void ar_draw( void )
 	glDisable( GL_LIGHTING );
 	glDisable( GL_DEPTH_TEST );
 }
+
+static void displayCB(void)
+{
+	// Select correct buffer for this context.
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
+
+    //argDrawMode2D(); //gsub.h dependent
+    //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
+	arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
+    arVideoCapNext();
+	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
+
+	if (gPatt_found) {
+		ar_draw();
+	}
+	glutSwapBuffers();
+}
+
+
 void idleCB()
 {
 /*	static int ms_prev;
@@ -494,140 +528,120 @@ static void startLighting2(void){
  picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
  */
 int selection(int key, int mouse_x, int mouse_y) { 
-    GLuint   buffer[512];	// Set Up A Selection Buffer 
-    GLint   hits;	  // The Number Of Objects That We Selected 
-   double   gl_para[16];
-    // The Size Of The Viewport. [0] Is , [1] Is , [2] Is , [3] Is  
-    GLint   viewport[4]; 
-	GLfloat projMatrix[16];
-  
+	GLuint   buffer[512];	// Set Up A Selection Buffer 
+	GLint   hits;	  // The Number Of Objects That We Selected 
+	double   gl_para[16];
+	// The Size Of The Viewport. [0] Is , [1] Is , [2] Is , [3] Is  
+	GLint   viewport[4]; 
+	GLdouble projMatrix[16];
 
-	int selected = -1; 
+	int selected = -1;
 
-    glSelectBuffer(512, buffer);   // Tell OpenGL To Use Our Array For Selection 
-    // Puts OpenGL In Selection Mode. Nothing Will Be Drawn.  Object ID's and Extents Are Stored In The Buffer. 
+	glSelectBuffer(512, buffer);   // Tell OpenGL To Use Our Array For Selection 
+	// Puts OpenGL In Selection Mode. Nothing Will Be Drawn.  Object ID's and Extents Are Stored In The Buffer. 
 
 	glRenderMode(GL_SELECT);  
 
 	glInitNames();   // Initializes The Name Stack 
-    ///glPushName(-1);   // Push 0 (At Least One Entry) Onto The Stack 
-  
-	//argDrawMode3D(); //gsub.h dependent
-    //argDraw3dCamera( 0, 0 ); //gsub.h dependent
+	///glPushName(-1);   // Push 0 (At Least One Entry) Onto The Stack 
 
-	glMatrixMode(GL_PROJECTION);    // Selects The Projection Matrix 
+	//argDrawMode3D(); //gsub.h dependent
+	//argDraw3dCamera( 0, 0 ); //gsub.h dependent
+	arglCameraFrustum(&gCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, projMatrix);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projMatrix);
 	glGetIntegerv(GL_VIEWPORT, viewport); 
-	glGetFloatv(GL_PROJECTION_MATRIX, projMatrix);
 
 	glPushMatrix();	    // Push The Projection Matrix 
-    glLoadIdentity();	   // Resets The Matrix 
- 
-    // This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
-    gluPickMatrix((GLdouble) mouse_x, (GLdouble) (viewport[3]-mouse_y), 5, 5, viewport); 
+	glLoadIdentity();	   // Resets The Matrix 
+
+	// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
+	gluPickMatrix((GLdouble) mouse_x, (GLdouble) (viewport[3]-mouse_y), 5, 5, viewport); 
 
 	//multiply the pick matrix by the projection matrix
-	glMultMatrixf( projMatrix);
+	glMultMatrixd(projMatrix);
 
 	//now draw everything as in ar_draw
 	glMatrixMode(GL_MODELVIEW);
 
 	glPushMatrix();
-    /* load the camera transformation matrix */
+	/* load the camera transformation matrix */
 	//argConvGlpara(gPatt_trans, gl_para); //gsub.h dependent
-	arglCameraView(gPatt_trans, gl_para, 1.0);
+	arglCameraView(gPatt_trans, gl_para, VIEW_SCALEFACTOR);
 	glLoadMatrixd( (GLdouble *) gl_para );
 
 
-//print out gl_para
-	 std::cout<<gl_para[8]<<" "<<gl_para[9]<<" "<<gl_para[10]<<std::endl;
+	//print out gl_para
+	std::cout<<gl_para[8]<<" "<<gl_para[9]<<" "<<gl_para[10]<<std::endl;
 
-    glMatrixMode(GL_MODELVIEW);
-    //glTranslatef( 0.0, 0.0, 25.0 );
+	glMatrixMode(GL_MODELVIEW);
+	//glTranslatef( 0.0, 0.0, 25.0 );
 
 	display();
 
 	glPopMatrix();
-	
+
 	//stop Picking, what did we click?
 
-    glMatrixMode(GL_PROJECTION);   // Select The Projection Matrix 
-   glPopMatrix();	   // Pop The Projection Matrix 
-    glMatrixMode(GL_MODELVIEW);   // Select The Modelview Matrix 
-    glFlush();
+	glMatrixMode(GL_PROJECTION);   // Select The Projection Matrix 
+	glPopMatrix();	   // Pop The Projection Matrix 
+	glMatrixMode(GL_MODELVIEW);   // Select The Modelview Matrix 
+	glFlush();
 	hits=glRenderMode(GL_RENDER);   // Switch To Render Mode, Find Out How Many 
-		// Objects Were Drawn Where The Mouse Was 
-   
+	// Objects Were Drawn Where The Mouse Was 
+
 	if (hits > 0) {	       // If There Were More Than 0 Hits 
-       int   choose = buffer[3];   // Make Our Selection The First Object 
-       int depth = buffer[1];	   // Store How Far Away It Is 
-	
-       printf("hits: %d %d\n", hits, choose); 
- 
-       for (int loop = 1; loop < hits; loop++)	    // Loop Through All The Detected Hits 
-       { 
-	  // If This Object Is Closer To Us Than The One We Have Selected 
-	  if (buffer[loop*4+1] < GLuint(depth)) 
-	  { 
-	     choose = buffer[loop*4+3];   // Select The Closer Object 
-	     depth = buffer[loop*4+1];	 // Store How Far Away It Is 
-		printf("object, depth: %d %d\n", choose, depth); 
-	  }	   
-	   } 
-	  selected = choose; 
- printf("closest: %d\n", selected); 
+		int   choose = buffer[3];   // Make Our Selection The First Object 
+		int depth = buffer[1];	   // Store How Far Away It Is 
+
+		printf("hits: %d %d\n", hits, choose); 
+
+		for (int loop = 1; loop < hits; loop++)	    // Loop Through All The Detected Hits 
+		{ 
+			// If This Object Is Closer To Us Than The One We Have Selected 
+			if (buffer[loop*4+1] < GLuint(depth)) 
+			{ 
+				choose = buffer[loop*4+3];   // Select The Closer Object 
+				depth = buffer[loop*4+1];	 // Store How Far Away It Is 
+				printf("object, depth: %d %d\n", choose, depth); 
+			}	   
+		} 
+		selected = choose; 
+		printf("closest: %d\n", selected); 
 
 
- if ((selected >= 0) && (selected < (int) w1.objectPtrs.size())){
-	w1.isSelected = 0;
-	 if (key != GLUT_ACTIVE_SHIFT){
-	 for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
-		 //w1.objectPtrs[i]->deselect();
-		///w1.objectPtrs[i]->isSelected = 0;
-		 w1.objectPtrs[i]->isSelected = 0;
-	 }
-	
-	 }
-	// w1.objectPtrs[selected]->select();
-	w1.objectPtrs[selected]->isSelected = 1;
+		if ((selected >= 0) && (selected < (int) w1.objectPtrs.size())){
+			w1.isSelected = 0;
+			if (key != GLUT_ACTIVE_SHIFT){
+				for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
+					//w1.objectPtrs[i]->deselect();
+					///w1.objectPtrs[i]->isSelected = 0;
+					w1.objectPtrs[i]->isSelected = 0;
+				}
 
- }
- else if (selected == -100){
-	  for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
-		 //w1.objectPtrs[i]->deselect();
-		///w1.objectPtrs[i]->isSelected = 0;
-		 w1.objectPtrs[i]->isSelected = 0;
-	 }
-	w1.isSelected = 1;
- }
+			}
+			// w1.objectPtrs[selected]->select();
+			w1.objectPtrs[selected]->isSelected = 1;
+
+		}
+		else if (selected == -100){
+			for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
+				//w1.objectPtrs[i]->deselect();
+				///w1.objectPtrs[i]->isSelected = 0;
+				w1.objectPtrs[i]->isSelected = 0;
+			}
+			w1.isSelected = 1;
+		}
 
 
-    } else { 
-       selected = -1; 
-       printf("no hits!\n"); 
-    }	 
+	} else { 
+		selected = -1; 
+		printf("no hits!\n"); 
+	}	 
 
 	return selected;
 
- } 
-
-static void displayCB(void)
-{
-	// Select correct buffer for this context.
-	glDrawBuffer(GL_BACK);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
-
-    //argDrawMode2D(); //gsub.h dependent
-    //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
-	arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
-    arVideoCapNext();
-	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
-
-	if (gPatt_found) {
-		ar_draw();
-	}
-	glutSwapBuffers();
-}
-
+} 
 
 void menuCB(int item)
 {
