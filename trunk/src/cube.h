@@ -96,49 +96,59 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 			else{
 
-		//float oldXSize = sX * size;
-		//float oldYSize = sY * size;
-		//float oldZSize = sZ * size;
-
-
-				float rzRad = RADIANS(rX);
-
-				std::cout<<"rX : "<<rX<<std::endl;
-				
-//after scaling, center of cube must be moved so that only one corner is dragged
-//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
-				//of the new larger/smaller shape, and convert back to world coordinates
-				//(rotation matrix with r = -rotation of object
-
-			float xOffInc = xGrow*size/40*cos(-rzRad) - yGrow*size/40*sin(-rzRad);
-			float yOffInc = xGrow*size/40*sin(-rzRad) + yGrow*size/40*cos(-rzRad);
-
-		if (min == d1||min == d5){
-			
-			sX -= xGrow/20; xOff += xOffInc; 
-			sZ-= yGrow/20; zOff+= yOffInc;
+			//after scaling, center of cube must be moved so that only one corner is dragged
+			//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+			//of the new larger/smaller shape, and convert back to world coordinates
+			//(rotation matrix with r = -rotation of object
+			float rzRad = RADIANS(rX);
+			std::cout<<"rX : "<<rX<<std::endl;
+			float xScaleInc = xGrow / 20;
+			float yScaleInc = yGrow / 20;
+			float xOffInc = xScaleInc*size/2*cos(-rzRad) - yScaleInc*size/2*sin(-rzRad);
+			float yOffInc = xScaleInc*size/2*sin(-rzRad) + yScaleInc*size/2*cos(-rzRad);
+		
+		if (min == d1||min == d5){	
+			sX -= xScaleInc; xOff += xOffInc; 
+			sZ-= yScaleInc; zOff+= yOffInc;
 		}
-		
-		else if (min == d2|| min == d6){sX += xGrow/20; 
-						xOff += xOffInc; 
-						sZ-= yGrow/20; zOff+= yOffInc;}
-	
-		else if (min == d3||min == d7){ sX += xGrow/20; xOff += xOffInc; 
-						sZ+= yGrow/20; zOff+= yOffInc;}
-		else if (min == d4||min == d8){sX -= xGrow/20; xOff += xOffInc; 
-						sZ+= yGrow/20; zOff+= yOffInc; }
-		
-
-
-
-			}
-			//xOff += xNew; zOff += yNew;
-
-
-
+		else if (min == d2|| min == d6){
+			sX += xScaleInc; xOff += xOffInc; 
+			sZ -= yScaleInc; zOff+= yOffInc;
+		}
+		else if (min == d3||min == d7){ 
+			sX += xScaleInc; xOff += xOffInc; 
+			sZ+= yScaleInc; zOff+= yOffInc;
+		}
+		else if (min == d4||min == d8){
+			sX -= xScaleInc; xOff += xOffInc; 
+			sZ+= yScaleInc; zOff+= yOffInc; 
+		}
+		}
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
-		 yOff -= y;
+		 
+			
+			if (min > 10){
+				yOff -= y;
+			}
+			else{
+
+					float yScaleInc = - (float)y / 25;
+					float yOffInc = yScaleInc*size/2;
+	//sY += yScaleInc;
+
+				if (min == d1||min == d2||min == d3||min == d4){	
+					sY -= yScaleInc;
+					yOff += yOffInc;
+				}
+				else if (min == d5||min == d6||min == d7||min == d8){
+					sY += yScaleInc;
+					yOff += yOffInc;
+				}
+			}
+
+
+
 		}
 		}
 
