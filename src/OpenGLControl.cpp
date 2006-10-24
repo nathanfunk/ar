@@ -3,11 +3,11 @@ The code in this file is was adapted to Windows Forms from an MFC
 tutorial at 
 http://www.codeguru.com/cpp/g-m/opengl/openfaq/article.php/c10975/
 */
-#include "OpenGLControl.h"
+#include "OGLControl.h"
 
 using namespace ms3dglut;
 
-COpenGLControl::COpenGLControl(void)
+OGLControl::OGLControl(void)
 {
 	m_fPosX = 0.0f;    // X position of model in camera view
 	m_fPosY = 0.0f;    // Y position of model in camera view
@@ -23,13 +23,13 @@ COpenGLControl::COpenGLControl(void)
 	this->SetStyle(ControlStyles::UserPaint, true);
 }
 
-void COpenGLControl::oglCreate(System::Drawing::Rectangle rect, Form ^parent)
+void OGLControl::oglCreate(System::Drawing::Rectangle rect, Form ^parent)
 {
 	m_oldWindow = rect;
 	m_originalRect = rect;
 }
 
-void COpenGLControl::oglInitialize()
+void OGLControl::oglInitialize()
 {
 	// Initial Setup:
 	//
@@ -86,7 +86,7 @@ void COpenGLControl::oglInitialize()
 	OnDraw();
 }
 
-void COpenGLControl::oglDrawScene()
+void OGLControl::oglDrawScene()
 {
    // Wireframe Mode
    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -130,7 +130,7 @@ void COpenGLControl::oglDrawScene()
    glEnd();
 }
 
-void COpenGLControl::OnPaint(PaintEventArgs ^e)
+void OGLControl::OnPaint(PaintEventArgs ^e)
 {
 	// this is supposed to do to nothing so that the timer-based drawing takes over
 	//ValidateRect(Null)
@@ -139,17 +139,17 @@ void COpenGLControl::OnPaint(PaintEventArgs ^e)
 }
 
 
-void COpenGLControl::OnCreateControl()
+void OGLControl::OnCreateControl()
 {
 	oglInitialize();
 	// Set up timer
 	timer = gcnew System::Windows::Forms::Timer();
-	timer->Tick += gcnew EventHandler(this, &COpenGLControl::OnTick);
+	timer->Tick += gcnew EventHandler(this, &OGLControl::OnTick);
 	timer->Interval = 1;
 	timer->Start();
 }
 
-void COpenGLControl::OnMouseMove(MouseEventArgs ^e)
+void OGLControl::OnMouseMove(MouseEventArgs ^e)
 {
 	int diffX = (int)(e->X - m_fLastX);
 	int diffY = (int)(e->Y - m_fLastY);
@@ -192,7 +192,7 @@ void COpenGLControl::OnMouseMove(MouseEventArgs ^e)
 	UserControl::OnMouseMove(e);
 }
 
-void COpenGLControl::OnDraw()
+void OGLControl::OnDraw()
 {
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -m_fZoom);
@@ -201,7 +201,7 @@ void COpenGLControl::OnDraw()
 	glRotatef(m_fRotY, 0.0f, 1.0f, 0.0f);
 }
 
-void COpenGLControl::updateModelView()
+void OGLControl::updateModelView()
 {
 	// Map the OpenGL coordinates.
 	glViewport(0, 0, Width, Height);
@@ -216,7 +216,7 @@ void COpenGLControl::updateModelView()
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void COpenGLControl::OnSizeChanged(System::EventArgs ^e)
+void OGLControl::OnSizeChanged(System::EventArgs ^e)
 {
 	UserControl::OnSizeChanged(e);
 	
@@ -226,7 +226,7 @@ void COpenGLControl::OnSizeChanged(System::EventArgs ^e)
 }
 
 /* Event handler for timer ticks */
-void COpenGLControl::OnTick(Object ^sender, EventArgs ^e)
+void OGLControl::OnTick(Object ^sender, EventArgs ^e)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -241,9 +241,9 @@ void COpenGLControl::OnTick(Object ^sender, EventArgs ^e)
 
 }
 
-COpenGLControl::~COpenGLControl()
+OGLControl::~OGLControl()
 {
-	System::Diagnostics::Debug::WriteLine("Inside COpenGLControl destructor");
+	System::Diagnostics::Debug::WriteLine("Inside OGLControl destructor");
 	wglMakeCurrent(NULL, NULL);
 	if (hrc) {
 		wglDeleteContext(hrc);

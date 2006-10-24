@@ -13,7 +13,7 @@ using namespace System::Drawing;
 
 namespace ms3dglut {
 
-ref class COpenGLControl : public UserControl
+ref class OGLControl : public UserControl
 {
 private:
 	System::Windows::Forms::Timer	^timer;
@@ -32,7 +32,7 @@ private:
 private:
 	void oglInitialize();
 public:
-	COpenGLControl(void);
+	OGLControl(void);
 	void oglCreate(System::Drawing::Rectangle rect, Form ^parent);
 	void oglDrawScene();
 	virtual void OnPaint(PaintEventArgs ^e) override;
@@ -43,7 +43,7 @@ public:
 	void OnDraw();
 	void OnTick(Object ^sender, EventArgs ^e);
 
-	virtual ~COpenGLControl(void);
+	virtual ~OGLControl(void);
 };
 
 }
