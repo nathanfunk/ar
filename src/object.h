@@ -11,7 +11,9 @@ and milkshape model class in myModel.h
 
 #include <string>
 
-//#define PI		3.141592654
+#ifndef PI
+#	define PI	3.1415926535897932384626433832795
+#endif
 #define PI_2	PI * 2
 #ifndef RADIANS
 #define RADIANS(x) ((x)/180.0*3.14159265358979323)
