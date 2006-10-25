@@ -227,7 +227,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\OpenGLControl.cpp"
+				RelativePath=".\src\OGLControl.cpp"
 				>
 			</File>
 			<File
@@ -265,7 +265,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\cone.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\cube.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\cylinder.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\debug.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\fillArc.h"
 				>
 			</File>
 			<File
@@ -274,6 +290,10 @@
 			</File>
 			<File
 				RelativePath=".\src\Lesson31.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\line.h"
 				>
 			</File>
 			<File
@@ -307,7 +327,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\OpenGLControl.h"
+				RelativePath=".\src\OGLControl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\partialCylinder.h"
 				>
 			</File>
 			<File
@@ -315,7 +339,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\pyramid.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Quaternion.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\rectangle.h"
 				>
 			</File>
 			<File
@@ -327,7 +359,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sphere.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Timer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\triangle.h"
 				>
 			</File>
 			<File
