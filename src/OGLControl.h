@@ -41,6 +41,7 @@ public:
 	virtual void OnMouseMove(MouseEventArgs ^e) override;
 	void updateModelView();
 	void OnDraw();
+	void OnIdle(Object ^sender, EventArgs ^e);
 	void OnTick(Object ^sender, EventArgs ^e);
 
 	virtual ~OGLControl(void);

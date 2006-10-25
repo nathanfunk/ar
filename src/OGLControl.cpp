@@ -21,6 +21,8 @@ OGLControl::OGLControl(void)
 	this->SetStyle(ControlStyles::Opaque, true);
 	this->SetStyle(ControlStyles::ResizeRedraw, true);
 	this->SetStyle(ControlStyles::UserPaint, true);
+
+	Application::Idle += gcnew EventHandler(this, &OGLControl::OnIdle);
 }
 
 void OGLControl::oglCreate(System::Drawing::Rectangle rect, Form ^parent)
@@ -130,6 +132,34 @@ void OGLControl::oglDrawScene()
    glEnd();
 }
 
+/* Event handler for idle event */
+void OGLControl::OnIdle(Object ^sender, EventArgs ^e)
+{
+	m_fRotX += (float)0.5f;
+
+	if ((m_fRotX > 360.0f) || (m_fRotX < -360.0f))
+	{
+		m_fRotX = 0.0f;
+	}
+	OnDraw();
+}
+
+/* Event handler for timer ticks */
+void OGLControl::OnTick(Object ^sender, EventArgs ^e)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Draw OpenGL scene
+	oglDrawScene();
+
+	// Swap buffers
+	if (!SwapBuffers(hdc))
+	{
+		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
+	}
+
+}
+
 void OGLControl::OnPaint(PaintEventArgs ^e)
 {
 	// this is supposed to do to nothing so that the timer-based drawing takes over
@@ -223,22 +253,6 @@ void OGLControl::OnSizeChanged(System::EventArgs ^e)
 	if (0 >= Width || 0 >= Height) return;
 
 	updateModelView();
-}
-
-/* Event handler for timer ticks */
-void OGLControl::OnTick(Object ^sender, EventArgs ^e)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Draw OpenGL scene
-	oglDrawScene();
-
-	// Swap buffers
-	if (!SwapBuffers(hdc))
-	{
-		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
-	}
-
 }
 
 OGLControl::~OGLControl()
