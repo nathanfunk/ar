@@ -27,8 +27,8 @@ Farooq Ahmad 2006
 
 
 
-static void startLighting(GLfloat (&mat_ambient)[4]);
-static void startLighting2(void);
+void startLighting(GLfloat (&mat_ambient)[4]);
+void startLighting2(void);
 
 
 
@@ -40,13 +40,6 @@ struct vertex{
 
 
 
-void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
-	for (int i = 0; i < 3; i++){
-		for (int j = 0; j < 3; j++){
-			rotMat[i][j]  = patt_trans[i][j];
-		}
-	}
-}
 
 class object{
 public:
@@ -98,6 +91,14 @@ psX = 1; psY = 1; psZ = 1;
 		std::cout<<" OBJECT CLONE "<<std::endl;
 		return new object(*this);};
 
+
+	static void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
+		for (int i = 0; i < 3; i++){
+			for (int j = 0; j < 3; j++){
+				rotMat[i][j]  = patt_trans[i][j];
+			}
+		}
+	}
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 		double wa, wb, wc;
 		double rotMat[3][3];
