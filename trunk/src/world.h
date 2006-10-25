@@ -6,56 +6,6 @@
 
 void loadTextures(char *textureFile);
 
-int drawGroundGrid( int divisions, float x, float y, float height)
-{
-//	double        gl_para[16];
-    int           i;
-	float x0,x1,y0,y1;
-	float deltaX, deltaY;
-
-    glTranslatef(x/2.,-y/2.,0.);
-    //draw the grid
-    glColor3f(1,0,0);
-	glLineWidth(1.0);
-	glBegin(GL_LINE_LOOP);
-	glVertex3f( -x, y, height );
-	glVertex3f(  x, y, height );  
-	glVertex3f(  x, -y, height );
-	glVertex3f( -x, -y, height );
-	glEnd();
-	glLineWidth(1.0);
-	
-	//draw a grid of lines
-	//X direction
-	x0 = -x; x1 = -x;
-	y0 = -y; y1 = y;
-	deltaX = (2*x)/divisions;
-
-	for(i=0;i<divisions;i++){
-		x0 = x0 + deltaX;
-		glBegin(GL_LINES);
-		glVertex3f(x0,y0,height);
-		glVertex3f(x0,y1,height);
-		glEnd();
-	}
-
-	x0 = -x; x1 = x;
-	deltaY = (2*y)/divisions;
-
-	for(i=0;i<divisions;i++){
-		y0 = y0 + deltaY;
-		glBegin(GL_LINES);
-		glVertex3f(x0,y0,height);
-		glVertex3f(x1,y0,height);
-		glEnd();
-	}
-
-	glLineWidth(0.5);
-
-	
-    //argDrawMode2D();
-    return 0;
-}
 
 GLuint LoadGLTextureRepeat( const char *filename );	
 
@@ -87,16 +37,66 @@ public:
 
 	~World(){ 
 		for (int i = 0; i < (int) objectPtrs.size(); i++){
-		delete objectPtrs[i];
-	}
-	
+			delete objectPtrs[i];
+		}
+
 	};
 
+	int drawGroundGrid( int divisions, float x, float y, float height)
+	{
+		//	double        gl_para[16];
+		int           i;
+		float x0,x1,y0,y1;
+		float deltaX, deltaY;
+
+		glTranslatef(x/2.,-y/2.,0.);
+		//draw the grid
+		glColor3f(1,0,0);
+		glLineWidth(1.0);
+		glBegin(GL_LINE_LOOP);
+		glVertex3f( -x, y, height );
+		glVertex3f(  x, y, height );  
+		glVertex3f(  x, -y, height );
+		glVertex3f( -x, -y, height );
+		glEnd();
+		glLineWidth(1.0);
+
+		//draw a grid of lines
+		//X direction
+		x0 = -x; x1 = -x;
+		y0 = -y; y1 = y;
+		deltaX = (2*x)/divisions;
+
+		for(i=0;i<divisions;i++){
+			x0 = x0 + deltaX;
+			glBegin(GL_LINES);
+			glVertex3f(x0,y0,height);
+			glVertex3f(x0,y1,height);
+			glEnd();
+		}
+
+		x0 = -x; x1 = x;
+		deltaY = (2*y)/divisions;
+
+		for(i=0;i<divisions;i++){
+			y0 = y0 + deltaY;
+			glBegin(GL_LINES);
+			glVertex3f(x0,y0,height);
+			glVertex3f(x1,y0,height);
+			glEnd();
+		}
+
+		glLineWidth(0.5);
+
+
+		//argDrawMode2D();
+		return 0;
+	}
 
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 		double wa, wb, wc;
 		double rotMat[3][3];
-		getRotFromTrans(patt_trans, rotMat);
+		object::getRotFromTrans(patt_trans, rotMat);
 		arGetAngle(rotMat, &wa, &wb, &wc);
 
 		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
