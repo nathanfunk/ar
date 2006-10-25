@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenGLControl.h"
+#include "OGLControl.h"
 
 using namespace System;
 using namespace System::ComponentModel;
@@ -74,7 +74,7 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator5;
 	private: System::Windows::Forms::ToolStripMenuItem^  aboutToolStripMenuItem;
 
-	private: COpenGLControl oglControl;
+	private: OGLControl oglControl;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;
