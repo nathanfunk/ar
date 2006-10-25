@@ -1,5 +1,14 @@
 #pragma once
 
+#include <stdlib.h>
+#include <math.h>
+#include <conio.h>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
+#include "ARMouseHouse.h"
 #include "OGLControl.h"
 
 using namespace System;
@@ -23,6 +32,10 @@ namespace ms3dglut {
 	/// </summary>
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
+	private:
+		OGLControl oglControl;
+		ARMouseHouse *controller;
+
 	public:
 		MainWindow(void)
 		{
@@ -73,8 +86,6 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripMenuItem^  searchToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator5;
 	private: System::Windows::Forms::ToolStripMenuItem^  aboutToolStripMenuItem;
-
-	private: OGLControl oglControl;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;

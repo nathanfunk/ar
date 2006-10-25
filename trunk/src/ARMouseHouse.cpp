@@ -31,6 +31,75 @@ struct _ARGL_CONTEXT_SETTINGS {}; // avoids "warning LNK4248: unresolved typeref
 #include "MainWindow.h" // uses System::... causes ambiguities for myModel calling MessageBox
 #include "ARMouseHouse.h"
 
+using namespace std;
+using namespace ms3dglut;
+
+int lastX;
+int lastY; 
+ARMouseHouse controller;
+
+void idleCB() {controller.idleCB();}
+void reshapeCB( int width , int height ) {controller.reshapeCB(width, height);}
+void arrowKeysCB( int a_keys, int x, int y ) {controller.arrowKeysCB(a_keys, x, y);}
+/*void menuCB(int item) {controller.menuCB(item);}
+void colorMenuCB(int item) {controller.colorMenuCB(item);}
+void textureMenuCB(int item) {controller.colorMenuCB(item);}
+void fileMenuCB(int item) {controller.fileMenuCB(item);}*/
+void displayCB(void) {controller.displayCB();}
+void motionCB(int x, int y) {controller.motionCB(x, y);}
+void mouseCB(int button, int state, int x, int y) {controller.mouseCB(button, state, x, y);}
+void keyboardCB( unsigned char key, int x, int y) {controller.keyboardCB(key, x, y);}
+
+void startLighting(GLfloat (&mat_ambient)[4]){
+//GLfloat   mat_ambient[]     = {0.2, 0.3, 0.5, 1.0};
+    GLfloat   mat_flash[]       = {0.3, 0.3, 0.8, 1.0};
+    GLfloat   mat_flash_shiny[] = {100.0};
+    GLfloat   light_position[]  = {20.0,-10.0,20.0,0.0};
+
+	GLfloat   light_position1[]  = {-20.0,10.0,20.0,0.0};
+
+    GLfloat   ambi[]            = {0.4, 0.4, 0.4, 1};
+    GLfloat   lightZeroColor[]  = {1, 1, 1, 0.1};
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
+
+	glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightZeroColor);
+
+
+    //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+    //glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
+	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
+
+}
+
+void startLighting2(void){
+  
+    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
+    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
+    GLfloat   mat_flash_shiny[] = {50.0};
+    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
+    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
+    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+   // glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+}
+
+
+
+
+
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 {
 	FILE *File=NULL;												// File Handle
@@ -135,9 +204,68 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 
 
 
+int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
+{
+	bool gui = false;
+
+	if (gui)
+	{
+		// Enabling Windows XP visual effects before any controls are created
+		Application::EnableVisualStyles();
+		Application::SetCompatibleTextRenderingDefault(false); 
+
+		// Create the main window and run it
+		Application::Run(gcnew ms3dglut::MainWindow());
+
+		return 0;
+	}
+	else
+	{
+		glutInit(&argc, argv);
+		controller.InitGL();
+		controller.ar_init();
+		//controller.initMenu();
+
+		//GLUT callbacks
+		glutMotionFunc(motionCB);
+		glutSpecialFunc(arrowKeysCB);
+		glutKeyboardFunc(keyboardCB);
+		glutMouseFunc(mouseCB);
+		glutDisplayFunc(displayCB);
+		glutReshapeFunc(reshapeCB);
+		glutIdleFunc(idleCB);
+
+		arVideoCapStart();
+
+//		argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop ); //gsub.h dependent
+		glutMainLoop();
+
+		char ch = getchar();
+
+		controller.ar_cleanup();
+		return 0;
+	}
+}
 
 
-static void ar_cleanup(void)
+ARMouseHouse::ARMouseHouse() {
+	thresh = 100;
+	ar_count = 0;
+	gCparam_name	= "Data/camera_para.dat";
+	gARTImage		= NULL; // current image
+	gArglSettings	= NULL;
+	gPatt_name		= "Data/patt.triangle";
+	gPatt_width		= 80.0;
+	gPatt_center[0]	= 0.0;
+	gPatt_center[1] = 0.0;
+	gPatt_found		= false;
+	w1.loadWorld("myworld.txt");
+	w1.loadTextures("blah.txt");
+
+}
+ARMouseHouse::~ARMouseHouse() {
+}
+void ARMouseHouse::ar_cleanup(void)
 {
     arVideoCapStop();
     arVideoClose();
@@ -146,7 +274,7 @@ static void ar_cleanup(void)
 }
 
 
-void InitGL ( GLvoid )     // Create Some Everyday Functions
+void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
 {	
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
 	glClearColor(1.0f, 1.0f, 1.0f, 0.5f);				// Black Background
@@ -165,12 +293,12 @@ void InitGL ( GLvoid )     // Create Some Everyday Functions
 
 
 
-void display ( void )   // Create The Display Function
+void ARMouseHouse::display ( void )   // Create The Display Function
 {
 	w1.draw();
 }
 
-static void ar_draw( void )
+void ARMouseHouse::ar_draw( void )
 {
 	double    p[16];
 	double    m[16];
@@ -221,7 +349,7 @@ static void ar_draw( void )
 	glDisable( GL_DEPTH_TEST );
 }
 
-static void displayCB(void)
+void ARMouseHouse::displayCB(void)
 {
 	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
@@ -240,7 +368,7 @@ static void displayCB(void)
 }
 
 
-void idleCB()
+void ARMouseHouse::idleCB()
 {
 /*	static int ms_prev;
 	int ms;
@@ -340,7 +468,7 @@ void idleCB()
 }
 
 
-void reshapeCB( int width , int height )   // Create The Reshape Function (the viewport)
+void ARMouseHouse::reshapeCB( int width , int height )   // Create The Reshape Function (the viewport)
 {
 	if (height==0)													// Prevent A Divide By Zero By
 	{
@@ -361,7 +489,7 @@ void reshapeCB( int width , int height )   // Create The Reshape Function (the v
 
 
 
-void arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
+void ARMouseHouse::arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
 {
 	switch ( a_keys ) {
 	case GLUT_KEY_UP:     // When Up Arrow Is Pressed...
@@ -382,11 +510,12 @@ void arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (requir
 
 
 
-static void ar_init( void )
+void ARMouseHouse::ar_init( void )
 {
     ARParam  wparam;
     /* open the video path */
-	if( arVideoOpen( vconf ) < 0 ){
+	//if( arVideoOpen( vconf ) < 0 ){
+	if( arVideoOpen("Data\\WDM_camera_flipV.xml") < 0 ){
         printf("arVideoOpen failed!! Press any key to exit...\n");
 		_getch();
 		exit(0);
@@ -438,59 +567,10 @@ static void ar_init( void )
 
 
 /* cleanup function called when program exits */
-static void startLighting(GLfloat (&mat_ambient)[4]){
-//GLfloat   mat_ambient[]     = {0.2, 0.3, 0.5, 1.0};
-    GLfloat   mat_flash[]       = {0.3, 0.3, 0.8, 1.0};
-    GLfloat   mat_flash_shiny[] = {100.0};
-    GLfloat   light_position[]  = {20.0,-10.0,20.0,0.0};
-
-	GLfloat   light_position1[]  = {-20.0,10.0,20.0,0.0};
-
-    GLfloat   ambi[]            = {0.4, 0.4, 0.4, 1};
-    GLfloat   lightZeroColor[]  = {1, 1, 1, 0.1};
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-
-	glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightZeroColor);
-
-
-    //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    //glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-
-}
-static void startLighting2(void){
-  
-    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny[] = {50.0};
-    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-   // glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-}
-
-
-
-
-
 /* Allow picking with the mouse
  picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
  */
-int selection(int key, int mouse_x, int mouse_y) { 
+int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) { 
 	GLuint   buffer[512];	// Set Up A Selection Buffer 
 	GLint   hits;	  // The Number Of Objects That We Selected 
 	double   gl_para[16];
@@ -606,205 +686,205 @@ int selection(int key, int mouse_x, int mouse_y) {
 
 } 
 
-void menuCB(int item)
-{
-     switch (item) {
+//void ARMouseHouse::menuCB(int item)
+//{
+//     switch (item) {
+//
+//      case 1:
+//		  w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
+//            break;
+//      case 2:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
+//			break;
+//    case 3:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
+//			break;
+//  case 4:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
+//			break;//was toilet3.ms3d
+// case 5:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
+//			break;//was sink
+//case 6:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
+//			break;
+//
+//case 7:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
+//			break;
+//case 8:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
+//			break;
+//case 9:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
+//			break;
+//case 10:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
+//			break;
+//case 11:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
+//			break;
+//case 12:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
+//			break;
+//case 13:
+//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
+//			break;
+//
+//
+//	  default:
+//			break;
+//
+//	 }
+//};
+//
+//
+//
+//void ARMouseHouse::colorMenuCB(int item)
+//{
+//
+//     switch (item) {
+//      case 1:
+//		 	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setColors(0.8,0.3,0.3,1);
+//			}	
+//			}
+//            break;
+//      case 2:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setColors(0.2,0.3,0.5,1);
+//			}
+//			}
+//			break;
+//       case 3:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setColors(0.2,0.8,0.8,1);
+//			}
+//			}
+//			break;
+//	  default:
+//			break;
+//
+//	 }
+//};
+//
+//
+//
+//
+//void ARMouseHouse::textureMenuCB(int item)
+//{
+///*
+//	std::cout<<"item "<<item<<"texindex size "<<w1.textureIndex.size()<<std::endl;
+//if ((item > 0) && (item <= w1.textureIndex.size())){
+//	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){			
+//				w1.objectPtrs[i]->setTexture(w1.textureIndex[item-1]);
+//			}
+//		}
+//}
+//*/
+//	     switch (item) {
+//      case 0:
+//		 		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture((GLuint) 0);
+//			}
+//			}
+//			break;
+//      case 1:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("steel01.bmp"));
+//			}
+//			}
+//			break;
+//	case 2:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b1.bmp"));
+//			}
+//			}
+//			break;
+//	case 3:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b19.bmp"));
+//			}
+//			}
+//			break;
+//	case 4:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b7.bmp"));
+//			}
+//			}
+//			break;
+//      case 5:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("panel_01.bmp"));
+//			}	
+//			}
+//            break;
+//     case 6:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("grass.bmp"));
+//			}	
+//			}
+//            break;
+//			     case 7:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("cement.bmp"));
+//			}	
+//			}
+//            break;
+//			     case 8:
+//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+//		if (w1.objectPtrs[i]->isSelected == 1){
+//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("road1.bmp"));
+//			}	
+//			}
+//            break;
+//
+//
+//
+//	  default:
+//			break;
+//
+//	 }
+//	 
+//};
+//
+//
+//
+//
+//void ARMouseHouse::fileMenuCB(int item)
+//{
+//
+//     switch (item) {
+//      case 1:
+//		 	w1.saveWorld("myworld.txt");
+//            break;
+//      case 2:
+//		 	w1.exportSL("SLFile.txt");
+//            break;
+//
+//
+//	  default:
+//			break;
+//
+//	 }
+//};
+//
+//
+//
 
-      case 1:
-		  w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
-            break;
-      case 2:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
-			break;
-    case 3:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
-			break;
-  case 4:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
-			break;//was toilet3.ms3d
- case 5:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
-			break;//was sink
-case 6:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
-			break;
-
-case 7:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
-			break;
-case 8:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
-			break;
-case 9:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
-			break;
-case 10:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
-			break;
-case 11:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
-			break;
-case 12:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
-			break;
-case 13:
-			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
-			break;
-
-
-	  default:
-			break;
-
-	 }
-};
-
-
-
-void colorMenuCB(int item)
-{
-
-     switch (item) {
-      case 1:
-		 	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setColors(0.8,0.3,0.3,1);
-			}	
-			}
-            break;
-      case 2:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setColors(0.2,0.3,0.5,1);
-			}
-			}
-			break;
-       case 3:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setColors(0.2,0.8,0.8,1);
-			}
-			}
-			break;
-	  default:
-			break;
-
-	 }
-};
-
-
-
-
-void textureMenuCB(int item)
-{
-/*
-	std::cout<<"item "<<item<<"texindex size "<<w1.textureIndex.size()<<std::endl;
-if ((item > 0) && (item <= w1.textureIndex.size())){
-	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){			
-				w1.objectPtrs[i]->setTexture(w1.textureIndex[item-1]);
-			}
-		}
-}
-*/
-	     switch (item) {
-      case 0:
-		 		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture((GLuint) 0);
-			}
-			}
-			break;
-      case 1:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("steel01.bmp"));
-			}
-			}
-			break;
-	case 2:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b1.bmp"));
-			}
-			}
-			break;
-	case 3:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b19.bmp"));
-			}
-			}
-			break;
-	case 4:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b7.bmp"));
-			}
-			}
-			break;
-      case 5:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("panel_01.bmp"));
-			}	
-			}
-            break;
-     case 6:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("grass.bmp"));
-			}	
-			}
-            break;
-			     case 7:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("cement.bmp"));
-			}	
-			}
-            break;
-			     case 8:
-		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
-			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("road1.bmp"));
-			}	
-			}
-            break;
-
-
-
-	  default:
-			break;
-
-	 }
-	 
-};
-
-
-
-
-void fileMenuCB(int item)
-{
-
-     switch (item) {
-      case 1:
-		 	w1.saveWorld("myworld.txt");
-            break;
-      case 2:
-		 	w1.exportSL("SLFile.txt");
-            break;
-
-
-	  default:
-			break;
-
-	 }
-};
-
-
-
-
-int GetOGLPos(int x, int y, float pos[])
+int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 {
 	GLint viewport[4];
 	GLdouble modelview[16];
@@ -830,26 +910,23 @@ int GetOGLPos(int x, int y, float pos[])
 
 
 
-int initDrag(int button, int x, int y){
+int ARMouseHouse::initDrag(int button, int x, int y){
 	lastX = x;
 	lastY = y;
 	lastButton = button;
 
-float pos[3];
-GetOGLPos(x, y, pos);
-std::cout<<"Drag Started at : ["<<x<<" "<<y<<" ]"<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
+	float pos[3];
+	GetOGLPos(x, y, pos);
+	std::cout<<"Drag Started at : ["<<x<<" "<<y<<" ]"<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
 
 
-for (int i =0; i < (int) w1.objectPtrs.size(); i++){
+	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
 		if (w1.objectPtrs[i]->isSelected == 1){
 			//std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
 			w1.objectPtrs[i]->initSelection(lastButton, specialKey, x,y);
 		}
-		
+
 	}
-
-
-
 
 	return 1;
 }
@@ -857,7 +934,7 @@ for (int i =0; i < (int) w1.objectPtrs.size(); i++){
 
 
 /*mouse motion callback - for dragging */
-static void motionCB(int x, int y)
+void ARMouseHouse::motionCB(int x, int y)
 {
 	//if an object is being dragged, move the object
 
@@ -868,7 +945,7 @@ static void motionCB(int x, int y)
 
 	double wa, wb, wc;
 		double rotMat[3][3];
-		getRotFromTrans(gPatt_trans, rotMat);
+		object::getRotFromTrans(gPatt_trans, rotMat);
 		arGetAngle(rotMat, &wa, &wb, &wc);
 
 		std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc<<std::endl;
@@ -899,60 +976,60 @@ static void motionCB(int x, int y)
 
 }
 
-static void initMenu(){
+//void ARMouseHouse::initMenu(){
+//
+//int submenu1, submenu2, submenu3, submenu4, mainMenu;
+//
+//submenu1 = glutCreateMenu(menuCB);
+//         glutAddMenuEntry("Chair", 1);
+//         glutAddMenuEntry("TV", 2);
+//		 glutAddMenuEntry("Bed", 3);
+//		 glutAddMenuEntry("Toilet", 4);
+//		 glutAddMenuEntry("Sink", 5);
+//		 glutAddMenuEntry("Sheep", 6);
+//		 glutAddMenuEntry("Desk", 7);
+//		  glutAddMenuEntry("Sofa", 8);
+//		  glutAddMenuEntry("Stairs", 9);
+//		  glutAddMenuEntry("Kitchen Table", 10);
+//		  glutAddMenuEntry("Shelf", 11);
+//		  glutAddMenuEntry("Door", 12);
+//		glutAddMenuEntry("Window", 13);
+//
+//		  submenu2 = glutCreateMenu(colorMenuCB);
+//		 glutAddMenuEntry("Red", 1);//
+//		glutAddMenuEntry("Blue", 2);//
+//		glutAddMenuEntry("Green", 3);//
+//		
+//		
+//			submenu3 = glutCreateMenu(fileMenuCB);
+//			glutAddMenuEntry("Save", 1);//
+//		glutAddMenuEntry("Export to SL", 2);//
+//		//glutAddMenuEntry("Green", 3);//
+//
+//		submenu4 = glutCreateMenu(textureMenuCB);
+//			glutAddMenuEntry("None", 0);//
+//	glutAddMenuEntry("Steel", 1);//
+//glutAddMenuEntry("Checkers", 2);//
+//glutAddMenuEntry("Red Checkers",3);//
+//glutAddMenuEntry("Beige Marble", 4);//
+//glutAddMenuEntry("Wood", 5);//
+//glutAddMenuEntry("Grass", 6);//
+//glutAddMenuEntry("Cement", 7);//
+//glutAddMenuEntry("Road", 8);//
+//		
+//			mainMenu = glutCreateMenu(menuCB);
+//			glutAddSubMenu("File", submenu3);
+//			glutAddSubMenu("Models", submenu1);
+//			glutAddSubMenu("Colors", submenu2);//
+//			glutAddSubMenu("Texture", submenu4);//
+//
+//
+//         glutAttachMenu(GLUT_RIGHT_BUTTON);
+//
+//}
+//
 
-int submenu1, submenu2, submenu3, submenu4, mainMenu;
-
-         submenu1 = glutCreateMenu(menuCB);
-         glutAddMenuEntry("Chair", 1);
-         glutAddMenuEntry("TV", 2);
-		 glutAddMenuEntry("Bed", 3);
-		 glutAddMenuEntry("Toilet", 4);
-		 glutAddMenuEntry("Sink", 5);
-		 glutAddMenuEntry("Sheep", 6);
-		 glutAddMenuEntry("Desk", 7);
-		  glutAddMenuEntry("Sofa", 8);
-		  glutAddMenuEntry("Stairs", 9);
-		  glutAddMenuEntry("Kitchen Table", 10);
-		  glutAddMenuEntry("Shelf", 11);
-		  glutAddMenuEntry("Door", 12);
-		glutAddMenuEntry("Window", 13);
-
-		  submenu2 = glutCreateMenu(colorMenuCB);
-		 glutAddMenuEntry("Red", 1);//
-		glutAddMenuEntry("Blue", 2);//
-		glutAddMenuEntry("Green", 3);//
-		
-		
-			submenu3 = glutCreateMenu(fileMenuCB);
-			glutAddMenuEntry("Save", 1);//
-		glutAddMenuEntry("Export to SL", 2);//
-		//glutAddMenuEntry("Green", 3);//
-
-		submenu4 = glutCreateMenu(textureMenuCB);
-			glutAddMenuEntry("None", 0);//
-	glutAddMenuEntry("Steel", 1);//
-glutAddMenuEntry("Checkers", 2);//
-glutAddMenuEntry("Red Checkers",3);//
-glutAddMenuEntry("Beige Marble", 4);//
-glutAddMenuEntry("Wood", 5);//
-glutAddMenuEntry("Grass", 6);//
-glutAddMenuEntry("Cement", 7);//
-glutAddMenuEntry("Road", 8);//
-		
-			mainMenu = glutCreateMenu(menuCB);
-			glutAddSubMenu("File", submenu3);
-			glutAddSubMenu("Models", submenu1);
-			glutAddSubMenu("Colors", submenu2);//
-			glutAddSubMenu("Texture", submenu4);//
-
-
-         glutAttachMenu(GLUT_RIGHT_BUTTON);
-
-}
-
-
-static void mouseCB(int button, int state, int x, int y) {
+void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 
 specialKey = glutGetModifiers();
 
@@ -1014,7 +1091,7 @@ if (state == GLUT_DOWN){
 }
 
 
-static void keyboardCB( unsigned char key, int x, int y)
+void ARMouseHouse::keyboardCB( unsigned char key, int x, int y)
 {
     /* quit if the ESC key is pressed */
     if( key == 0x1b ) {
@@ -1209,50 +1286,3 @@ if( key == 8 ) {
 
 
 
-int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
-{
-	bool gui = false;
-
-	if (gui)
-	{
-		// Enabling Windows XP visual effects before any controls are created
-		Application::EnableVisualStyles();
-		Application::SetCompatibleTextRenderingDefault(false); 
-
-		// Create the main window and run it
-		Application::Run(gcnew ms3dglut::MainWindow());
-
-		return 0;
-	}
-	else
-	{
-		//w1.loadWorld();
-		glutInit(&argc, argv); // Erm Just Write It =)
-		InitGL();
-
-		w1.loadTextures("blah.txt");
-
-		ar_init();
-
-		initMenu();
-
-		//GLUT callbacks
-		glutMotionFunc(motionCB);
-		glutSpecialFunc(arrowKeysCB);
-		glutKeyboardFunc(keyboardCB);
-		glutMouseFunc(mouseCB);
-		glutDisplayFunc(displayCB);
-		glutReshapeFunc(reshapeCB);
-		glutIdleFunc(idleCB);
-
-		arVideoCapStart();
-
-//		argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop ); //gsub.h dependent
-		glutMainLoop();
-
-		char ch = getchar();
-
-		ar_cleanup();
-		return 0;
-	}
-}
