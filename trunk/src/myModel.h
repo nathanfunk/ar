@@ -1,3 +1,6 @@
+#ifndef MYMODEL_H
+#define MYMODEL_H
+
 #include "shapeClasses.h"
 
 
@@ -283,3 +286,5 @@ startLighting2();
 	std::string modelFileName, scriptFileName;
 
 };
+
+#endif
