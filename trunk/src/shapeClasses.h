@@ -8,7 +8,8 @@ Created by Farooq Ahmad Sept. 2006
 #ifndef SHAPECLASSES_H
 #define SHAPECLASSES_H
 
-int lastX; int lastY; 
+extern int lastX;
+extern int lastY; 
 
 #include "object.h"
 #include "sphere.h"
