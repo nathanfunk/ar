@@ -1,4 +1,8 @@
+#ifndef WORLD_H
+#define WORLD_H
+
 #include "ptr_vector.h"
+#include "shapeClasses.h"
 
 void loadTextures(char *textureFile);
 
@@ -370,3 +374,5 @@ public:
 	}
 
 };
+
+#endif
