@@ -9,29 +9,21 @@ using namespace ms3dglut;
 
 OGLControl::OGLControl(void)
 {
-	m_fPosX = 0.0f;    // X position of model in camera view
-	m_fPosY = 0.0f;    // Y position of model in camera view
-	m_fZoom = 10.0f;   // Zoom on model in camera view
-	m_fRotX = 0.0f;    // Rotation on model in camera view
-	m_fRotY = 0.0f;    // Rotation on model in camera view
-
 	this->BackColor = Drawing::Color::Black;
 	this->SetStyle(ControlStyles::AllPaintingInWmPaint, true);
 	this->SetStyle(ControlStyles::DoubleBuffer, false);
 	this->SetStyle(ControlStyles::Opaque, true);
 	this->SetStyle(ControlStyles::ResizeRedraw, true);
 	this->SetStyle(ControlStyles::UserPaint, true);
-
-	Application::Idle += gcnew EventHandler(this, &OGLControl::OnIdle);
 }
 
-void OGLControl::oglCreate(System::Drawing::Rectangle rect, Form ^parent)
+
+void OGLControl::OnPaint(PaintEventArgs ^e)
 {
-	m_oldWindow = rect;
-	m_originalRect = rect;
 }
 
-void OGLControl::oglInitialize()
+
+void OGLControl::OnCreateControl()
 {
 	// Initial Setup:
 	//
@@ -81,170 +73,36 @@ void OGLControl::oglInitialize()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	// set up model view matrix
-	updateModelView();
-
-	// Send draw request
-	OnDraw();
-}
-
-void OGLControl::oglDrawScene()
-{
-   // Wireframe Mode
-   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-   glBegin(GL_QUADS);
-      // Top Side
-      glVertex3f( 1.0f, 1.0f,  1.0f);
-      glVertex3f( 1.0f, 1.0f, -1.0f);
-      glVertex3f(-1.0f, 1.0f, -1.0f);
-      glVertex3f(-1.0f, 1.0f,  1.0f);
-
-      // Bottom Side
-      glVertex3f(-1.0f, -1.0f, -1.0f);
-      glVertex3f( 1.0f, -1.0f, -1.0f);
-      glVertex3f( 1.0f, -1.0f,  1.0f);
-      glVertex3f(-1.0f, -1.0f,  1.0f);
-
-      // Front Side
-      glVertex3f( 1.0f,  1.0f, 1.0f);
-      glVertex3f(-1.0f,  1.0f, 1.0f);
-      glVertex3f(-1.0f, -1.0f, 1.0f);
-      glVertex3f( 1.0f, -1.0f, 1.0f);
-
-      // Back Side
-      glVertex3f(-1.0f, -1.0f, -1.0f);
-      glVertex3f(-1.0f,  1.0f, -1.0f);
-      glVertex3f( 1.0f,  1.0f, -1.0f);
-      glVertex3f( 1.0f, -1.0f, -1.0f);
-
-      // Left Side
-      glVertex3f(-1.0f, -1.0f, -1.0f);
-      glVertex3f(-1.0f, -1.0f,  1.0f);
-      glVertex3f(-1.0f,  1.0f,  1.0f);
-      glVertex3f(-1.0f,  1.0f, -1.0f);
-
-      // Right Side
-      glVertex3f( 1.0f,  1.0f,  1.0f);
-      glVertex3f( 1.0f, -1.0f,  1.0f);
-      glVertex3f( 1.0f, -1.0f, -1.0f);
-      glVertex3f( 1.0f,  1.0f, -1.0f);
-   glEnd();
-}
-
-/* Event handler for idle event */
-void OGLControl::OnIdle(Object ^sender, EventArgs ^e)
-{
-	m_fRotX += (float)0.5f;
-
-	if ((m_fRotX > 360.0f) || (m_fRotX < -360.0f))
-	{
-		m_fRotX = 0.0f;
-	}
-	OnDraw();
-}
-
-/* Event handler for timer ticks */
-void OGLControl::OnTick(Object ^sender, EventArgs ^e)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Draw OpenGL scene
-	oglDrawScene();
-
-	// Swap buffers
-	if (!SwapBuffers(hdc))
-	{
-		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
-	}
-
-}
-
-void OGLControl::OnPaint(PaintEventArgs ^e)
-{
-	// this is supposed to do to nothing so that the timer-based drawing takes over
-	//ValidateRect(Null)
-	//Form::OnPaint(e);
-	//e->Graphics->FillRectangle(SystemBrushes::Highlight, 10, 10, 30, 30);
-}
-
-
-void OGLControl::OnCreateControl()
-{
-	oglInitialize();
 	// Set up timer
 	timer = gcnew System::Windows::Forms::Timer();
 	timer->Tick += gcnew EventHandler(this, &OGLControl::OnTick);
-	timer->Interval = 1;
+	timer->Interval = 1000/30; //30Hz
 	timer->Start();
 }
 
 void OGLControl::OnMouseMove(MouseEventArgs ^e)
 {
-	int diffX = (int)(e->X - m_fLastX);
-	int diffY = (int)(e->Y - m_fLastY);
-	m_fLastX  = (float)e->X;
-	m_fLastY  = (float)e->Y;
-	// Left mouse button
-	if (e->Button == Windows::Forms::MouseButtons::Left)
-	{
-		m_fRotX += (float)0.5f * diffY;
-
-		if ((m_fRotX > 360.0f) || (m_fRotX < -360.0f))
-		{
-			m_fRotX = 0.0f;
-		}
-
-		m_fRotY += (float)0.5f * diffX;
-
-		if ((m_fRotY > 360.0f) || (m_fRotY < -360.0f))
-		{
-			m_fRotY = 0.0f;
-		}
-	}
-
-	// Right mouse button
-	else if (e->Button == Windows::Forms::MouseButtons::Right)
-	{
-		m_fZoom -= (float)0.1f * diffY;
-	}
-
-	// Middle mouse button
-	else if (e->Button == Windows::Forms::MouseButtons::Middle)
-	{
-		m_fPosX += (float)0.05f * diffX;
-		m_fPosY -= (float)0.05f * diffY;
-	}
-
-	OnDraw();
-
 	//CWnd::OnMouseMove(nFlags, point);
 	UserControl::OnMouseMove(e);
 }
 
 void OGLControl::OnDraw()
 {
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -m_fZoom);
-	glTranslatef(m_fPosX, m_fPosY, 0.0f);
-	glRotatef(m_fRotX, 1.0f, 0.0f, 0.0f);
-	glRotatef(m_fRotY, 0.0f, 1.0f, 0.0f);
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Draw OpenGL scene
+	if (controller) {
+		controller->displayCB();
+	}
+
+	// Swap buffers
+	if (!SwapBuffers(hdc))
+	{
+		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
+	}
 }
 
-void OGLControl::updateModelView()
-{
-	// Map the OpenGL coordinates.
-	glViewport(0, 0, Width, Height);
-
-	// Projection view
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	// Set our current view perspective
-	gluPerspective(35.0f, (float)Width / (float)Height, 0.01f, 300.0f);
-	// Model view
-	glMatrixMode(GL_MODELVIEW);
-}
 
 void OGLControl::OnSizeChanged(System::EventArgs ^e)
 {
@@ -252,8 +110,19 @@ void OGLControl::OnSizeChanged(System::EventArgs ^e)
 	
 	if (0 >= Width || 0 >= Height) return;
 
-	updateModelView();
+
 }
+
+/** Event handler for timer ticks
+*/
+void OGLControl::OnTick(Object ^sender, EventArgs ^e)
+{
+	if (controller->idleCB()) {
+		// new video frame is available
+		OnDraw();
+	}
+}
+
 
 OGLControl::~OGLControl()
 {
