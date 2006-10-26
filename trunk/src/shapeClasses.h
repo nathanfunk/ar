@@ -14,6 +14,7 @@ extern int lastY;
 #include "object.h"
 #include "sphere.h"
 #include "cube.h"
+#include "cube2.h"
 #include "rectangle.h"
 #include "cone.h"
 #include "triangle.h"
