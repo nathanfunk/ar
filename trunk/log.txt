@@ -1,3 +1,11 @@
+Oct 25 nf
+	- first integration of video into Windows Forms GUI
+	- still having problems with resizing
+	- no keyboard, mouse, menu functionality
+
+Oct 24 nf
+	- made ARMouseHouse a class
+
 Oct 22 nf
 	- capitalized world class to World
 	- added loading projection matrix in ar_draw() and selection() with gsub_lite
