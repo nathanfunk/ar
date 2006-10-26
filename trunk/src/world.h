@@ -1,8 +1,17 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include <math.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
+
+#include <AR/gsub_lite.h>
+
 #include "ptr_vector.h"
 #include "shapeClasses.h"
+#include "myModel.h"
 
 void loadTextures(char *textureFile);
 
