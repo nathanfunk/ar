@@ -34,29 +34,10 @@ namespace ms3dglut {
 	{
 	private:
 		OGLControl oglControl;
-		ARMouseHouse *controller;
+	private: System::Windows::Forms::ToolStripContainer^  toolStripContainer;
 
-	public:
-		MainWindow(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
-		}
+	private: System::Windows::Forms::MenuStrip^  menuStrip;
 
-	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		~MainWindow()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  newToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
@@ -86,11 +67,8 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripMenuItem^  searchToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator5;
 	private: System::Windows::Forms::ToolStripMenuItem^  aboutToolStripMenuItem;
-	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::Button^  button3;
-	private: System::Windows::Forms::ToolStrip^  toolStrip1;
-	private: System::Windows::Forms::StatusStrip^  statusStrip1;
+	private: System::Windows::Forms::ToolStrip^  toolStrip;
+
 	private: System::Windows::Forms::ToolStripButton^  newToolStripButton;
 	private: System::Windows::Forms::ToolStripButton^  openToolStripButton;
 	private: System::Windows::Forms::ToolStripButton^  saveToolStripButton;
@@ -101,6 +79,82 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripButton^  pasteToolStripButton;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
 	private: System::Windows::Forms::ToolStripButton^  helpToolStripButton;
+	private: System::Windows::Forms::StatusStrip^  statusStrip;
+
+			 ARMouseHouse *controller;
+
+	public:
+		MainWindow(void)
+		{
+			InitializeComponent();
+			controller = new ARMouseHouse(false);
+		}
+
+	protected:
+		virtual void OnResize(EventArgs ^e) override 
+		{
+			oglControl.SetBounds(0, 0, this->toolStripContainer->ContentPanel->Size.Width,
+				this->toolStripContainer->ContentPanel->Size.Height);
+			
+		}
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MainWindow()
+		{
+			if (components)
+			{
+				delete components;
+			}
+
+			delete controller;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -121,7 +175,8 @@ namespace ms3dglut {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWindow::typeid));
-			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->toolStripContainer = (gcnew System::Windows::Forms::ToolStripContainer());
+			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->openToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -151,11 +206,7 @@ namespace ms3dglut {
 			this->searchToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->toolStripSeparator5 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->toolStrip1 = (gcnew System::Windows::Forms::ToolStrip());
-			this->statusStrip1 = (gcnew System::Windows::Forms::StatusStrip());
+			this->toolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->newToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->openToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->saveToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
@@ -166,19 +217,41 @@ namespace ms3dglut {
 			this->pasteToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
-			this->menuStrip1->SuspendLayout();
-			this->toolStrip1->SuspendLayout();
+			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
+			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
+			this->toolStripContainer->SuspendLayout();
+			this->menuStrip->SuspendLayout();
+			this->toolStrip->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// menuStrip1
+			// toolStripContainer
 			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->fileToolStripMenuItem, 
+			// 
+			// toolStripContainer.ContentPanel
+			// 
+			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(610, 441);
+			this->toolStripContainer->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->toolStripContainer->Location = System::Drawing::Point(0, 0);
+			this->toolStripContainer->Name = L"toolStripContainer";
+			this->toolStripContainer->Size = System::Drawing::Size(610, 490);
+			this->toolStripContainer->TabIndex = 0;
+			this->toolStripContainer->Text = L"toolStripContainer1";
+			// 
+			// toolStripContainer.TopToolStripPanel
+			// 
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->menuStrip);
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->toolStrip);
+			// 
+			// menuStrip
+			// 
+			this->menuStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->menuStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->fileToolStripMenuItem, 
 				this->editToolStripMenuItem, this->toolsToolStripMenuItem, this->helpToolStripMenuItem});
-			this->menuStrip1->Location = System::Drawing::Point(0, 0);
-			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(693, 24);
-			this->menuStrip1->TabIndex = 0;
-			this->menuStrip1->Text = L"menuStrip1";
+			this->menuStrip->Location = System::Drawing::Point(0, 0);
+			this->menuStrip->Name = L"menuStrip";
+			this->menuStrip->Size = System::Drawing::Size(610, 24);
+			this->menuStrip->TabIndex = 0;
+			this->menuStrip->Text = L"menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -195,7 +268,7 @@ namespace ms3dglut {
 			this->newToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->newToolStripMenuItem->Name = L"newToolStripMenuItem";
 			this->newToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-			this->newToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->newToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->newToolStripMenuItem->Text = L"&New";
 			// 
 			// openToolStripMenuItem
@@ -204,13 +277,13 @@ namespace ms3dglut {
 			this->openToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->openToolStripMenuItem->Name = L"openToolStripMenuItem";
 			this->openToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-			this->openToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->openToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->openToolStripMenuItem->Text = L"&Open";
 			// 
 			// toolStripSeparator
 			// 
 			this->toolStripSeparator->Name = L"toolStripSeparator";
-			this->toolStripSeparator->Size = System::Drawing::Size(137, 6);
+			this->toolStripSeparator->Size = System::Drawing::Size(6, 6);
 			// 
 			// saveToolStripMenuItem
 			// 
@@ -218,19 +291,19 @@ namespace ms3dglut {
 			this->saveToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
 			this->saveToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
-			this->saveToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->saveToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->saveToolStripMenuItem->Text = L"&Save";
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this->saveAsToolStripMenuItem->Name = L"saveAsToolStripMenuItem";
-			this->saveAsToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->saveAsToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->saveAsToolStripMenuItem->Text = L"Save &As";
 			// 
 			// toolStripSeparator1
 			// 
 			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(137, 6);
+			this->toolStripSeparator1->Size = System::Drawing::Size(6, 6);
 			// 
 			// printToolStripMenuItem
 			// 
@@ -238,7 +311,7 @@ namespace ms3dglut {
 			this->printToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->printToolStripMenuItem->Name = L"printToolStripMenuItem";
 			this->printToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::P));
-			this->printToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->printToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->printToolStripMenuItem->Text = L"&Print";
 			// 
 			// printPreviewToolStripMenuItem
@@ -246,18 +319,18 @@ namespace ms3dglut {
 			this->printPreviewToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"printPreviewToolStripMenuItem.Image")));
 			this->printPreviewToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->printPreviewToolStripMenuItem->Name = L"printPreviewToolStripMenuItem";
-			this->printPreviewToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->printPreviewToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->printPreviewToolStripMenuItem->Text = L"Print Pre&view";
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(137, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(6, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->exitToolStripMenuItem->Text = L"E&xit";
 			// 
 			// editToolStripMenuItem
@@ -273,20 +346,20 @@ namespace ms3dglut {
 			// 
 			this->undoToolStripMenuItem->Name = L"undoToolStripMenuItem";
 			this->undoToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Z));
-			this->undoToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->undoToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->undoToolStripMenuItem->Text = L"&Undo";
 			// 
 			// redoToolStripMenuItem
 			// 
 			this->redoToolStripMenuItem->Name = L"redoToolStripMenuItem";
 			this->redoToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Y));
-			this->redoToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->redoToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->redoToolStripMenuItem->Text = L"&Redo";
 			// 
 			// toolStripSeparator3
 			// 
 			this->toolStripSeparator3->Name = L"toolStripSeparator3";
-			this->toolStripSeparator3->Size = System::Drawing::Size(136, 6);
+			this->toolStripSeparator3->Size = System::Drawing::Size(6, 6);
 			// 
 			// cutToolStripMenuItem
 			// 
@@ -294,7 +367,7 @@ namespace ms3dglut {
 			this->cutToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->cutToolStripMenuItem->Name = L"cutToolStripMenuItem";
 			this->cutToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::X));
-			this->cutToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->cutToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->cutToolStripMenuItem->Text = L"Cu&t";
 			// 
 			// copyToolStripMenuItem
@@ -303,7 +376,7 @@ namespace ms3dglut {
 			this->copyToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->copyToolStripMenuItem->Name = L"copyToolStripMenuItem";
 			this->copyToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::C));
-			this->copyToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->copyToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->copyToolStripMenuItem->Text = L"&Copy";
 			// 
 			// pasteToolStripMenuItem
@@ -312,18 +385,18 @@ namespace ms3dglut {
 			this->pasteToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->pasteToolStripMenuItem->Name = L"pasteToolStripMenuItem";
 			this->pasteToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::V));
-			this->pasteToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->pasteToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->pasteToolStripMenuItem->Text = L"&Paste";
 			// 
 			// toolStripSeparator4
 			// 
 			this->toolStripSeparator4->Name = L"toolStripSeparator4";
-			this->toolStripSeparator4->Size = System::Drawing::Size(136, 6);
+			this->toolStripSeparator4->Size = System::Drawing::Size(6, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this->selectAllToolStripMenuItem->Name = L"selectAllToolStripMenuItem";
-			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->selectAllToolStripMenuItem->Text = L"Select &All";
 			// 
 			// toolsToolStripMenuItem
@@ -337,13 +410,13 @@ namespace ms3dglut {
 			// customizeToolStripMenuItem
 			// 
 			this->customizeToolStripMenuItem->Name = L"customizeToolStripMenuItem";
-			this->customizeToolStripMenuItem->Size = System::Drawing::Size(123, 22);
+			this->customizeToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->customizeToolStripMenuItem->Text = L"&Customize";
 			// 
 			// optionsToolStripMenuItem
 			// 
 			this->optionsToolStripMenuItem->Name = L"optionsToolStripMenuItem";
-			this->optionsToolStripMenuItem->Size = System::Drawing::Size(123, 22);
+			this->optionsToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->optionsToolStripMenuItem->Text = L"&Options";
 			// 
 			// helpToolStripMenuItem
@@ -357,77 +430,43 @@ namespace ms3dglut {
 			// contentsToolStripMenuItem
 			// 
 			this->contentsToolStripMenuItem->Name = L"contentsToolStripMenuItem";
-			this->contentsToolStripMenuItem->Size = System::Drawing::Size(118, 22);
+			this->contentsToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->contentsToolStripMenuItem->Text = L"&Contents";
 			// 
 			// indexToolStripMenuItem
 			// 
 			this->indexToolStripMenuItem->Name = L"indexToolStripMenuItem";
-			this->indexToolStripMenuItem->Size = System::Drawing::Size(118, 22);
+			this->indexToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->indexToolStripMenuItem->Text = L"&Index";
 			// 
 			// searchToolStripMenuItem
 			// 
 			this->searchToolStripMenuItem->Name = L"searchToolStripMenuItem";
-			this->searchToolStripMenuItem->Size = System::Drawing::Size(118, 22);
+			this->searchToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->searchToolStripMenuItem->Text = L"&Search";
 			// 
 			// toolStripSeparator5
 			// 
 			this->toolStripSeparator5->Name = L"toolStripSeparator5";
-			this->toolStripSeparator5->Size = System::Drawing::Size(115, 6);
+			this->toolStripSeparator5->Size = System::Drawing::Size(6, 6);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(118, 22);
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(32, 19);
 			this->aboutToolStripMenuItem->Text = L"&About...";
 			// 
-			// button1
+			// toolStrip
 			// 
-			this->button1->Location = System::Drawing::Point(606, 77);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 1;
-			this->button1->Text = L"button1";
-			this->button1->UseVisualStyleBackColor = true;
-			// 
-			// button2
-			// 
-			this->button2->Location = System::Drawing::Point(606, 106);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(75, 23);
-			this->button2->TabIndex = 2;
-			this->button2->Text = L"button2";
-			this->button2->UseVisualStyleBackColor = true;
-			// 
-			// button3
-			// 
-			this->button3->Location = System::Drawing::Point(606, 135);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(75, 23);
-			this->button3->TabIndex = 3;
-			this->button3->Text = L"button3";
-			this->button3->UseVisualStyleBackColor = true;
-			// 
-			// toolStrip1
-			// 
-			this->toolStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {this->newToolStripButton, 
+			this->toolStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->toolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {this->newToolStripButton, 
 				this->openToolStripButton, this->saveToolStripButton, this->printToolStripButton, this->toolStripSeparator6, this->cutToolStripButton, 
 				this->copyToolStripButton, this->pasteToolStripButton, this->toolStripSeparator7, this->helpToolStripButton});
-			this->toolStrip1->Location = System::Drawing::Point(0, 24);
-			this->toolStrip1->Name = L"toolStrip1";
-			this->toolStrip1->Size = System::Drawing::Size(693, 25);
-			this->toolStrip1->TabIndex = 4;
-			this->toolStrip1->Text = L"toolStrip1";
-			// 
-			// statusStrip1
-			// 
-			this->statusStrip1->Location = System::Drawing::Point(0, 647);
-			this->statusStrip1->Name = L"statusStrip1";
-			this->statusStrip1->Size = System::Drawing::Size(693, 22);
-			this->statusStrip1->TabIndex = 5;
-			this->statusStrip1->Text = L"statusStrip1";
+			this->toolStrip->Location = System::Drawing::Point(3, 24);
+			this->toolStrip->Name = L"toolStrip";
+			this->toolStrip->Size = System::Drawing::Size(208, 25);
+			this->toolStrip->TabIndex = 0;
+			this->toolStrip->Text = L"toolStrip1";
 			// 
 			// newToolStripButton
 			// 
@@ -511,41 +550,50 @@ namespace ms3dglut {
 			this->helpToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->helpToolStripButton->Text = L"He&lp";
 			// 
+			// statusStrip
+			// 
+			this->statusStrip->Location = System::Drawing::Point(0, 468);
+			this->statusStrip->Name = L"statusStrip";
+			this->statusStrip->Size = System::Drawing::Size(610, 22);
+			this->statusStrip->TabIndex = 1;
+			this->statusStrip->Text = L"statusStrip";
+			// 
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(693, 669);
-			this->Controls->Add(this->statusStrip1);
-			this->Controls->Add(this->toolStrip1);
-			this->Controls->Add(this->button3);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
-			this->Controls->Add(this->menuStrip1);
-			this->MainMenuStrip = this->menuStrip1;
+			this->ClientSize = System::Drawing::Size(610, 490);
+			this->Controls->Add(this->statusStrip);
+			this->Controls->Add(this->toolStripContainer);
 			this->Name = L"MainWindow";
 			this->Text = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
-			this->menuStrip1->ResumeLayout(false);
-			this->menuStrip1->PerformLayout();
-			this->toolStrip1->ResumeLayout(false);
-			this->toolStrip1->PerformLayout();
+			this->toolStripContainer->TopToolStripPanel->ResumeLayout(false);
+			this->toolStripContainer->TopToolStripPanel->PerformLayout();
+			this->toolStripContainer->ResumeLayout(false);
+			this->toolStripContainer->PerformLayout();
+			this->menuStrip->ResumeLayout(false);
+			this->menuStrip->PerformLayout();
+			this->toolStrip->ResumeLayout(false);
+			this->toolStrip->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
 	private: System::Void MainWindow_Load(System::Object^  sender, System::EventArgs^  e) {
-		
+
+		this->toolStripContainer->ContentPanel->Controls->Add(%oglControl);
 		oglControl.Name = L"OpenGL Control";
 		oglControl.Location = System::Drawing::Point(0,0);
-		oglControl.Size = System::Drawing::Size(500, 500);
-		oglControl.oglCreate(System::Drawing::Rectangle(0,0,500,100), this);
-		//oglControl.Hide();
-		this->Controls->Add(%oglControl);
+		oglControl.Size = System::Drawing::Size(320, 240);
 		this->ResumeLayout(false);
 		this->PerformLayout();
-		oglControl.Invalidate();
+
+		controller->InitGL();
+		controller->ar_init();
+		oglControl.setController(controller);
+		arVideoCapStart();
 	}
 };
 }
