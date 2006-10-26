@@ -32,10 +32,13 @@ void startLighting2(void);
 
 
 
-struct vertex{
-	float x;
-	float y;
-	float z;
+class vertex{
+public:
+	vertex(float _x, float _y, float _z){
+		x = _x; y = _y; z = _z;
+	};
+
+	float x, y, z;
 };
 
 
@@ -58,6 +61,9 @@ psX = 1; psY = 1; psZ = 1;
 	setColors(0.2, 0.3, 0.5, 1);
 	quadratic =  gluNewQuadric();
 	texture = 0;
+
+	minI = 0;
+
 	};
 	
 	object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
@@ -74,7 +80,7 @@ psX = 1; psY = 1; psZ = 1;
 
 
 		texture = 0;
-
+	minI = 0;
 	}
 
 	object(GLfloat _objTrans[16]){
@@ -228,32 +234,29 @@ psX = 1; psY = 1; psZ = 1;
 	virtual void highlight(){
 	glPushMatrix();		
 		glTranslatef(xOff,0,zOff);
-		
-
+	
 		glPushMatrix();
 		//glTranslatef(0,60,0);
 
-		glDisable ( GL_LIGHTING ) ;
-		//startLighting2();
-		glColor3f(0.8, 0.3, 0.3);
-		//glutSolidSphere(3,5,5);
+			glDisable ( GL_LIGHTING ) ;
+			//startLighting2();
+			glColor3f(0.8, 0.3, 0.3);
+			//glutSolidSphere(3,5,5);
 	
-		glPushMatrix();
-		glRotatef(-90,1,0,0);
-		//gluDisk(quadratic, 0, rad, 15, 15);
-		gluCylinder(quadratic, 0.5, 0.5,  500, 15, 15);
-		glPopMatrix();
+			glPushMatrix();
+					glRotatef(-90,1,0,0);
+					//gluDisk(quadratic, 0, rad, 15, 15);
+					gluCylinder(quadratic, 0.5, 0.5,  500, 15, 15);
+			glPopMatrix();
 
-		
-		
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-glScalef(2,0.5,2);
-		//glutWireCube(5);
-		glutSolidCube(5);
+			glRotatef(rX,0,1,0);
+			glRotatef(rY,1,0,0);
+			glScalef(2,0.5,2);
+			//glutWireCube(5);
+			glutSolidCube(5);
 	
 
-		glEnable ( GL_LIGHTING ) ;
+			glEnable ( GL_LIGHTING ) ;
 		glPopMatrix();
 	
 	glPopMatrix();
@@ -261,9 +264,142 @@ glScalef(2,0.5,2);
 
 	}
 
+
+	//virtual void initSelection(int but, int key, int x, int y){};
+
 	virtual void initSelection(int but, int key, int x, int y){
 
+	GLint vPort[4];
+	glGetIntegerv( GL_VIEWPORT, vPort );
+	GLfloat mouseX = (float) lastX;
+	GLfloat mouseY = (float)vPort[3] - (float) lastY;
+
+
+	min = 999999;
+
+	if (winCoords.empty()) {
+		std::cout<<"winCoords empty "<<std::endl;	
+		return;
 	}
+
+	min = distance((float) mouseX, (float) mouseY, 
+			(float) winCoords[0].x, (float) winCoords[0].y);
+	minI = 0;
+
+	for (int i = 1; i < winCoords.size(); i++){
+		float dist = distance((float) mouseX, (float) mouseY, 
+			(float) winCoords[i].x, (float) winCoords[i].y);
+		if (dist < min){
+			minI = i;		
+			min = dist;
+		}
+	}
+	std::cout<<"min is "<<min<<" best point is "<<minI<<std::endl;
+	std::cout<<"Current pos: "<<getDataString();
+	}
+
+
+void setHandles(){
+	initHandles();
+	if (handles.empty()) {return;}
+	 //set the position of each corner handle
+	highlightCorners(); //draw each handle and set the window coordinates
+	setWinCoords();
+}
+
+
+
+
+virtual void initHandles(){};
+
+void highlightCorners(){
+	glPushMatrix();
+		glTranslatef(xOff,yOff,zOff);
+		glRotatef(rX,0,1,0);
+		glRotatef(rY,1,0,0);
+		glScalef(sX, sY, sZ);
+
+		glDisable(GL_LIGHTING);
+		glColor3f(0.85, 0.1, 0.1);
+
+
+		for (int i = 0; i < handles.size(); i++){
+			glPushMatrix();
+				glTranslatef(handles[i].x, handles[i].y, handles[i].z);
+				glScalef(1/sX, 1/sY, 1/sZ);
+				glutSolidCube(5);
+			glPopMatrix();
+
+		}
+	glPopMatrix();
+
+}
+
+void setWinCoords(){
+	GLint vPort[4];
+	GLdouble mMatrix[16];
+	GLdouble pMatrix[16];
+	//GLdouble winX, winY, winZ;
+	GLdouble  winZ;
+
+glPushMatrix();
+glTranslatef(xOff,yOff,zOff);
+		glRotatef(rX,0,1,0);
+		glRotatef(rY,1,0,0);
+		glScalef(sX, sY, sZ);
+
+
+	glGetDoublev( GL_MODELVIEW_MATRIX, mMatrix);
+	glGetDoublev( GL_PROJECTION_MATRIX, pMatrix);
+	glGetIntegerv( GL_VIEWPORT, vPort );
+	//std::cout<<"Closest vertex is "<<
+
+	GLfloat mouseX = (float) lastX;
+	GLfloat mouseY = (float)vPort[3] - (float) lastY;
+
+
+
+	winCoords.clear();
+	for (int i = 0; i < handles.size(); i++){
+		GLdouble winX, winY, winZ;
+		gluProject(handles[i].x, handles[i].y, handles[i].z,
+					mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
+		winCoords.push_back(vertex((float) winX, (float) winY, (float) winZ));
+	}
+
+glPopMatrix();
+
+
+};
+
+
+	void scaleXY(float xGrow, float yGrow, float oSize){
+			//after scaling, center of cube must be moved so that only one corner is dragged
+			//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+			//of the new larger/smaller shape, and convert back to world coordinates
+			//(rotation matrix with r = -rotation of object
+			float rzRad = RADIANS(rX);
+			std::cout<<"rX : "<<rX<<std::endl;
+
+			float xScaleInc = xGrow/20;float yScaleInc = yGrow / 20;
+			float xOffInc = xScaleInc*oSize/2*cos(-rzRad) - yScaleInc*oSize/2*sin(-rzRad);
+			float yOffInc = xScaleInc*oSize/2*sin(-rzRad) + yScaleInc*oSize/2*cos(-rzRad);
+
+			if (handles[minI].x < 0) xScaleInc *=-1;
+			if (handles[minI].z < 0) yScaleInc *=-1;
+			sX += xScaleInc; sZ+= yScaleInc;
+			xOff+= xOffInc; zOff += yOffInc;
+	}
+
+	void scaleZ(float y, float oSize){
+				float yScaleInc = - (float)y / 25;
+				float yOffInc = yScaleInc*oSize/2;
+				if (handles[minI].y < 0) yScaleInc *=-1;
+				sY += yScaleInc;
+				yOff += yOffInc;
+	}
+
+
 
 	virtual void transform(float _x, float _y, float _z, float _rX, float _rY, float _rZ,
 		float _sX, float _sY, float _sZ){
@@ -351,10 +487,14 @@ GLfloat  objTrans[16];
 	GLuint texture;
 	std::string textureFilename;
 
-	std::vector<vertex> vertices;
-	std::vector<vertex> handles;
+	std::vector<vertex> vertices;  //all vertices used for drawing (rel to object center)
+	std::vector<vertex> handles;  //handles for resizing, stretching etc. (rel to object center)
+	std::vector<vertex> winCoords; //window coordinates of each handles
 	int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
 
+
+	int minI; 
+	float min;
 
 };
 
