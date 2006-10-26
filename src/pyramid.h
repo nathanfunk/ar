@@ -42,10 +42,15 @@ std::string getDataString(){
 	}
 
 
+
+
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
 			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
+
+			double xGrow, yGrow;
+getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 if (key & GLUT_ACTIVE_CTRL &&
 			key & GLUT_ACTIVE_ALT){
@@ -68,9 +73,6 @@ if (key & GLUT_ACTIVE_CTRL &&
 		rX += x; 
 		////rY-=y; //yOff += y;
 		}
-		else if (but == GLUT_RIGHT_BUTTON){
-		rX += x;
-		}
 		else if (but == GLUT_MIDDLE_BUTTON){
 		rX+=x;
 		}
@@ -81,14 +83,27 @@ if (key & GLUT_ACTIVE_CTRL &&
 
 
 		if (but == GLUT_LEFT_BUTTON){
-		xOff += xNew; zOff += yNew;
+			if (min > 10 || handles.empty()){
+			xOff += xNew; zOff += yNew;
+			}
+			else{
+				scaleXY(xGrow, yGrow, size);
+			}
+			//xOff += xNew; zOff += yNew;
+
+
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
-		 yOff -= y;
+if (min > 10||handles.empty()){
+				yOff -= y;
+			}
+			else{
+					scaleZ(y, size);
+
+			}
+			//yOff -= y;
 		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 rX += x; rY+= y;//sOff += y;
-		}
+
 		}
 
 	}
@@ -107,11 +122,25 @@ void drawTri(){
 }
 
 
+	void initHandles(){
+
+	handles.clear();
+	handles.push_back(vertex(-size/2, -size/2, -size/2));
+	handles.push_back(vertex(-size/2, -size/2, size/2));
+	handles.push_back(vertex(size/2, -size/2, size/2));
+	handles.push_back(vertex(size/2, -size/2, -size/2));
+
+	handles.push_back(vertex(0, size/2, 0));
+}
+
+
+
 
 	void	draw(){
 	if (isVisible == 1){
 	if (isSelected == 1){
 		highlight();
+		setHandles();
 	}
 	//glPushName(name);
 	glPushMatrix();		
