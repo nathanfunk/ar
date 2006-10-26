@@ -2,8 +2,8 @@
 #define MYMODEL_H
 
 #include "shapeClasses.h"
-
-
+#include "Model.h"
+#include "MilkshapeModel.h"
 /* Wrapper around Portalib milkshape model loader 
 Farooq Ahmad 2006
 */
