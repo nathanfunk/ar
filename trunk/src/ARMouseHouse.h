@@ -39,8 +39,8 @@ private:
 	int		ar_count;
 
 	ARUint8					*gARTImage; // current image
-	char				*gCparam_name;
-	ARParam							 gCparam;				// camera parameters
+	char					*gCparam_name;
+	ARParam					 gCparam;				// camera parameters
 	ARGL_CONTEXT_SETTINGS_REF gArglSettings;
 
 	char	*gPatt_name;
@@ -53,12 +53,12 @@ private:
 	int		lastButton;
 	int		specialKey;
 
-	World w1;
-
+	World	world;
+	bool	useGLUTGUI;
 public:
-	ARMouseHouse();
+	ARMouseHouse(bool useGLUTGUI);
 	~ARMouseHouse();
-	void idleCB();
+	bool idleCB();
 	void reshapeCB( int width , int height );
 	void arrowKeysCB( int a_keys, int x, int y );
 	//void initMenu();
@@ -73,8 +73,8 @@ public:
 	void InitGL ( GLvoid );
 	void ar_init( void );
 	void ar_cleanup(void);
+	World *getWorld() {return &world;}
 private:
-	void display ( void );
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
 	int GetOGLPos(int x, int y, float pos[]);

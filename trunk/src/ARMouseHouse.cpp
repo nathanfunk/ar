@@ -30,25 +30,31 @@ struct _ARGL_CONTEXT_SETTINGS {}; // avoids "warning LNK4248: unresolved typeref
 #include "world.h"
 #include "MainWindow.h" // uses System::... causes ambiguities for myModel calling MessageBox
 #include "ARMouseHouse.h"
+//--------------------------------------------------------------------------------------
 
 using namespace std;
 using namespace ms3dglut;
 
+//--------------------------------------------------------------------------------------
 int lastX;
 int lastY; 
-ARMouseHouse controller;
+ARMouseHouse *controller;
+bool useGLUTGUI = false;
 
-void idleCB() {controller.idleCB();}
-void reshapeCB( int width , int height ) {controller.reshapeCB(width, height);}
-void arrowKeysCB( int a_keys, int x, int y ) {controller.arrowKeysCB(a_keys, x, y);}
-/*void menuCB(int item) {controller.menuCB(item);}
-void colorMenuCB(int item) {controller.colorMenuCB(item);}
-void textureMenuCB(int item) {controller.colorMenuCB(item);}
-void fileMenuCB(int item) {controller.fileMenuCB(item);}*/
-void displayCB(void) {controller.displayCB();}
-void motionCB(int x, int y) {controller.motionCB(x, y);}
-void mouseCB(int button, int state, int x, int y) {controller.mouseCB(button, state, x, y);}
-void keyboardCB( unsigned char key, int x, int y) {controller.keyboardCB(key, x, y);}
+
+//--------------------------------------------------------------------------------------
+
+void idleCB() {controller->idleCB();}
+void reshapeCB( int width , int height ) {controller->reshapeCB(width, height);}
+void arrowKeysCB( int a_keys, int x, int y ) {controller->arrowKeysCB(a_keys, x, y);}
+/*void menuCB(int item) {controller->menuCB(item);}
+void colorMenuCB(int item) {controller->colorMenuCB(item);}
+void textureMenuCB(int item) {controller->colorMenuCB(item);}
+void fileMenuCB(int item) {controller->fileMenuCB(item);}*/
+void displayCB(void) {controller->displayCB();}
+void motionCB(int x, int y) {controller->motionCB(x, y);}
+void mouseCB(int button, int state, int x, int y) {controller->mouseCB(button, state, x, y);}
+void keyboardCB( unsigned char key, int x, int y) {controller->keyboardCB(key, x, y);}
 
 void startLighting(GLfloat (&mat_ambient)[4]){
 //GLfloat   mat_ambient[]     = {0.2, 0.3, 0.5, 1.0};
@@ -204,26 +210,19 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 
 
 
+
+
+//--------------------------------------------------------------------------------------
+
 int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
 {
-	bool gui = false;
 
-	if (gui)
+	if (useGLUTGUI)
 	{
-		// Enabling Windows XP visual effects before any controls are created
-		Application::EnableVisualStyles();
-		Application::SetCompatibleTextRenderingDefault(false); 
-
-		// Create the main window and run it
-		Application::Run(gcnew ms3dglut::MainWindow());
-
-		return 0;
-	}
-	else
-	{
+		controller = new ARMouseHouse(true);
 		glutInit(&argc, argv);
-		controller.InitGL();
-		controller.ar_init();
+		controller->InitGL();
+		controller->ar_init();
 		//controller.initMenu();
 
 		//GLUT callbacks
@@ -241,14 +240,32 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 		glutMainLoop();
 
 		char ch = getchar();
+		delete controller;
+		return 0;
+	}
+	else
+	{
+		// Enabling Windows XP visual effects before any controls are created
+		Application::EnableVisualStyles();
+		Application::SetCompatibleTextRenderingDefault(false); 
 
-		controller.ar_cleanup();
+		// Create the main window and run it
+		Application::Run(gcnew ms3dglut::MainWindow());
+
 		return 0;
 	}
 }
 
 
-ARMouseHouse::ARMouseHouse() {
+
+
+
+
+//--------------------------------------------------------------------------------------
+
+
+ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
+	this->useGLUTGUI = useGLUTGUI;
 	thresh = 100;
 	ar_count = 0;
 	gCparam_name	= "Data/camera_para.dat";
@@ -259,18 +276,22 @@ ARMouseHouse::ARMouseHouse() {
 	gPatt_center[0]	= 0.0;
 	gPatt_center[1] = 0.0;
 	gPatt_found		= false;
-	w1.loadWorld("myworld.txt");
-	w1.loadTextures("blah.txt");
+	world.loadWorld("myworld.txt");
+	world.loadTextures("blah.txt");
+}
 
-}
 ARMouseHouse::~ARMouseHouse() {
+	ar_cleanup();
 }
+
 void ARMouseHouse::ar_cleanup(void)
 {
+	if (gArglSettings) {
+		arglCleanup(gArglSettings);
+	}
     arVideoCapStop();
     arVideoClose();
 //    argCleanup(); //gsub.h dependent
-	arglCleanup(gArglSettings);
 }
 
 
@@ -289,14 +310,6 @@ void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
 
 }
 
-
-
-
-
-void ARMouseHouse::display ( void )   // Create The Display Function
-{
-	w1.draw();
-}
 
 void ARMouseHouse::ar_draw( void )
 {
@@ -343,7 +356,7 @@ void ARMouseHouse::ar_draw( void )
 	// glTranslatef( 0.0, 0.0, 25.0 );
 
 	// Display the world
-	display();
+	world.draw();
 
 	glDisable( GL_LIGHTING );
 	glDisable( GL_DEPTH_TEST );
@@ -351,9 +364,13 @@ void ARMouseHouse::ar_draw( void )
 
 void ARMouseHouse::displayCB(void)
 {
-	// Select correct buffer for this context.
-	glDrawBuffer(GL_BACK);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
+	if (useGLUTGUI) {
+		// Select correct buffer for this context.
+		glDrawBuffer(GL_BACK);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
+	} else {
+		// OGLControl takes care of setting the right buffer
+	}
 
     //argDrawMode2D(); //gsub.h dependent
     //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
@@ -364,59 +381,20 @@ void ARMouseHouse::displayCB(void)
 	if (gPatt_found) {
 		ar_draw();
 	}
-	glutSwapBuffers();
+	if (useGLUTGUI) {
+		glutSwapBuffers();
+	} else {
+		//OGLControl takes care of the swapping
+	}
 }
 
+/**
+Idle callback. Is called before the GUI goes into idle state.
 
-void ARMouseHouse::idleCB()
-{
-/*	static int ms_prev;
-	int ms;
-	float s_elapsed;
-	ARUint8 *image;
-
-	ARMarkerInfo    *marker_info;					// Pointer to array holding the details of detected markers.
-    int             marker_num;						// Count of number of markers detected.
-    int             j, k;
-	
-	// Find out how long since Idle() last ran.
-	ms = glutGet(GLUT_ELAPSED_TIME);
-	s_elapsed = (float)(ms - ms_prev) * 0.001;
-	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
-	ms_prev = ms;
-	
-	// Grab a video frame.
-	if ((image = arVideoGetImage()) != NULL) {
-		gARTImage = image;	// Save the fetched image.
-		gPatt_found = FALSE;	// Invalidate any previous detected markers.
-		
-		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
-		
-		// Detect the markers in the video frame.
-		if (arDetectMarker(gARTImage, gARTThreshhold, &marker_info, &marker_num) < 0) {
-			exit(-1);
-		}
-		
-		// Check through the marker_info array for highest confidence
-		// visible marker matching our preferred pattern.
-		k = -1;
-		for (j = 0; j < marker_num; j++) {
-			if (marker_info[j].id == gPatt_id) {
-				if (k == -1) k = j; // First marker detected.
-				else if(marker_info[j].cf > marker_info[k].cf) k = j; // Higher confidence marker detected.
-			}
-		}
-		
-		if (k != -1) {
-			// Get the transformation between the marker and the real camera into gPatt_trans.
-			arGetTransMat(&(marker_info[k]), gPatt_centre, gPatt_width, gPatt_trans);
-			gPatt_found = TRUE;
-		}
-		
-		// Tell GLUT the display has changed.
-		glutPostRedisplay();
-	}
+Returns true if window needs to be redrawn, false otherwise
 */
+bool ARMouseHouse::idleCB()
+{
 	static int ms_prev;
 	int ms;
 	float s_elapsed;
@@ -428,12 +406,16 @@ void ARMouseHouse::idleCB()
 	// Find out how long since Idle() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
-	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	if (s_elapsed < 0.01f) {
+		return false; // Don't update more often than 100 Hz.
+	}
 	ms_prev = ms;
 
     // try to grab a new frame
 	// return if none is available
-    if( (dataPtr = (ARUint8 *)arVideoGetImage()) == NULL ) return;
+	if ((dataPtr = (ARUint8 *)arVideoGetImage()) == NULL) {
+		return false;
+	}
 	gARTImage = dataPtr;	// Save the fetched image.
 	gPatt_found = FALSE;	// Invalidate any previous detected markers.
 
@@ -463,14 +445,17 @@ void ARMouseHouse::idleCB()
 		gPatt_found = TRUE;
 	}
 
-	// Tell GLUT the display has changed.
-	glutPostRedisplay();
+	if (useGLUTGUI) {
+		// Tell GLUT the display has changed.
+		glutPostRedisplay();
+	}
+	return true;
 }
 
 
 void ARMouseHouse::reshapeCB( int width , int height )   // Create The Reshape Function (the viewport)
 {
-	if (height==0)													// Prevent A Divide By Zero By
+	if (height==0)										// Prevent A Divide By Zero By
 	{
 		height=1;													// Making Height Equal One
 	}
@@ -550,9 +535,11 @@ void ARMouseHouse::ar_init( void )
 	//
 
 	// Set up GL context(s) for OpenGL to draw into.
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize(gCparam.xsize, gCparam.ysize);
-	glutCreateWindow("AR Window");
+	if (useGLUTGUI) {
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+		glutInitWindowSize(gCparam.xsize, gCparam.ysize);
+		glutCreateWindow("AR Window");
+	}
 
 	// Setup argl library for current context.
 	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
@@ -620,7 +607,8 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 	glMatrixMode(GL_MODELVIEW);
 	//glTranslatef( 0.0, 0.0, 25.0 );
 
-	display();
+	//draw the world
+	world.draw();
 
 	glPopMatrix();
 
@@ -653,27 +641,27 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 		printf("closest: %d\n", selected); 
 
 
-		if ((selected >= 0) && (selected < (int) w1.objectPtrs.size())){
-			w1.isSelected = 0;
+		if ((selected >= 0) && (selected < (int) world.objectPtrs.size())){
+			world.isSelected = 0;
 			if (key != GLUT_ACTIVE_SHIFT){
-				for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
-					//w1.objectPtrs[i]->deselect();
-					///w1.objectPtrs[i]->isSelected = 0;
-					w1.objectPtrs[i]->isSelected = 0;
+				for (int i = 0; i< (int) world.objectPtrs.size(); i++){
+					//world.objectPtrs[i]->deselect();
+					///world.objectPtrs[i]->isSelected = 0;
+					world.objectPtrs[i]->isSelected = 0;
 				}
 
 			}
-			// w1.objectPtrs[selected]->select();
-			w1.objectPtrs[selected]->isSelected = 1;
+			// world.objectPtrs[selected]->select();
+			world.objectPtrs[selected]->isSelected = 1;
 
 		}
 		else if (selected == -100){
-			for (int i = 0; i< (int) w1.objectPtrs.size(); i++){
-				//w1.objectPtrs[i]->deselect();
-				///w1.objectPtrs[i]->isSelected = 0;
-				w1.objectPtrs[i]->isSelected = 0;
+			for (int i = 0; i< (int) world.objectPtrs.size(); i++){
+				//world.objectPtrs[i]->deselect();
+				///world.objectPtrs[i]->isSelected = 0;
+				world.objectPtrs[i]->isSelected = 0;
 			}
-			w1.isSelected = 1;
+			world.isSelected = 1;
 		}
 
 
@@ -691,44 +679,44 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 //     switch (item) {
 //
 //      case 1:
-//		  w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
+//		  world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
 //            break;
 //      case 2:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
 //			break;
 //    case 3:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
 //			break;
 //  case 4:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
 //			break;//was toilet3.ms3d
 // case 5:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
 //			break;//was sink
 //case 6:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
 //			break;
 //
 //case 7:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
 //			break;
 //case 8:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
 //			break;
 //case 9:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
 //			break;
 //case 10:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
 //			break;
 //case 11:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
 //			break;
 //case 12:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
 //			break;
 //case 13:
-//			w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
+//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
 //			break;
 //
 //
@@ -745,23 +733,23 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 //
 //     switch (item) {
 //      case 1:
-//		 	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setColors(0.8,0.3,0.3,1);
+//		 	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setColors(0.8,0.3,0.3,1);
 //			}	
 //			}
 //            break;
 //      case 2:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setColors(0.2,0.3,0.5,1);
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setColors(0.2,0.3,0.5,1);
 //			}
 //			}
 //			break;
 //       case 3:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setColors(0.2,0.8,0.8,1);
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setColors(0.2,0.8,0.8,1);
 //			}
 //			}
 //			break;
@@ -777,76 +765,76 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 //void ARMouseHouse::textureMenuCB(int item)
 //{
 ///*
-//	std::cout<<"item "<<item<<"texindex size "<<w1.textureIndex.size()<<std::endl;
-//if ((item > 0) && (item <= w1.textureIndex.size())){
-//	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){			
-//				w1.objectPtrs[i]->setTexture(w1.textureIndex[item-1]);
+//	std::cout<<"item "<<item<<"texindex size "<<world.textureIndex.size()<<std::endl;
+//if ((item > 0) && (item <= world.textureIndex.size())){
+//	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){			
+//				world.objectPtrs[i]->setTexture(world.textureIndex[item-1]);
 //			}
 //		}
 //}
 //*/
 //	     switch (item) {
 //      case 0:
-//		 		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture((GLuint) 0);
+//		 		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture((GLuint) 0);
 //			}
 //			}
 //			break;
 //      case 1:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("steel01.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("steel01.bmp"));
 //			}
 //			}
 //			break;
 //	case 2:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b1.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b1.bmp"));
 //			}
 //			}
 //			break;
 //	case 3:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b19.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b19.bmp"));
 //			}
 //			}
 //			break;
 //	case 4:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b7.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b7.bmp"));
 //			}
 //			}
 //			break;
 //      case 5:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("panel_01.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("panel_01.bmp"));
 //			}	
 //			}
 //            break;
 //     case 6:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("grass.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("grass.bmp"));
 //			}	
 //			}
 //            break;
 //			     case 7:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("cement.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("cement.bmp"));
 //			}	
 //			}
 //            break;
 //			     case 8:
-//		for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-//		if (w1.objectPtrs[i]->isSelected == 1){
-//			w1.objectPtrs[i]->setTexture(LoadGLTextureRepeat("road1.bmp"));
+//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+//		if (world.objectPtrs[i]->isSelected == 1){
+//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("road1.bmp"));
 //			}	
 //			}
 //            break;
@@ -868,10 +856,10 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 //
 //     switch (item) {
 //      case 1:
-//		 	w1.saveWorld("myworld.txt");
+//		 	world.saveWorld("myworld.txt");
 //            break;
 //      case 2:
-//		 	w1.exportSL("SLFile.txt");
+//		 	world.exportSL("SLFile.txt");
 //            break;
 //
 //
@@ -920,10 +908,10 @@ int ARMouseHouse::initDrag(int button, int x, int y){
 	std::cout<<"Drag Started at : ["<<x<<" "<<y<<" ]"<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
 
 
-	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
+	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
 			//std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
-			w1.objectPtrs[i]->initSelection(lastButton, specialKey, x,y);
+			world.objectPtrs[i]->initSelection(lastButton, specialKey, x,y);
 		}
 
 	}
@@ -962,14 +950,14 @@ void ARMouseHouse::motionCB(int x, int y)
 //		std::cout<<"3dPos: "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]/MAX_INT<<std::endl;
 //}
 
-		if (w1.isSelected == 1){
-			w1.move(gPatt_trans, lastButton, specialKey, xMove, yMove);
+		if (world.isSelected == 1){
+			world.move(gPatt_trans, lastButton, specialKey, xMove, yMove);
 		}
 
-	for (int i =0; i < (int) w1.objectPtrs.size(); i++){
-		if (w1.objectPtrs[i]->isSelected == 1){
+	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
 			std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
-			w1.objectPtrs[i]->move(gPatt_trans, lastButton, specialKey, xMove, yMove);
+			world.objectPtrs[i]->move(gPatt_trans, lastButton, specialKey, xMove, yMove);
 		}
 		
 	}
@@ -1104,64 +1092,64 @@ void ARMouseHouse::keyboardCB( unsigned char key, int x, int y)
  if( key == 'r' ) {
 
 	 std::cout<<"new rectangle"<<std::endl;
-	 w1.objectPtrs.push_back(new rectangle((int) w1.objectPtrs.size(), -10,-10,50, 50, 90));	
+	 world.objectPtrs.push_back(new rectangle((int) world.objectPtrs.size(), -10,-10,50, 50, 90));	
     }
 if( key == 'e' ) {
 
 	 std::cout<<"new triangle"<<std::endl;
-	 //w1.objectPtrs.push_back(new triangle ((int) w1.objectPtrs.size(), -50,-50,50, -50, 0,50, 90));
-w1.objectPtrs.push_back(new triangle ((int) w1.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
+	 //world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,-50,50, -50, 0,50, 90));
+world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
 
     }
 
 if( key == 'a' ) {
 
 	 std::cout<<"new arc"<<std::endl;
-	 w1.objectPtrs.push_back(new fillArc ((int) w1.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
+	 world.objectPtrs.push_back(new fillArc ((int) world.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
     }
 if( key == 'p' ) {
 
 	 std::cout<<"new partialCylinder"<<std::endl;
-	 w1.objectPtrs.push_back(new partialCylinder ((int) w1.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
+	 world.objectPtrs.push_back(new partialCylinder ((int) world.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
     }
 
  if( key == 's' ) {
 
 	 std::cout<<"new sphere"<<std::endl;
-	 w1.objectPtrs.push_back(new sphere((int) w1.objectPtrs.size(), 0,0,30,30));	
+	 world.objectPtrs.push_back(new sphere((int) world.objectPtrs.size(), 0,0,30,30));	
     }
 
   if( key == 'b' ) {
 
 	 std::cout<<"new cube"<<std::endl;
-	 w1.objectPtrs.push_back(new cube((int) w1.objectPtrs.size(), 0,30,60,30));	
+	 world.objectPtrs.push_back(new cube((int) world.objectPtrs.size(), 0,30,60,30));	
     }
   if( key == 'm' ) {
 
 	 std::cout<<"new mouse"<<std::endl;
-	 w1.objectPtrs.push_back(new myModel((int) w1.objectPtrs.size(), "mouse2.ms3d", 0,0,0,0,1.5));	
+	 world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "mouse2.ms3d", 0,0,0,0,1.5));	
     }
   if( key == 't' ) {
 
 	 std::cout<<"new tube"<<std::endl;
-	 w1.objectPtrs.push_back(new cylinder((int) w1.objectPtrs.size(), 10, 10));	
+	 world.objectPtrs.push_back(new cylinder((int) world.objectPtrs.size(), 10, 10));	
     }
   if( key == 'c' ) {
 
 	 std::cout<<"new cone"<<std::endl;
-	 w1.objectPtrs.push_back(new cone((int) w1.objectPtrs.size(), 0,0,0, 10, 30));	
+	 world.objectPtrs.push_back(new cone((int) world.objectPtrs.size(), 0,0,0, 10, 30));	
     }
   if( key == 'o' ) {
 
 	 std::cout<<"new pyramid"<<std::endl;
-	 w1.objectPtrs.push_back(new pyramid((int) w1.objectPtrs.size(), 0,30,60, 30));	
+	 world.objectPtrs.push_back(new pyramid((int) world.objectPtrs.size(), 0,30,60, 30));	
     }
 
 
   if( key == 'l' ) {
 
 	 std::cout<<"new line"<<std::endl;
-	 w1.objectPtrs.push_back(new line((int) w1.objectPtrs.size(), 0, 0, 30, 30));	
+	 world.objectPtrs.push_back(new line((int) world.objectPtrs.size(), 0, 0, 30, 30));	
     }
 
 
@@ -1169,11 +1157,11 @@ if( key == 'p' ) {
 	 std::cout<<"copy"<<std::endl;
 		
 	int i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
 		std::cout<<"copying "<<i<<std::endl;
-		it = w1.objectPtrs.insert(w1.objectPtrs.end(), ((*it)->clone()) );
+		it = world.objectPtrs.insert(world.objectPtrs.end(), ((*it)->clone()) );
 		it++;
 		}
 		else ++it;
@@ -1191,15 +1179,15 @@ if( key == 'p' ) {
 
 	 //ungroup all grouped objects that are selected
 	int i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
 		std::cout<<"ungrouping "<<i<<std::endl;
 			std::vector<object *> group = (*it)->ungroup();
 			if (!group.empty()){
-				//std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs)
-				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs));
-				it = w1.objectPtrs.erase(it++);
+				//std::back_insert_iterator<std::vector<object *> >(world.objectPtrs)
+				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world.objectPtrs));
+				it = world.objectPtrs.erase(it++);
 			}
 			else ++it;
 		}
@@ -1209,20 +1197,20 @@ if( key == 'p' ) {
 
 
 	i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
 		std::cout<<"Adding to group "<<i<<std::endl;
 		newGroup.push_back((*it)->clone());
 		//++it;
-		it = w1.objectPtrs.erase(it++);
+		it = world.objectPtrs.erase(it++);
 		}
 		else ++it;
 	 }
 		
 
 	//multiShape * myMulti = new multiShape(newGroup);
-	 w1.objectPtrs.push_back(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+	 world.objectPtrs.push_back(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
 
 
     }
@@ -1234,16 +1222,16 @@ if( key == 'p' ) {
 		//then destroy the multishape
 
 		int i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
 		std::cout<<"ungrouping "<<i<<std::endl;
 			std::vector<object *> group = (*it)->ungroup();
 			if (!group.empty()){
 
-				//std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs)
-				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(w1.objectPtrs));
-				it = w1.objectPtrs.erase(it++);
+				//std::back_insert_iterator<std::vector<object *> >(world.objectPtrs)
+				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world.objectPtrs));
+				it = world.objectPtrs.erase(it++);
 			}
 			else ++it;
 		}
@@ -1265,14 +1253,14 @@ if( key == 'p' ) {
 
 if( key == 8 ) {
 	 std::cout<<"deleting"<<std::endl;
-		//for (int i = 0; i< w1.objectPtrs.size(); i++){
+		//for (int i = 0; i< world.objectPtrs.size(); i++){
 
 	 int i = 0;
-	 for (std::vector<object *>::iterator it = w1.objectPtrs.begin(); it!=w1.objectPtrs.end();) {
+	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
     if ( (*it)->isSelected  == 1)
 	{
 		std::cout<<"deleting "<<i<<std::endl;
-		it = w1.objectPtrs.erase(it++);
+		it = world.objectPtrs.erase(it++);
 
 	}
 	else ++it;
