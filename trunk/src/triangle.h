@@ -97,10 +97,82 @@ std::string getDataString(){
 		}
 
 	}
+
+
+void setHandles(){
+	initHandles(); //set the position of each corner handle
+	highlightCorners(); //draw each handle and set the window coordinates
+}
+
+void initHandles(){
+
+	handles.clear();
+	handles.push_back(vertex(x1, y1, 0));
+	handles.push_back(vertex(x2, y2, 0));
+	handles.push_back(vertex(x3, y3, 0));
+}
+
+
+void setWinCoords(){
+	GLint vPort[4];
+	GLdouble mMatrix[16];
+	GLdouble pMatrix[16];
+	//GLdouble winX, winY, winZ;
+	GLdouble  winZ;
+	glGetDoublev( GL_MODELVIEW_MATRIX, mMatrix);
+	glGetDoublev( GL_PROJECTION_MATRIX, pMatrix);
+	glGetIntegerv( GL_VIEWPORT, vPort );
+	//std::cout<<"Closest vertex is "<<
+
+	GLfloat mouseX = (float) lastX;
+	GLfloat mouseY = (float)vPort[3] - (float) lastY;
+
+
+
+	winCoords.clear();
+	for (int i = 0; i < handles.size(); i++){
+		GLdouble winX, winY, winZ;
+		gluProject(handles[i].x, handles[i].y, handles[i].z,
+					mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
+		winCoords.push_back(vertex((float) winX, (float) winY, (float) winZ));
+	}
+}
+
+
+
+void highlightCorners(){
+glPushMatrix();
+glTranslatef(xOff,yOff,zOff);
+		glRotatef(rX,0,1,0);
+		glRotatef(rY,1,0,0);
+		glScalef(sX, sY, sZ);
+
+		glDisable(GL_LIGHTING);
+		glColor3f(0.85, 0.1, 0.1);
+
+		for (int i = 0; i < handles.size(); i++){
+			glPushMatrix();
+			glTranslatef(handles[i].x, handles[i].y, handles[i].z);
+			glScalef(1/sX, 1/sY, 1/sZ);
+			glutSolidCube(5);
+			glPopMatrix();
+
+		}
+	setWinCoords(); //fill the wincoords vector with the wincoords of each handle
+	glPopMatrix();
+
+}
+
+
+
+
+
+
 	void	draw(){
 	if (isVisible == 1){
 	if (isSelected == 1){
 		highlight();
+		setHandles();
 	}
 	//glPushName(name);
 	glPushMatrix();		
