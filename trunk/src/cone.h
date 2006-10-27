@@ -36,15 +36,13 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
 			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
-
+			double xGrow, yGrow;
+getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 
 		if (key == GLUT_ACTIVE_ALT){
 		if (but == GLUT_LEFT_BUTTON){
 		sX += (float)x / 25; sZ -= (float)y / 25; //yOff += y;
-		}
-		else if (but == GLUT_RIGHT_BUTTON){
-		 sY -= (float)y / 25;
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
 		 //sX -= (float)y / 25; sZ -= (float)y / 25; 
@@ -68,10 +66,21 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 		if (but == GLUT_LEFT_BUTTON){
-		xOff += xNew; zOff += yNew;
+		if (min > 10 || handles.empty()){
+			xOff += xNew; zOff += yNew;
+			}
+			else{
+				scaleXY(xGrow, yGrow, rad);
+			}
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
-		 yOff -= y;
+		if (min > 10||handles.empty()){
+				yOff -= y;
+			}
+			else{
+					scaleZ(y, height);
+
+			}
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
 		 rX += x; rY+= y;//sOff += y;
@@ -79,17 +88,40 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		}
 
 	}
+
+
+	void initHandles(){
+
+	handles.clear();
+	/*handles.push_back(vertex(-rad, -rad, 0));
+	handles.push_back(vertex(-rad, rad/2, 0));
+	handles.push_back(vertex(rad, rad, 0));
+	handles.push_back(vertex(rad, -rad, 0));
+
+	handles.push_back(vertex(0, 0, height));*/
+handles.push_back(vertex(-rad, -rad, 0));
+	handles.push_back(vertex(-rad, rad, 0));
+	handles.push_back(vertex(rad,rad, 0));
+	handles.push_back(vertex(rad, -rad, 0));
+
+	handles.push_back(vertex(0, 0, height));
+
+}
+
+
+
 	void	draw(){
 	if (isVisible == 1){
 	if (isSelected == 1){
 		highlight();
+		setHandles();
 	}
 	//glPushName(name);
 	glPushMatrix();		
 		glTranslatef(xOff,yOff,zOff);
 		glRotatef(rX,0,1,0);
 		glRotatef(rY,1,0,0);
-		glScalef(sX, sZ, sY);
+		glScalef(sX, sY, sZ);
 startLighting(mat_ambient);
 
 glColor3f(0.85, 0.1, 0.1);
