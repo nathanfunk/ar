@@ -91,13 +91,6 @@ namespace ms3dglut {
 		}
 
 	protected:
-		virtual void OnResize(EventArgs ^e) override 
-		{
-			oglControl.SetBounds(0, 0, this->toolStripContainer->ContentPanel->Size.Width,
-				this->toolStripContainer->ContentPanel->Size.Height);
-			
-		}
-
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -110,53 +103,6 @@ namespace ms3dglut {
 
 			delete controller;
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	protected: 
@@ -582,17 +528,17 @@ namespace ms3dglut {
 		}
 #pragma endregion
 	private: System::Void MainWindow_Load(System::Object^  sender, System::EventArgs^  e) {
-
+		// Add the openGL control to the content panel of the toolstrip container
 		this->toolStripContainer->ContentPanel->Controls->Add(%oglControl);
-		oglControl.Name = L"OpenGL Control";
-		oglControl.Location = System::Drawing::Point(0,0);
-		oglControl.Size = System::Drawing::Size(320, 240);
-		this->ResumeLayout(false);
-		this->PerformLayout();
+		oglControl.Name = L"OpenGL Control";	// give some name
+		oglControl.Dock = DockStyle::Fill;		// set to fill contentpanel
 
+		// Initialize controller and hook together OpenGL control to the controller
 		controller->InitGL();
 		controller->ar_init();
 		oglControl.setController(controller);
+
+		// Start video capture now that everything's set up
 		arVideoCapStart();
 	}
 };
