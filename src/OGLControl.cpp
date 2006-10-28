@@ -80,9 +80,35 @@ void OGLControl::OnCreateControl()
 	timer->Start();
 }
 
+/**
+Gets the GLUT button id from the Windows Forms id
+*/
+int OGLControl::getGLUTButton(System::Windows::Forms::MouseButtons b) {
+	if (b == ::MouseButtons::Left) {
+		return GLUT_LEFT_BUTTON;
+	} else if (b == ::MouseButtons::Middle) {
+		return GLUT_MIDDLE_BUTTON;
+	} else {
+		return GLUT_RIGHT_BUTTON;
+	}
+}
+
+void OGLControl::OnMouseDown(MouseEventArgs ^e)
+{
+	controller->mouseCB(getGLUTButton(e->Button), GLUT_DOWN, e->X, e->Y);
+	UserControl::OnMouseDown(e);
+}
+
+void OGLControl::OnMouseUp(MouseEventArgs ^e)
+{
+	controller->mouseCB(getGLUTButton(e->Button), GLUT_UP, e->X, e->Y);
+	UserControl::OnMouseDown(e);
+}
+
 void OGLControl::OnMouseMove(MouseEventArgs ^e)
 {
 	//CWnd::OnMouseMove(nFlags, point);
+	controller->motionCB(e->X, e->Y);
 	UserControl::OnMouseMove(e);
 }
 

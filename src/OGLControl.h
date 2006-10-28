@@ -31,11 +31,15 @@ public:
 	virtual void OnPaint(PaintEventArgs ^e) override;
 	virtual void OnCreateControl() override;
 	virtual void OnSizeChanged(EventArgs ^e) override;
+	virtual void OnMouseDown(MouseEventArgs ^e) override;
+	virtual void OnMouseUp(MouseEventArgs ^e) override;
 	virtual void OnMouseMove(MouseEventArgs ^e) override;
 	void OnDraw();
 	void OnTick(Object ^sender, EventArgs ^e);
 	void setController(ARMouseHouse *controller) {this->controller = controller;}
 	virtual ~OGLControl(void);
+private:
+	int getGLUTButton(System::Windows::Forms::MouseButtons b);
 };
 
 }
