@@ -1,3 +1,8 @@
+Oct 28 nf
+	- finished resizing
+	- started mouse event passthrough
+	- still having some problems with dragging
+
 Oct 25 nf
 	- first integration of video into Windows Forms GUI
 	- still having problems with resizing
