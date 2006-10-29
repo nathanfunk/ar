@@ -247,7 +247,7 @@ glDisable(GL_BLEND);
 
 	virtual void draw() {
 	
-		for (int i = 0; i < vertices.size(); i++){
+		for (unsigned i = 0; i < vertices.size(); i++){
 			
 
 
@@ -341,7 +341,7 @@ glDisable(GL_BLEND);
 			(float) winCoords[0].x, (float) winCoords[0].y);
 	minI = 0;
 
-	for (int i = 1; i < winCoords.size(); i++){
+	for (unsigned i = 1; i < winCoords.size(); i++){
 		float dist = distance((float) mouseX, (float) mouseY, 
 			(float) winCoords[i].x, (float) winCoords[i].y);
 		if (dist < min){
@@ -378,7 +378,7 @@ void highlightCorners(){
 		glColor3f(0.85, 0.1, 0.1);
 
 
-		for (int i = 0; i < handles.size(); i++){
+		for (unsigned i = 0; i < handles.size(); i++){
 			glPushMatrix();
 				glTranslatef(handles[i].x, handles[i].y, handles[i].z);
 				glScalef(1/sX, 1/sY, 1/sZ);
@@ -415,7 +415,7 @@ glTranslatef(xOff,yOff,zOff);
 
 
 	winCoords.clear();
-	for (int i = 0; i < handles.size(); i++){
+	for (unsigned i = 0; i < handles.size(); i++){
 		GLdouble winX, winY, winZ;
 		gluProject(handles[i].x, handles[i].y, handles[i].z,
 					mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
