@@ -180,6 +180,9 @@ if (texture != 0) {
 }
 
 
+drawMode = WIREFRAME;
+
+if (drawMode == NORMAL){
 //glColor3f(0.85, 0.1, 0.1);
 //first face
 glPushMatrix();
@@ -216,10 +219,21 @@ glTranslatef(0, 0, -size/2);
 drawRect();
 glPopMatrix();
 
+}
 
+else if (drawMode == WIREFRAME){
 
-///glColor3f(0.85, 0.1, 0.1);
-///		glutSolidCube(size);
+	//glDisable ( GL_LIGHTING );
+	glEnable (GL_BLEND); 
+	//glDisable(GL_DEPTH_TEST);	
+		glColor4f(0.85, 0.1, 0.1, 0.2f);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE);
+	
+		glutSolidCube(size);
+	glDisable(GL_BLEND);
+//glEnable(GL_DEPTH_TEST);
+
+}
 	glDisable ( GL_LIGHTING ) ;
 
 	glPopMatrix();
