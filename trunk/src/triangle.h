@@ -130,7 +130,7 @@ void setWinCoords(){
 
 
 	winCoords.clear();
-	for (int i = 0; i < handles.size(); i++){
+	for (unsigned i = 0; i < handles.size(); i++){
 		GLdouble winX, winY, winZ;
 		gluProject(handles[i].x, handles[i].y, handles[i].z,
 					mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
@@ -150,7 +150,7 @@ glTranslatef(xOff,yOff,zOff);
 		glDisable(GL_LIGHTING);
 		glColor3f(0.85, 0.1, 0.1);
 
-		for (int i = 0; i < handles.size(); i++){
+		for (unsigned i = 0; i < handles.size(); i++){
 			glPushMatrix();
 			glTranslatef(handles[i].x, handles[i].y, handles[i].z);
 			glScalef(1/sX, 1/sY, 1/sZ);
