@@ -3,7 +3,10 @@ ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
 
 */
+#define _CRTDBG_MAP_ALLOC	// include for mapping allocation for detecting memory leaks
 #include <stdlib.h>
+#include <crtdbg.h>			// include for detecting memory leaks
+
 #include <math.h>
 #include <conio.h>
 #include <vector>
@@ -216,6 +219,8 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 
 int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
 {
+	// enable automatic memory leak detection report on exit
+	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 
 	if (useGLUTGUI)
 	{
@@ -1019,7 +1024,9 @@ void ARMouseHouse::motionCB(int x, int y)
 
 void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 
-specialKey = glutGetModifiers();
+	if (useGLUTGUI) {
+		specialKey = glutGetModifiers();
+	}
 
  /*int submenu1, submenu2, submenu3, submenu4, mainMenu;
 
