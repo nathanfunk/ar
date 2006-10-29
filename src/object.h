@@ -212,7 +212,21 @@ arGetAngle(rotMat, &mouseMat[0], &mouseMat[1], &mouseMat[2]);
 		glRotatef(prY,1,0,0);
 		glScalef(psX, psY, psZ);
 
+ if (drawMode == WIREFRAME){
+	glEnable (GL_BLEND); 
+	glColor4f(0.85, 0.1, 0.1, 0.2f);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE);
+ }
 		draw();
+
+	
+glDisable(GL_BLEND);
+
+
+
+
+
+
 
 		//if (snap_to_grid == 1)
 		snap(snapPos, snapRot, snapScale);
