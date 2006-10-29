@@ -1,6 +1,10 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+
+#define NORMAL 0
+#define WIREFRAME 1
+
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
@@ -63,6 +67,7 @@ psX = 1; psY = 1; psZ = 1;
 	texture = 0;
 
 	minI = 0;
+	drawMode = NORMAL;
 
 	};
 	
@@ -81,6 +86,8 @@ psX = 1; psY = 1; psZ = 1;
 
 		texture = 0;
 	minI = 0;
+
+	drawMode = NORMAL;
 	}
 
 	object(GLfloat _objTrans[16]){
@@ -108,18 +115,52 @@ psX = 1; psY = 1; psZ = 1;
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 		double wa, wb, wc;
 		double rotMat[3][3];
+
+		double mouseMat[3];
+
 		getRotFromTrans(patt_trans, rotMat);
-		arGetAngle(rotMat, &wa, &wb, &wc);
+		//arGetAngle(rotMat, &wa, &wb, &wc);
+arGetAngle(rotMat, &mouseMat[0], &mouseMat[1], &mouseMat[2]);
+
 
 		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
 		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
 
 		//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
-		xNew = 1*(x*cos(wc) - y * sin(wc));
-		yNew = 1*(x*sin(wc) + y * cos(wc));
+		xNew = (x*cos(mouseMat[2]) - y * sin(mouseMat[2]));
+		yNew = (x*sin(mouseMat[2]) + y * cos(mouseMat[2]));
+
+
+
+
 		//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
 	return 1;
 	}
+
+
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, float _rX, float _rY, 
+		float _rZ, double &xNew, double &yNew){
+		
+		double wa, wb, wc;
+		double rotMat[3][3];
+		getRotFromTrans(patt_trans, rotMat);
+		arGetAngle(rotMat, &wa, &wb, &wc);
+
+		float rxRad = RADIANS(_rX);
+		float ryRad = RADIANS(_rY);
+		float rzRad = RADIANS(_rZ);
+
+
+		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
+		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
+
+		//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
+		xNew = (x*cos(wc) - y * sin(wc))*cos(wb);
+		yNew = (x*sin(wc) + y * cos(wc));
+		//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
+	return 1;
+	}
+
 
 
 	virtual std::vector<object *> ungroup(){std::vector<object *> emptyVec; return emptyVec;};
@@ -493,6 +534,7 @@ GLfloat  objTrans[16];
 	int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
 
 
+	int drawMode;
 	int minI; 
 	float min;
 
