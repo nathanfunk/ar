@@ -10,6 +10,9 @@ public:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z;sX = 1; sY = 1; sZ =1; radius = _rad; isVisible = 1; rY = 0; rX = 0;
+			XYSize = radius;
+		ZSize = radius;
+
 	}
 	sphere(int _name, float _x, float _y,  float _z, float _rX, float _rY, float _rZ, 
 		float _sX, float _sY, float _sZ, float _rad)//:
@@ -19,6 +22,9 @@ public:
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ; 
 		radius = _rad; isVisible = 1; 
+
+				XYSize = radius;
+		ZSize = radius;
 	}
 
 	
@@ -42,24 +48,9 @@ public:
 
 	void	draw(){
 	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glScalef(sX, sY, sZ);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-
-
-/////	startLighting(mat_ambient);
-
+	
 		glutSolidSphere(radius, 10, 10);
-		glDisable ( GL_LIGHTING ) ;
 
-	glPopMatrix();
-	//glPopName();
 	}
 	}
 	float radius;
