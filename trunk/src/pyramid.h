@@ -10,6 +10,9 @@ public:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 5; sZ= 5; size = _size; isVisible = 1; rX = 0; rY = 0;
+	
+			XYSize = size;
+		ZSize = size;
 	}
 	pyramid(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -20,6 +23,9 @@ public:
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ; 
 		size = _size; isVisible = 1; 
+
+				XYSize = size;
+		ZSize = size;
 	}
 
 
@@ -137,28 +143,6 @@ void drawTri(){
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		setHandles();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sY, sZ);
-startLighting(mat_ambient);
-
-if (texture != 0) {
-	//std::cout<<"enabling texture "<<std::endl;	
-	glEnable( GL_TEXTURE_2D );	
-	glBindTexture( GL_TEXTURE_2D, texture);
-
-}
-
-
-//glColor3f(0.85, 0.1, 0.1);
 //first face
 glPushMatrix();
 glTranslatef(0.0f, 0.0, size/2);
@@ -186,20 +170,6 @@ glTranslatef(0, 0, size/2);
 drawTri();
 glPopMatrix();
 
-
-
-
-///glColor3f(0.85, 0.1, 0.1);
-///		glutSolidCube(size);
-	glDisable ( GL_LIGHTING ) ;
-
-	glPopMatrix();
-
-glDisable( GL_TEXTURE_2D );	
-
-
-	//glPopName();
-	}
 	}
 	float size;
 };
