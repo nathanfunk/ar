@@ -382,6 +382,66 @@ public:
 
 	}
 
+	/**
+	Adds an object to the world
+	*/
+	void addObject(object *o) {
+		objectPtrs.push_back(o);
+	}
+
+	/**
+	Adds and object of specified type
+	*/
+	void addObject(int objectType) {
+		addObject(createObject(objectType));
+	}
+
+	/**
+	Creates an object of specified type
+	*/
+	object *createObject(int objectType) {
+		int nObjects = (int)getNumberOfObjects();
+		object *o;
+
+		switch (objectType) {
+		case ObjectTypes::RECTANGLE:
+			o = new rectangle(nObjects, -10,-10,50, 50, 90);
+			break;
+		case ObjectTypes::TRIANGLE:
+			o = new triangle(nObjects, -50,50,-50, -50,-50,50, -50, 0,50, 45);
+			break;
+		case ObjectTypes::FILLARC:
+			o = new fillArc(nObjects, -50,-50,100, 100, 50, 90);
+			break;
+		case ObjectTypes::PARTIALCYLINDER:
+			o = new partialCylinder(nObjects, -50,-50,100, 100, 0,180, 0);
+			break;
+		case ObjectTypes::SPHERE:
+			o = new sphere(nObjects, 0,0,30,30);
+			break;
+		case ObjectTypes::CUBE:
+			o = new cube(nObjects, 0,30,60,30);
+			break;
+		case ObjectTypes::CYLINDER:
+			o = new cylinder(nObjects, 10, 10);
+			break;
+		case ObjectTypes::CONE:
+			o = new cone(nObjects, 0,0,0, 10, 30);
+			break;
+		case ObjectTypes::PYRAMID:
+			o = new pyramid(nObjects, 0,30,60, 30);
+			break;
+		case ObjectTypes::LINE:
+			o = new line(nObjects, 0, 0, 30, 30);
+			break;
+		}
+
+		return o;
+	}
+
+	size_t getNumberOfObjects() {
+		return objectPtrs.size();
+	}
 };
 
 #endif
