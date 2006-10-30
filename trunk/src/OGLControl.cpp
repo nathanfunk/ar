@@ -107,9 +107,16 @@ void OGLControl::OnMouseUp(MouseEventArgs ^e)
 
 void OGLControl::OnMouseMove(MouseEventArgs ^e)
 {
-	//CWnd::OnMouseMove(nFlags, point);
-	controller->motionCB(e->X, e->Y);
+	// motion callback function should only be called if a mouse button is pressed
+	if (e->Button != ::MouseButtons::None) {
+		controller->motionCB(e->X, e->Y);
+	}
 	UserControl::OnMouseMove(e);
+}
+
+void OGLControl::OnKeyDown(KeyEventArgs ^e)
+{
+	controller->keyboardCB(e->KeyValue, 0, 0);
 }
 
 void OGLControl::OnDraw()
