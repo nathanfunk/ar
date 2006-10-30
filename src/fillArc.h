@@ -15,6 +15,10 @@ public:
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		zOff = 0;
+
+		XYSize = radius;
+		ZSize = 0;
+
 	}
 
 fillArc(int _name, float _xOff, float _yOff,  float _zOff, 
@@ -30,6 +34,9 @@ fillArc(int _name, float _xOff, float _yOff,  float _zOff,
 		sX = _sX; sY = _sY; sZ= _sZ;
 		
 		isVisible = 1;
+
+		XYSize = radius;
+		ZSize = 0;
 
 	}
 
@@ -91,25 +98,8 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-	}
-	//glPushName(name);
-
+	
 	int n = 50;
-
-	glPushMatrix();		
-		glTranslatef(xOff,yOff ,zOff);
-		//move to center
-		
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-
-		glScalef(sX, sZ, 1);
-		startLighting(mat_ambient);
-		
-////
 	float pheta, angle_increment;
     float x1, y1, x2, y2;
 
@@ -117,43 +107,8 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
         n = 1;
 
     angle_increment = PI_2 / n;
-
-    //  specify the center
-    //glVertex2f (0.0f, 0.0f);
-/*
-    glPushMatrix ();
-
-    //  center the oval at x_center, y_center
-
-
-    //  fill the oval using triangle fan
-    glBegin (GL_TRIANGLE_FAN);
-
-    glVertex2f (0.0f, 0.0f);
-
-    for (pheta = startAngle; pheta - (startAngle + arcAngle)
-                          < 0.001; pheta += angle_increment)
-    {
-        x = radius * cos (pheta);
-        y = radius * sin (pheta);
-
-        glVertex2f (x, y);
-    }
-
-    glEnd ();
-
-    glPopMatrix ();
-	/////
-*/
-
-	glPushMatrix();
 	int stacks = 20;
 	float radIncrement = radius/stacks;
-	
-
-
-   // glVertex2f (0.0f, 0.0f);
-
 
 for (int stack = 0; stack <stacks ; stack++){
 
@@ -173,18 +128,6 @@ for (int stack = 0; stack <stacks ; stack++){
 	 glEnd ();
 }
 
-   
-
-    glPopMatrix ();
-
-
-
-
-
-	glDisable ( GL_LIGHTING ) ;
-	glPopMatrix();
-	//glPopName();
-	}
 	}
 	float radius, startAngle, arcAngle, thickness;
 };
