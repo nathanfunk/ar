@@ -1221,7 +1221,27 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 		}
 
 	}
+if( key == 'i' ) {
+    std::cout<<"transparent"<<std::endl;
+       
+   int i = 0;
+    for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+       if ( (*it)->isSelected  == 1)
+       {
 
+       if ((*it)->drawMode == WIREFRAME)
+               (*it)->drawMode = NORMAL;
+       else
+       (*it)->drawMode = WIREFRAME;
+
+
+       it++;
+       }
+       else ++it;
+    }
+
+
+   }
 }
 
 
