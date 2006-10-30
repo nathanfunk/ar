@@ -9,7 +9,8 @@ public:
 	{
 		name = _name; rad = _rad; height = _height; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = 0;
 		quadratic =  gluNewQuadric();
-
+		XYSize = rad;
+		ZSize = height;
 	}
 	cylinder(int _name, 
 		float _xOff, float _yOff, float _zOff,
@@ -24,6 +25,8 @@ public:
 		rad = _rad; height = _height; isVisible = 1;
 		quadratic =  gluNewQuadric();
 
+				XYSize = rad;
+		ZSize = height;
 	}
 
 
@@ -44,9 +47,6 @@ public:
 		data<<"<size x=\""<<rad*sX/100<<"\" y=\""<<rad*sY/100<<"\" z=\""<<height*sZ/100<<"\">"<<std::endl;
 		return data.str(); 
 	}
-
-
-
 
 
 
@@ -106,42 +106,6 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 
 
-
-
-void highlightCorners(){
-
-
-		glDisable(GL_LIGHTING);
-		glColor3f(0.85, 0.1, 0.1);
-
-glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sZ, sY);
-
-
-		glPushMatrix();
-		glScalef(1/sX, 1/sZ, 1/sY);
-		glutSolidCube(5);
-		glPopMatrix();
-
-
-		glPushMatrix();
-		glTranslatef(0,0,height);
-		glScalef(1/sX, 1/sZ, 1/sY);
-		glutSolidCube(5);
-		glPopMatrix();
-
-
-
-glPopMatrix();
-
-
-
-}
-
-
 void initHandles(){
 
 	handles.clear();
@@ -156,30 +120,11 @@ void initHandles(){
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		setHandles();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sY, sZ);
-	startLighting(mat_ambient);
-		//quadratic =  gluNewQuadric();		
 		gluDisk(quadratic, 0, rad, 15, 15);
 		gluCylinder(quadratic, rad, rad,  height, 15, 15);
 
 		glTranslatef(0,0,height);
 		gluDisk(quadratic, 0, rad, 15, 15);
-
-	glDisable ( GL_LIGHTING ) ;
-
-	glPopMatrix();
-	//glPopName();
-	}
 	}
 	float rad, height; GLUquadricObj *quadratic;
 };
