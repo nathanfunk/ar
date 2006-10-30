@@ -45,6 +45,20 @@ public:
 	float x, y, z;
 };
 
+class ObjectTypes {
+public:
+	static const int MS3D		= 0;
+	static const int TRIANGLE	= 1;
+	static const int RECTANGLE	= 2;
+	static const int SPHERE		= 3;
+	static const int CUBE		= 4;
+	static const int PYRAMID	= 5;
+	static const int CONE		= 6;
+	static const int CYLINDER	= 7;
+	static const int PARTIALCYLINDER = 8;
+	static const int FILLARC	= 9;
+	static const int LINE		= 10;
+};
 
 
 
@@ -113,7 +127,7 @@ psX = 1; psY = 1; psZ = 1;
 		}
 	}
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
-		double wa, wb, wc;
+//		double wa, wb, wc;
 		double rotMat[3][3];
 
 		double mouseMat[3];
@@ -395,7 +409,7 @@ void setWinCoords(){
 	GLdouble mMatrix[16];
 	GLdouble pMatrix[16];
 	//GLdouble winX, winY, winZ;
-	GLdouble  winZ;
+//	GLdouble  winZ;
 
 glPushMatrix();
 glTranslatef(xOff,yOff,zOff);
@@ -530,7 +544,7 @@ glPopMatrix();
 	int isSelected; int isVisible;
 	//float xo, yo, x1, y1,  x2, y2, z,r;
 
-GLfloat  objTrans[16];
+	GLfloat  objTrans[16];
 
 	float pxOff, pyOff, pzOff, prX, prY, prZ, psX, psY, psZ; 
 
