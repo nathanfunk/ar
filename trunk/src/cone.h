@@ -93,13 +93,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 	void initHandles(){
 
 	handles.clear();
-	/*handles.push_back(vertex(-rad, -rad, 0));
-	handles.push_back(vertex(-rad, rad/2, 0));
-	handles.push_back(vertex(rad, rad, 0));
-	handles.push_back(vertex(rad, -rad, 0));
-
-	handles.push_back(vertex(0, 0, height));*/
-handles.push_back(vertex(-rad, -rad, 0));
+	handles.push_back(vertex(-rad, -rad, 0));
 	handles.push_back(vertex(-rad, rad, 0));
 	handles.push_back(vertex(rad,rad, 0));
 	handles.push_back(vertex(rad, -rad, 0));
@@ -109,28 +103,9 @@ handles.push_back(vertex(-rad, -rad, 0));
 }
 
 
-
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		setHandles();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sY, sZ);
-startLighting(mat_ambient);
-
-glColor3f(0.85, 0.1, 0.1);
 		glutSolidCone(rad, height, 5, 15);
-	glDisable ( GL_LIGHTING ) ;
+	}
 
-	glPopMatrix();
-	//glPopName();
-	}
-	}
 	float rad, height;
 };
