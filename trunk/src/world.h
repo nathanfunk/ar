@@ -228,7 +228,7 @@ public:
 			else if (type == "CUBE"){
 				float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 				iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-				objectPtrs.push_back( new cube((int) objectPtrs.size(), 
+				objectPtrs.push_back( new cube2((int) objectPtrs.size(), 
 					xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 			}
 			else if (type == "PYRAMID"){
@@ -365,6 +365,7 @@ public:
 		for (int i = 0; i < (int) objects.size(); i++){
 			//push i onto namestack
 			//glPushName(i);
+			
 			objects[i].drawTopLevel(5,5,5);
 			//glPopName();
 
@@ -372,12 +373,28 @@ public:
 
 		//draw the models
 		for (int i = 0; i < (int) objectPtrs.size(); i++){
+			if (objectPtrs[i]->drawMode == NORMAL){
+			//push i onto namestack
+			glPushName(i);
+				objectPtrs[i]->drawTopLevel(5,5,5);
+			glPopName();
+			}
+
+		}
+		for (int i = 0; i < (int) objectPtrs.size(); i++){
+			if (objectPtrs[i]->drawMode == WIREFRAME){
 			//push i onto namestack
 			glPushName(i);
 			objectPtrs[i]->drawTopLevel(5,5,5);
 			glPopName();
+			}
+
 
 		}
+
+
+
+
 		glPopMatrix();
 
 	}
