@@ -10,6 +10,10 @@ public:
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; size = _size; isVisible = 1; rX = 0; rY = 0;
 			minI = 0;
+		XYSize = size;
+		ZSize = size;
+
+
 	}
 	cube2(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -22,6 +26,9 @@ public:
 		sX = _sX; sY = _sY; sZ = _sZ;
 		minI = 0;
 		size = _size; isVisible = 1; 
+
+		XYSize = size;
+		ZSize = size;
 	}
 
 
@@ -153,37 +160,9 @@ void initHandles(){
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		setHandles();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sY, sZ);
-
-
-//glMultMatrixf(objTrans);
-
-
-//setWinCoords();
-startLighting(mat_ambient);
-
-if (texture != 0) {
-	//std::cout<<"enabling texture "<<std::endl;	
-	glEnable( GL_TEXTURE_2D );	
-	glBindTexture( GL_TEXTURE_2D, texture);
-
-}
 
 
 
-
-
-//glColor3f(0.85, 0.1, 0.1);
 //first face
 glPushMatrix();
 glTranslatef(0.0f, 0.0, size/2);
@@ -219,16 +198,6 @@ glTranslatef(0, 0, -size/2);
 drawRect();
 glPopMatrix();
 
-
-	glDisable ( GL_LIGHTING ) ;
-
-	glPopMatrix();
-
-glDisable( GL_TEXTURE_2D );	
-
-
-	//glPopName();
-	}
 	}
 	float size;
 //	int minI;
