@@ -48,28 +48,12 @@ public:
 
 	}
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sZ, sY);
-	startLighting(mat_ambient);
+	
 glBegin(GL_LINES);
 glVertex2f(x1,y1);
 glVertex2f(x2,y2);
 glEnd();
 
-
-	glDisable ( GL_LIGHTING ) ;
-
-	glPopMatrix();
-	//glPopName();
-	}
 	}
 	float x1,y1,x2,y2;
 };
