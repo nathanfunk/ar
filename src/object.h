@@ -226,17 +226,37 @@ arGetAngle(rotMat, &mouseMat[0], &mouseMat[1], &mouseMat[2]);
 		glRotatef(prY,1,0,0);
 		glScalef(psX, psY, psZ);
 
+	
+
  if (drawMode == WIREFRAME){
 	glEnable (GL_BLEND); 
 	glColor4f(0.85, 0.1, 0.1, 0.2f);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE);
  }
+	if (isSelected == 1){
+		highlight();
+		setHandles();
+	}
+	startLighting(mat_ambient);
+
+	if (texture != 0) {	
+		glEnable( GL_TEXTURE_2D );	
+		glBindTexture( GL_TEXTURE_2D, texture);
+	}
+
+glPushMatrix();		
+		glTranslatef(xOff,yOff,zOff);
+		glRotatef(rX,0,1,0);
+		glRotatef(rY,1,0,0);
+		glScalef(sX, sY, sZ);
+
 		draw();
 
+glPopMatrix();
 	
 glDisable(GL_BLEND);
-
-
+glDisable ( GL_LIGHTING ) ;
+glDisable( GL_TEXTURE_2D );	
 
 
 
@@ -261,7 +281,7 @@ glDisable(GL_BLEND);
 
 	virtual void draw() {
 	
-		for (unsigned i = 0; i < vertices.size(); i++){
+		for (int i = 0; i < (int) vertices.size(); i++){
 			
 
 
@@ -355,7 +375,7 @@ glDisable(GL_BLEND);
 			(float) winCoords[0].x, (float) winCoords[0].y);
 	minI = 0;
 
-	for (unsigned i = 1; i < winCoords.size(); i++){
+	for (int i = 1; i < (int) winCoords.size(); i++){
 		float dist = distance((float) mouseX, (float) mouseY, 
 			(float) winCoords[i].x, (float) winCoords[i].y);
 		if (dist < min){
@@ -392,7 +412,7 @@ void highlightCorners(){
 		glColor3f(0.85, 0.1, 0.1);
 
 
-		for (unsigned i = 0; i < handles.size(); i++){
+		for (int i = 0; i < (int) handles.size(); i++){
 			glPushMatrix();
 				glTranslatef(handles[i].x, handles[i].y, handles[i].z);
 				glScalef(1/sX, 1/sY, 1/sZ);
@@ -429,7 +449,7 @@ glTranslatef(xOff,yOff,zOff);
 
 
 	winCoords.clear();
-	for (unsigned i = 0; i < handles.size(); i++){
+	for (int i = 0; i < (int) handles.size(); i++){
 		GLdouble winX, winY, winZ;
 		gluProject(handles[i].x, handles[i].y, handles[i].z,
 					mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
@@ -459,6 +479,26 @@ glPopMatrix();
 			sX += xScaleInc; sZ+= yScaleInc;
 			xOff+= xOffInc; zOff += yOffInc;
 	}
+
+
+	void scaleX(float xGrow, float oSize){
+			//after scaling, center of cube must be moved so that only one corner is dragged
+			//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+			//of the new larger/smaller shape, and convert back to world coordinates
+			//(rotation matrix with r = -rotation of object
+			float rzRad = RADIANS(rX);
+			std::cout<<"rX : "<<rX<<std::endl;
+
+			float xScaleInc = xGrow/20;
+			float xOffInc = xScaleInc*oSize/2*cos(-rzRad) ;
+			float yOffInc = xScaleInc*oSize/2*sin(-rzRad) ;
+
+			if (handles[minI].x < 0) xScaleInc *=-1;
+			sX += xScaleInc; 
+			xOff+= xOffInc; zOff += yOffInc;
+	}
+
+
 
 	void scaleZ(float y, float oSize){
 				float yScaleInc = - (float)y / 25;
@@ -491,6 +531,10 @@ glPopMatrix();
 		double xNew, yNew;
 			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
 
+	double xGrow, yGrow;
+getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
+
+
 
 			//if (key ==(GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT)){
 		if (key == GLUT_ACTIVE_ALT){
@@ -521,13 +565,26 @@ glPopMatrix();
 
 		else{
 		if (but == GLUT_LEFT_BUTTON){
-		xOff += xNew; zOff += yNew;
+			
+			if (min > 10 || handles.empty()){
+				xOff += xNew; zOff += yNew;
+			}
+			else{
+				std::cout<<"--------------SCALING------------------"<<std::endl;
+				scaleXY(xGrow, yGrow, XYSize);
+			}
+
+
+
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
-		 yOff -= y;
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 rX += x; rY+= y;//sOff += y;
+		if (min > 10||handles.empty()){
+				yOff -= y;
+			}
+			else{
+					scaleZ(y, ZSize);
+
+			}
 		}
 		}
 
@@ -544,7 +601,7 @@ glPopMatrix();
 	int isSelected; int isVisible;
 	//float xo, yo, x1, y1,  x2, y2, z,r;
 
-	GLfloat  objTrans[16];
+GLfloat  objTrans[16];
 
 	float pxOff, pyOff, pzOff, prX, prY, prZ, psX, psY, psZ; 
 
@@ -565,6 +622,8 @@ glPopMatrix();
 	int drawMode;
 	int minI; 
 	float min;
+
+	float XYSize, ZSize;
 
 };
 
