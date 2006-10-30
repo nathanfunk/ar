@@ -166,76 +166,7 @@ void setWinCoords(){
 
 	}
 
-
-	void highlightCorners(){
-glPushMatrix();		
-	glTranslatef(xOff, yOff, zOff);
-	glRotatef(rX,0,1,0);
-	glRotatef(rY,1,0,0);
-	glScalef(sX, sZ, 1);
-	//setWinCoords();
-glDisable(GL_LIGHTING);
-glColor3f(0.85, 0.1, 0.1);
-glPushMatrix();
-glTranslatef(x1,y1, 0.0f);
-glScalef(1/sX,1/sZ,1);
-glutSolidCube(5);
-glPopMatrix();
-glPushMatrix();
-glTranslatef(x1,y2, 0.0f);
-glScalef(1/sX,1/sZ,1);
-glutSolidCube(5);
-glPopMatrix();
-glPushMatrix();
-glTranslatef(x2,y1, 0.0f);
-glScalef(1/sX,1/sZ,1);
-glutSolidCube(5);
-glPopMatrix();
-glPushMatrix();
-glTranslatef(x2,y2, 0.0f);
-glScalef(1/sX,1/sZ,1);
-glutSolidCube(5);
-glPopMatrix();
-glPopMatrix();
-};
-
-
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		highlightCorners();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-
-	glTranslatef(xOff, yOff, zOff);
-		//glTranslatef(xOff - (x2 - x1)/ 2,yOff - (y2 - y1)/2,zOff);
-		//move to center
-		//glTranslatef((x2 - x1)/ 2,(y2 - y1)/2,0);
-
-
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-
-
-
-
-
-		glScalef(sX, sZ, 1);
-
-
-//initSelection();
-		setWinCoords();
-		startLighting(mat_ambient);
-
-if (texture != 0) {
-	//std::cout<<"enabling texture "<<std::endl;	
-	glEnable( GL_TEXTURE_2D );	
-	glBindTexture( GL_TEXTURE_2D, texture);
-
-}
-
 glBegin( GL_POLYGON );
 glVertex3f( x1, y1, 0.0f );
    glTexCoord2f( 0.0f, 0.0f );
@@ -246,54 +177,6 @@ glVertex3f( x1, y1, 0.0f );
    glVertex3f( x2,  y1, 0.0f );
    glTexCoord2f( 0.0f, 1.0f );
   glEnd();
-
-
-/*
-GLUtesselator *tobj  = gluNewTess();
-GLdouble data[4][3];
-data[0][0] = x1; data[0][1] = y1; data[0][2] = 0;  
-data[1][0] = x1; data[1][1] = y2; data[1][2] = 0; 
-data[2][0] = x2; data[2][1] = y2; data[2][2] = 0; 
-data[3][0] = x2; data[3][1] = y1; data[3][2] = 0; 
-
-gluTessProperty(tobj, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_POSITIVE); 
-
-  gluTessCallback(tobj, GLU_TESS_VERTEX, 
-                   glVertex3dv);
-   gluTessCallback(tobj, GLU_TESS_BEGIN, 
-                   beginCallback);
-   gluTessCallback(tobj, GLU_TESS_END, 
-                   endCallback);
-   gluTessCallback(tobj, GLU_TESS_ERROR, 
-                   errorCallback);
-
-
-
-   gluTessBeginPolygon(tobj, NULL);
- gluTessBeginContour(tobj);
-   gluTessVertex(tobj, data[0], data[0]);  
-  gluTessVertex(tobj, data[1], data[1]);
-  gluTessVertex(tobj, data[2], data[2]);
-  gluTessVertex(tobj, data[3], data[3]);
-
-gluTessEndContour(tobj);
- //       gluNextContour(tobj, GLU_INTERIOR);
-   //        gluTessVertex(tobj, v5, v5);
-    //       gluTessVertex(tobj, v6, v6);
-     //      gluTessVertex(tobj, v7, v7);
-        gluTessEndPolygon(tobj);
-gluDeleteTess(tobj);
-*/
-		//glRectf(x1,y1,x2,y2);
-
-
-
-	glDisable ( GL_LIGHTING ) ;
-	glPopMatrix();
-	//glPopName();
-glDisable(GL_TEXTURE_2D);
-
-	}
 	}
 	float x1, y1,  x2, y2;
 
