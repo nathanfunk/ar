@@ -74,7 +74,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 		}
 	else if (key == GLUT_ACTIVE_CTRL){
 		if (but == GLUT_LEFT_BUTTON){
-		rX += x; 
+		rX += x;   rY -= y;
 		////rY-=y; //yOff += y;
 		}
 		else if (but == GLUT_RIGHT_BUTTON){
@@ -330,31 +330,31 @@ gluProject(size/2,size/2,size/2, mMatrix, pMatrix, vPort,&winX7, &winY7, &winZ7)
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		highlightCorners();
-	}
+//	if (isVisible == 1){
+//	if (isSelected == 1){
+//		highlight();
+//		highlightCorners();
+//	}
 	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sY, sZ);
+//	glPushMatrix();		
+//		glTranslatef(xOff,yOff,zOff);
+//		glRotatef(rX,0,1,0);
+//		glRotatef(rY,1,0,0);
+//		glScalef(sX, sY, sZ);
 
 
 //glMultMatrixf(objTrans);
 
 
 setWinCoords();
-startLighting(mat_ambient);
+//startLighting(mat_ambient);
 
-if (texture != 0) {
+//if (texture != 0) {
 	//std::cout<<"enabling texture "<<std::endl;	
-	glEnable( GL_TEXTURE_2D );	
-	glBindTexture( GL_TEXTURE_2D, texture);
+//	glEnable( GL_TEXTURE_2D );	
+//	glBindTexture( GL_TEXTURE_2D, texture);
 
-}
+//}
 
 
 //glColor3f(0.85, 0.1, 0.1);
@@ -397,16 +397,16 @@ glPopMatrix();
 
 ///glColor3f(0.85, 0.1, 0.1);
 ///		glutSolidCube(size);
-	glDisable ( GL_LIGHTING ) ;
+//	glDisable ( GL_LIGHTING ) ;
 
-	glPopMatrix();
+//	glPopMatrix();
 
-glDisable( GL_TEXTURE_2D );	
+//glDisable( GL_TEXTURE_2D );	
 
 
 	//glPopName();
 	}
-	}
+
 	float size;
 
 		float d1, d2, d3, d4,d5, d6, d7, d8, min;
