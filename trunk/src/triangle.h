@@ -118,7 +118,7 @@ void setWinCoords(){
 	GLdouble mMatrix[16];
 	GLdouble pMatrix[16];
 	//GLdouble winX, winY, winZ;
-	GLdouble  winZ;
+//	GLdouble  winZ;
 	glGetDoublev( GL_MODELVIEW_MATRIX, mMatrix);
 	glGetDoublev( GL_PROJECTION_MATRIX, pMatrix);
 	glGetIntegerv( GL_VIEWPORT, vPort );
