@@ -97,32 +97,11 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-	}
-	//glPushName(name);
-
-	int n = 100;
-
-
-	startLighting(mat_ambient);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff ,zOff);
-		//move to center
-		
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-glRotatef(rZ,0,0,1);
-
-
-		glScalef(sX, sZ, sY);
-		
-		
-
+	
+	int n = 20;
 int stack;
-int stacks = 100;
-int slices = 100;
+int stacks = 20;
+int slices = 20;
 
   GLdouble dangle,dradius,dheight;
   GLdouble normCo, normZ;
@@ -206,13 +185,6 @@ for (pheta = startAngle; pheta - (startAngle + arcAngle)
   }
 
 
-
-
-	glDisable ( GL_LIGHTING ) ;
-	glPopMatrix();
-	glDisable( GL_TEXTURE_2D );	
-	//glPopName();
-	}
 	}
 	float radius, height, startAngle, arcAngle;
 };
