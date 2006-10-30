@@ -79,6 +79,7 @@ private:
 	int selection(int key, int mouse_x, int mouse_y);
 	int GetOGLPos(int x, int y, float pos[]);
 	int initDrag(int button, int x, int y);
+	int keyMapping(unsigned char key);
 };
 
 }

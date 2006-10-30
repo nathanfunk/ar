@@ -646,10 +646,10 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 		printf("closest: %d\n", selected); 
 
 
-		if ((selected >= 0) && (selected < (int) world.objectPtrs.size())){
+		if ((selected >= 0) && (selected < world.getNumberOfObjects())) {
 			world.isSelected = 0;
 			if (key != GLUT_ACTIVE_SHIFT){
-				for (int i = 0; i< (int) world.objectPtrs.size(); i++){
+				for (size_t i = 0; i < world.getNumberOfObjects(); i++){
 					//world.objectPtrs[i]->deselect();
 					///world.objectPtrs[i]->isSelected = 0;
 					world.objectPtrs[i]->isSelected = 0;
@@ -661,7 +661,7 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 
 		}
 		else if (selected == -100){
-			for (int i = 0; i< (int) world.objectPtrs.size(); i++){
+			for (int i = 0; i < world.getNumberOfObjects(); i++){
 				//world.objectPtrs[i]->deselect();
 				///world.objectPtrs[i]->isSelected = 0;
 				world.objectPtrs[i]->isSelected = 0;
@@ -684,44 +684,44 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 //     switch (item) {
 //
 //      case 1:
-//		  world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
+//		  world.addObject(new myModel((int) world.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
 //            break;
 //      case 2:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
 //			break;
 //    case 3:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
 //			break;
 //  case 4:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
 //			break;//was toilet3.ms3d
 // case 5:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
 //			break;//was sink
 //case 6:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
 //			break;
 //
 //case 7:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
 //			break;
 //case 8:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
 //			break;
 //case 9:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
 //			break;
 //case 10:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
 //			break;
 //case 11:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
 //			break;
 //case 12:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
 //			break;
 //case 13:
-//			world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
+//			world.addObject(new myModel((int) world.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
 //			break;
 //
 //
@@ -1085,10 +1085,26 @@ if (state == GLUT_DOWN){
 	
 }
 
+int ARMouseHouse::keyMapping(unsigned char key) {
+	switch (key) {
+		case 'r': return ObjectTypes::RECTANGLE;
+		case 'e': return ObjectTypes::TRIANGLE;
+		case 'a': return ObjectTypes::FILLARC;
+		case 'p': return ObjectTypes::PARTIALCYLINDER;
+		case 's': return ObjectTypes::SPHERE;
+		case 'b': return ObjectTypes::CUBE;
+		case 't': return ObjectTypes::CYLINDER;
+		case 'c': return ObjectTypes::CONE;
+		case 'o': return ObjectTypes::PYRAMID;
+		case 'l': return ObjectTypes::LINE;
+		default: return -1;
+	}
+}
 
 void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 {
 	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
+	int nObjects = (int) world.objectPtrs.size();
 
 	/* quit if the ESC key is pressed */
 	if( key == 0x1b ) {
@@ -1099,60 +1115,15 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 		}
 	}
 
-	if( key == 'r' ) {
-		std::cout<<"new rectangle"<<std::endl;
-		world.objectPtrs.push_back(new rectangle((int) world.objectPtrs.size(), -10,-10,50, 50, 90));	
-	}
-
-	if( key == 'e' ) {
-		std::cout<<"new triangle"<<std::endl;
-		//world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,-50,50, -50, 0,50, 90));
-		world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
-	}
-
-	if( key == 'a' ) {
-		std::cout<<"new arc"<<std::endl;
-		world.objectPtrs.push_back(new fillArc ((int) world.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
-	}
-
-	if( key == 'p' ) {
-		std::cout<<"new partialCylinder"<<std::endl;
-		world.objectPtrs.push_back(new partialCylinder ((int) world.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
-	}
-
-	if( key == 's' ) {
-		std::cout<<"new sphere"<<std::endl;
-		world.objectPtrs.push_back(new sphere((int) world.objectPtrs.size(), 0,0,30,30));	
-	}
-
-	if( key == 'b' ) {
-		std::cout<<"new cube"<<std::endl;
-		world.objectPtrs.push_back(new cube((int) world.objectPtrs.size(), 0,30,60,30));	
-	}
+	// handle most object types
+	int objectType = keyMapping(key);
+	if (objectType > 0)	world.addObject(objectType);
 
 	if( key == 'm' ) {
 		std::cout<<"new mouse"<<std::endl;
-		world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "mouse2.ms3d", 0,0,0,0,1.5));	
-	}
-	if( key == 't' ) {
-		std::cout<<"new tube"<<std::endl;
-		world.objectPtrs.push_back(new cylinder((int) world.objectPtrs.size(), 10, 10));	
+		world.addObject(new myModel(nObjects, "mouse2.ms3d", 0,0,0,0,1.5));	
 	}
 
-	if( key == 'c' ) {
-		std::cout<<"new cone"<<std::endl;
-		world.objectPtrs.push_back(new cone((int) world.objectPtrs.size(), 0,0,0, 10, 30));	
-	}
-
-	if( key == 'o' ) {
-		std::cout<<"new pyramid"<<std::endl;
-		world.objectPtrs.push_back(new pyramid((int) world.objectPtrs.size(), 0,30,60, 30));	
-	}
-
-	if( key == 'l' ) {
-		std::cout<<"new line"<<std::endl;
-		world.objectPtrs.push_back(new line((int) world.objectPtrs.size(), 0, 0, 30, 30));	
-	}
 
 	if( key == 'd' ) {
 		std::cout<<"copy"<<std::endl;
@@ -1206,7 +1177,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 
 
 		//multiShape * myMulti = new multiShape(newGroup);
-		world.objectPtrs.push_back(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+		world.addObject(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
 	}
 
 	if( key == 'u' ) {
@@ -1233,7 +1204,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 		}
 	}
 
-	if( key == 8 ) {
+	if( key == 8 || key == 46) {
 		std::cout<<"deleting"<<std::endl;
 		//for (int i = 0; i< world.objectPtrs.size(); i++){
 
