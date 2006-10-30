@@ -15,6 +15,8 @@ extern int lastY;
 #include "sphere.h"
 #include "cube.h"
 #include "cube2.h"
+#include "room.h"
+#include "wall.h"
 #include "rectangle.h"
 #include "cone.h"
 #include "triangle.h"
