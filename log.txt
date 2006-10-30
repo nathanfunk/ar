@@ -1,3 +1,7 @@
+Oct 29 nf
+	- fixed dragging problem (needed to only call motionfunc when button depressed)
+	- added basic keyboard input (no modifier keys yet)
+
 Oct 28 nf
 	- finished resizing
 	- started mouse event passthrough

@@ -1086,196 +1086,170 @@ if (state == GLUT_DOWN){
 }
 
 
-void ARMouseHouse::keyboardCB( unsigned char key, int x, int y)
+void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 {
-    /* quit if the ESC key is pressed */
-    if( key == 0x1b ) {
-        printf("*** %f (frame/sec)\n", (double)ar_count/arUtilTimer());
-        ar_cleanup();
-        exit(0);
-    }
+	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
 
-
- if( key == 'r' ) {
-
-	 std::cout<<"new rectangle"<<std::endl;
-	 world.objectPtrs.push_back(new rectangle((int) world.objectPtrs.size(), -10,-10,50, 50, 90));	
-    }
-if( key == 'e' ) {
-
-	 std::cout<<"new triangle"<<std::endl;
-	 //world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,-50,50, -50, 0,50, 90));
-world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
-
-    }
-
-if( key == 'a' ) {
-
-	 std::cout<<"new arc"<<std::endl;
-	 world.objectPtrs.push_back(new fillArc ((int) world.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
-    }
-if( key == 'p' ) {
-
-	 std::cout<<"new partialCylinder"<<std::endl;
-	 world.objectPtrs.push_back(new partialCylinder ((int) world.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
-    }
-
- if( key == 's' ) {
-
-	 std::cout<<"new sphere"<<std::endl;
-	 world.objectPtrs.push_back(new sphere((int) world.objectPtrs.size(), 0,0,30,30));	
-    }
-
-  if( key == 'b' ) {
-
-	 std::cout<<"new cube"<<std::endl;
-	 world.objectPtrs.push_back(new cube((int) world.objectPtrs.size(), 0,30,60,30));	
-    }
-  if( key == 'm' ) {
-
-	 std::cout<<"new mouse"<<std::endl;
-	 world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "mouse2.ms3d", 0,0,0,0,1.5));	
-    }
-  if( key == 't' ) {
-
-	 std::cout<<"new tube"<<std::endl;
-	 world.objectPtrs.push_back(new cylinder((int) world.objectPtrs.size(), 10, 10));	
-    }
-  if( key == 'c' ) {
-
-	 std::cout<<"new cone"<<std::endl;
-	 world.objectPtrs.push_back(new cone((int) world.objectPtrs.size(), 0,0,0, 10, 30));	
-    }
-  if( key == 'o' ) {
-
-	 std::cout<<"new pyramid"<<std::endl;
-	 world.objectPtrs.push_back(new pyramid((int) world.objectPtrs.size(), 0,30,60, 30));	
-    }
-
-
-  if( key == 'l' ) {
-
-	 std::cout<<"new line"<<std::endl;
-	 world.objectPtrs.push_back(new line((int) world.objectPtrs.size(), 0, 0, 30, 30));	
-    }
-
-
-  if( key == 'd' ) {
-	 std::cout<<"copy"<<std::endl;
-		
-	int i = 0;
-	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
-		if ( (*it)->isSelected  == 1)
-		{
-		std::cout<<"copying "<<i<<std::endl;
-		it = world.objectPtrs.insert(world.objectPtrs.end(), ((*it)->clone()) );
-		it++;
+	/* quit if the ESC key is pressed */
+	if( key == 0x1b ) {
+		printf("*** %f (frame/sec)\n", (double)ar_count/arUtilTimer());
+		if (useGLUTGUI) {
+			ar_cleanup();
+			exit(0);
 		}
-		else ++it;
-	 }
+	}
+
+	if( key == 'r' ) {
+		std::cout<<"new rectangle"<<std::endl;
+		world.objectPtrs.push_back(new rectangle((int) world.objectPtrs.size(), -10,-10,50, 50, 90));	
+	}
+
+	if( key == 'e' ) {
+		std::cout<<"new triangle"<<std::endl;
+		//world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,-50,50, -50, 0,50, 90));
+		world.objectPtrs.push_back(new triangle ((int) world.objectPtrs.size(), -50,50,-50, -50,-50,50, -50, 0,50, 45));
+	}
+
+	if( key == 'a' ) {
+		std::cout<<"new arc"<<std::endl;
+		world.objectPtrs.push_back(new fillArc ((int) world.objectPtrs.size(), -50,-50,100, 100, 50, 90));	
+	}
+
+	if( key == 'p' ) {
+		std::cout<<"new partialCylinder"<<std::endl;
+		world.objectPtrs.push_back(new partialCylinder ((int) world.objectPtrs.size(), -50,-50,100, 100, 0,180, 0));	
+	}
+
+	if( key == 's' ) {
+		std::cout<<"new sphere"<<std::endl;
+		world.objectPtrs.push_back(new sphere((int) world.objectPtrs.size(), 0,0,30,30));	
+	}
+
+	if( key == 'b' ) {
+		std::cout<<"new cube"<<std::endl;
+		world.objectPtrs.push_back(new cube((int) world.objectPtrs.size(), 0,30,60,30));	
+	}
+
+	if( key == 'm' ) {
+		std::cout<<"new mouse"<<std::endl;
+		world.objectPtrs.push_back(new myModel((int) world.objectPtrs.size(), "mouse2.ms3d", 0,0,0,0,1.5));	
+	}
+	if( key == 't' ) {
+		std::cout<<"new tube"<<std::endl;
+		world.objectPtrs.push_back(new cylinder((int) world.objectPtrs.size(), 10, 10));	
+	}
+
+	if( key == 'c' ) {
+		std::cout<<"new cone"<<std::endl;
+		world.objectPtrs.push_back(new cone((int) world.objectPtrs.size(), 0,0,0, 10, 30));	
+	}
+
+	if( key == 'o' ) {
+		std::cout<<"new pyramid"<<std::endl;
+		world.objectPtrs.push_back(new pyramid((int) world.objectPtrs.size(), 0,30,60, 30));	
+	}
+
+	if( key == 'l' ) {
+		std::cout<<"new line"<<std::endl;
+		world.objectPtrs.push_back(new line((int) world.objectPtrs.size(), 0, 0, 30, 30));	
+	}
+
+	if( key == 'd' ) {
+		std::cout<<"copy"<<std::endl;
+
+		int i = 0;
+		for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+			if ( (*it)->isSelected  == 1)
+			{
+				std::cout<<"copying "<<i<<std::endl;
+				it = world.objectPtrs.insert(world.objectPtrs.end(), ((*it)->clone()) );
+				it++;
+			}
+			else ++it;
+		}
+	}
 
 
-    }
+	if( key == 'g' ) {
+		std::cout<<"group"<<std::endl;
 
+		std::vector<object *> newGroup;
 
-  if( key == 'g' ) {
-	 std::cout<<"group"<<std::endl;
-		
+		//ungroup all grouped objects that are selected
+		int i = 0;
+		for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+			if ( (*it)->isSelected  == 1)
+			{
+				std::cout<<"ungrouping "<<i<<std::endl;
+				std::vector<object *> group = (*it)->ungroup();
+				if (!group.empty()){
+					//std::back_insert_iterator<std::vector<object *> >(world.objectPtrs)
+					copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world.objectPtrs));
+					it = world.objectPtrs.erase(it++);
+				}
+				else ++it;
+			}
+			else ++it;
+		}
 
-	 std::vector<object *> newGroup;
-
-	 //ungroup all grouped objects that are selected
-	int i = 0;
-	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
-		if ( (*it)->isSelected  == 1)
-		{
-		std::cout<<"ungrouping "<<i<<std::endl;
-			std::vector<object *> group = (*it)->ungroup();
-			if (!group.empty()){
-				//std::back_insert_iterator<std::vector<object *> >(world.objectPtrs)
-				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world.objectPtrs));
+		i = 0;
+		for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+			if ( (*it)->isSelected  == 1)
+			{
+				std::cout<<"Adding to group "<<i<<std::endl;
+				newGroup.push_back((*it)->clone());
+				//++it;
 				it = world.objectPtrs.erase(it++);
 			}
 			else ++it;
 		}
-		else ++it;
-	 }
 
 
+		//multiShape * myMulti = new multiShape(newGroup);
+		world.objectPtrs.push_back(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+	}
 
-	i = 0;
-	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
-		if ( (*it)->isSelected  == 1)
-		{
-		std::cout<<"Adding to group "<<i<<std::endl;
-		newGroup.push_back((*it)->clone());
-		//++it;
-		it = world.objectPtrs.erase(it++);
-		}
-		else ++it;
-	 }
-		
-
-	//multiShape * myMulti = new multiShape(newGroup);
-	 world.objectPtrs.push_back(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
-
-
-    }
-
-  if( key == 'u' ) {
-	 std::cout<<"ungroup"<<std::endl;
+	if( key == 'u' ) {
+		std::cout<<"ungroup"<<std::endl;
 		//if any of the selected objects is a multiShape
-	 //take the objects from the shapePtrs vector and put into the world vector
+		//take the objects from the shapePtrs vector and put into the world vector
 		//then destroy the multishape
 
 		int i = 0;
-	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
-		if ( (*it)->isSelected  == 1)
-		{
-		std::cout<<"ungrouping "<<i<<std::endl;
-			std::vector<object *> group = (*it)->ungroup();
-			if (!group.empty()){
+		for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+			if ( (*it)->isSelected  == 1)
+			{
+				std::cout<<"ungrouping "<<i<<std::endl;
+				std::vector<object *> group = (*it)->ungroup();
+				if (!group.empty()){
 
-				//std::back_insert_iterator<std::vector<object *> >(world.objectPtrs)
-				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world.objectPtrs));
-				it = world.objectPtrs.erase(it++);
+					//std::back_insert_iterator<std::vector<object *> >(world.objectPtrs)
+					copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world.objectPtrs));
+					it = world.objectPtrs.erase(it++);
+				}
+				else ++it;
 			}
 			else ++it;
 		}
-		else ++it;
-	 }
-		
+	}
 
-
-
-
-
-    }
-
-
-
-
-
-
-
-if( key == 8 ) {
-	 std::cout<<"deleting"<<std::endl;
+	if( key == 8 ) {
+		std::cout<<"deleting"<<std::endl;
 		//for (int i = 0; i< world.objectPtrs.size(); i++){
 
-	 int i = 0;
-	 for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
-    if ( (*it)->isSelected  == 1)
-	{
-		std::cout<<"deleting "<<i<<std::endl;
-		it = world.objectPtrs.erase(it++);
+		int i = 0;
+		for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+			if ( (*it)->isSelected  == 1)
+			{
+				std::cout<<"deleting "<<i<<std::endl;
+				it = world.objectPtrs.erase(it++);
+
+			}
+			else ++it;
+
+		}
 
 	}
-	else ++it;
-
-	 }
-
-  }
-
 
 }
 
