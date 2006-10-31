@@ -35,7 +35,6 @@ public:
 	virtual void OnMouseUp(MouseEventArgs ^e) override;
 	virtual void OnMouseMove(MouseEventArgs ^e) override;
 	virtual void OnKeyDown(KeyEventArgs ^e) override;
-	void OnDraw();
 	void OnTick(Object ^sender, EventArgs ^e);
 	void setController(ARMouseHouse *controller) {this->controller = controller;}
 	virtual ~OGLControl(void);
