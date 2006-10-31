@@ -20,6 +20,17 @@ OGLControl::OGLControl(void)
 
 void OGLControl::OnPaint(PaintEventArgs ^e)
 {
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Draw OpenGL scene
+	controller->displayCB();
+
+	// Swap buffers
+	if (!SwapBuffers(hdc))
+	{
+		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
+	}
 }
 
 
@@ -119,23 +130,6 @@ void OGLControl::OnKeyDown(KeyEventArgs ^e)
 	controller->keyboardCB(e->KeyValue, 0, 0);
 }
 
-void OGLControl::OnDraw()
-{
-	glDrawBuffer(GL_BACK);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Draw OpenGL scene
-	if (controller) {
-		controller->displayCB();
-	}
-
-	// Swap buffers
-	if (!SwapBuffers(hdc))
-	{
-		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
-	}
-}
-
 
 void OGLControl::OnSizeChanged(System::EventArgs ^e)
 {
@@ -162,7 +156,7 @@ void OGLControl::OnTick(Object ^sender, EventArgs ^e)
 {
 	if (controller->idleCB()) {
 		// new video frame is available
-		OnDraw();
+		Invalidate();
 	}
 }
 
