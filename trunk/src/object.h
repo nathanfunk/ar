@@ -226,11 +226,17 @@ public:
 
 
 
-			if (drawMode == WIREFRAME){
+			if (drawMode == TRANSPARENT){
 				glEnable (GL_BLEND); 
 				glColor4f(0.85, 0.1, 0.1, 0.4f);
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE);
 			}
+
+		 if (drawMode == WIREFRAME){
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+
+
 			if (isSelected == 1){
 				highlight();
 				setHandles();
@@ -260,7 +266,7 @@ public:
 			glDisable(GL_BLEND);
 			glDisable ( GL_LIGHTING ) ;
 			glDisable( GL_TEXTURE_2D );	
-
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			//if (snap_to_grid == 1)
 			snap(snapPos, snapRot, snapScale);
 			glPopMatrix();
