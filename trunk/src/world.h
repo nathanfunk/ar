@@ -373,7 +373,7 @@ public:
 
 		//draw the models
 		for (int i = 0; i < (int) objectPtrs.size(); i++){
-			if (objectPtrs[i]->drawMode == NORMAL){
+			if (objectPtrs[i]->drawMode == NORMAL||objectPtrs[i]->drawMode == WIREFRAME){
 			//push i onto namestack
 			glPushName(i);
 				objectPtrs[i]->drawTopLevel(5,5,5);
@@ -382,7 +382,7 @@ public:
 
 		}
 		for (int i = 0; i < (int) objectPtrs.size(); i++){
-			if (objectPtrs[i]->drawMode == WIREFRAME){
+			if (objectPtrs[i]->drawMode == TRANSPARENT){
 			//push i onto namestack
 			glPushName(i);
 			objectPtrs[i]->drawTopLevel(5,5,5);
