@@ -326,15 +326,6 @@ void ARMouseHouse::ar_draw( void )
 {
 	double    p[16];
 	double    m[16];
-	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-	GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-	GLfloat   mat_flash_shiny[] = {50.0};
-	GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-	GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-	GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-
-	//argDrawMode3D(); // gsub.h dependent
-	//argDraw3dCamera( 0, 0 ); // gsub.h dependent
 
 	// Projection transformation.
 	arglCameraFrustum(&gCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
@@ -346,35 +337,17 @@ void ARMouseHouse::ar_draw( void )
 
 	glClearDepth( 1.0 );
 	glClear(GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 
 	/* load the camera transformation matrix */
-	//argConvGlpara(gPatt_trans, m); //gsub.h dependent
 	arglCameraView(gPatt_trans, m, VIEW_SCALEFACTOR); //gsub_lite.h - TODO: check scale factor
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(m);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-	glMatrixMode(GL_MODELVIEW);
-	// glTranslatef( 0.0, 0.0, 25.0 );
 
 	// Display the world
 	world.draw();
 
 	if(nothingSelected)
 		drawSelectionRect();
-
-
-	glDisable( GL_LIGHTING );
-	glDisable( GL_DEPTH_TEST );
 }
 
 void ARMouseHouse::displayCB(void)
@@ -482,7 +455,7 @@ void ARMouseHouse::reshapeCB( int width , int height )   // Create The Reshape F
 	glLoadIdentity();												// Reset The Projection Matrix
 
 	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(15.0f,(GLfloat)width/(GLfloat)height,1.0f,1000.0f);	// View Depth of 1000
+	gluPerspective(15.0f,(GLfloat)width/(GLfloat)height,VIEW_DISTANCE_MIN,VIEW_DISTANCE_MAX);	// View Depth of 1000
 
 	glMatrixMode(GL_MODELVIEW);										// Select The Modelview Matrix
 	glLoadIdentity();												// Reset The Modelview Matrix
@@ -1410,6 +1383,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 		}
 	}
 
+	// backspace (8) or delete (46) (seems like GLUT doesn't send 46 through this callback)
 	if( key == 8 || key == 46) {
 		std::cout<<"deleting"<<std::endl;
 		//for (int i = 0; i< world.objectPtrs.size(); i++){
