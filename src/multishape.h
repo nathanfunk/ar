@@ -74,6 +74,9 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 	}
 
 
+
+
+
 	virtual void	draw(){
 
 
@@ -86,7 +89,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 		for (int i = 0; i < (int) shapePtrs.size(); i++){
-			if (shapePtrs[i]->drawMode == NORMAL){
+			if (shapePtrs[i]->drawMode == NORMAL||shapePtrs[i]->drawMode == WIREFRAME){
 			//push i onto namestack
 			glPushName(i);
 				shapePtrs[i]->drawTopLevel(5,5,5);
@@ -95,7 +98,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 		}
 		for (int i = 0; i < (int) shapePtrs.size(); i++){
-			if (shapePtrs[i]->drawMode == WIREFRAME){
+			if (shapePtrs[i]->drawMode == TRANSPARENT){
 			//push i onto namestack
 			glPushName(i);
 			shapePtrs[i]->drawTopLevel(5,5,5);
