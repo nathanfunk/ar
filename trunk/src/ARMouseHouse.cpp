@@ -389,7 +389,7 @@ void ARMouseHouse::displayCB(void)
 
     //argDrawMode2D(); //gsub.h dependent
     //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
-	///arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
+	arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
     arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 
