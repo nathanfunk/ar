@@ -46,6 +46,7 @@ int x1Rect;
 int y1Rect;
 int x2Rect;
 int y2Rect;
+int selectRectDefined;
 int nothingSelected;
 ARMouseHouse *controller;
 bool useGLUTGUI = false;
@@ -678,6 +679,9 @@ int ARMouseHouse::selectionRect(int key) {
 	GLint   viewport[4]; 
 	GLdouble projMatrix[16];
 
+
+	selectRectDefined = 1;
+
 	int selected = -1;
 
 	glSelectBuffer(512, buffer);   // Tell OpenGL To Use Our Array For Selection 
@@ -807,6 +811,7 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 
 	} else { 
 		selected = -1; 
+		selectRectDefined = 0;
 		printf("no hits!\n"); 
 	}	 
 
@@ -1105,17 +1110,6 @@ void ARMouseHouse::motionCB(int x, int y)
 		std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc<<std::endl;
 		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
 
-//std::cout<<"F : "<<xMove<<" "<<yMove<<std::endl;
-//get the projection matrix
-//	double    gl_para[16];
-//	argConvGlpara(patt_trans, gl_para);
-
-//if (lastButton == GLUT_LEFT_BUTTON){
-//		float pos[3];
-//		GetOGLPos(x, y, pos);
-//		std::cout<<"3dPos: "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]/MAX_INT<<std::endl;
-//}
-
 		int nothingSelected = 1;
 
 		if (world.isSelected == 1){
@@ -1246,10 +1240,12 @@ void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 
 if (state == GLUT_DOWN){
 
+	//if (selectRectDefined == 0){
 	for (int i =0; i < (int) world.objectPtrs.size(); i++){
 		world.objectPtrs[i]->isSelected = 0;
 		}
 	world.isSelected = 0;	
+	//}
 
 		std::cout<<"Clicked "<<x<<" "<<y<<std::endl;
 		selection(specialKey, x,y);
@@ -1409,10 +1405,13 @@ if( key == 'i' ) {
        if ( (*it)->isSelected  == 1)
        {
 
-       if ((*it)->drawMode == WIREFRAME)
-               (*it)->drawMode = NORMAL;
-       else
-       (*it)->drawMode = WIREFRAME;
+       if ((*it)->drawMode == NORMAL)
+               (*it)->drawMode = WIREFRAME;
+	   else
+		  if ((*it)->drawMode == WIREFRAME)
+               (*it)->drawMode = TRANSPARENT;
+		  else
+			  (*it)->drawMode = NORMAL;
 
 
        it++;
