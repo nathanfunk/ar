@@ -437,7 +437,7 @@ public:
 			o = new sphere(nObjects, 0,0,30,30);
 			break;
 		case ObjectTypes::CUBE:
-			o = new cube(nObjects, 0,30,60,30);
+			o = new cube2(nObjects, 0,30,60,30);
 			break;
 		case ObjectTypes::CYLINDER:
 			o = new cylinder(nObjects, 10, 10);
