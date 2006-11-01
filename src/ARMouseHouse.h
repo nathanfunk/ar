@@ -27,8 +27,8 @@ char		*vconf = "";
 #endif*/
 
 #define VIEW_SCALEFACTOR		1.0			// 1.0 ARToolKit unit becomes 0.025 of my OpenGL units.
-#define VIEW_DISTANCE_MIN		0.1			// Objects closer to the camera than this will not be displayed.
-#define VIEW_DISTANCE_MAX		10000.0		// Objects further away from the camera than this will not be displayed.
+#define VIEW_DISTANCE_MIN		100.0			// Objects closer to the camera than this will not be displayed.
+#define VIEW_DISTANCE_MAX		5000.0		// Objects further away from the camera than this will not be displayed.
 
 namespace ms3dglut {
 
