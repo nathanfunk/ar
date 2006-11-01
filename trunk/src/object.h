@@ -230,7 +230,7 @@ arGetAngle(rotMat, &mouseMat[0], &mouseMat[1], &mouseMat[2]);
 
  if (drawMode == WIREFRAME){
 	glEnable (GL_BLEND); 
-	glColor4f(0.85, 0.1, 0.1, 0.2f);
+	glColor4f(0.85, 0.1, 0.1, 0.4f);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE);
  }
 	if (isSelected == 1){
