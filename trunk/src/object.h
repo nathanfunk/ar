@@ -3,7 +3,8 @@
 
 
 #define NORMAL 0
-#define WIREFRAME 1
+#define TRANSPARENT 1
+#define WIREFRAME 2
 
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
