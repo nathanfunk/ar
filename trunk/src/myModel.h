@@ -243,35 +243,8 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 	//advanceScript();
 
 	
-	if (isVisible == 1){
-
-if (isSelected == 1){
-	highlight();
-	}
-
-
-//glPushName(name);
-
-	glPushMatrix();		
-   glTranslatef(xOff,yOff,zOff);
-
-	//glTranslatef(xOff,zOff,yOff);
-	glRotatef(rX,0,1,0);
-	glRotatef(rY, 1, 0, 0);
-	
-
-
-	glScalef(sX, sY, sZ);
-	//pModel->reloadTextures();
-startLighting2();
-
-	glEnable( GL_TEXTURE_2D );	
 	pModel->draw();
-	glDisable(GL_TEXTURE_2D );	
-	glPopMatrix();
-//glPopName();
-
-	}
+	
 	
 	}
 
