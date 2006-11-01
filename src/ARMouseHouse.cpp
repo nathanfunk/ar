@@ -41,6 +41,12 @@ using namespace ms3dglut;
 //--------------------------------------------------------------------------------------
 int lastX;
 int lastY; 
+
+int x1Rect;
+int y1Rect;
+int x2Rect;
+int y2Rect;
+int nothingSelected;
 ARMouseHouse *controller;
 bool useGLUTGUI = false;
 
@@ -363,6 +369,10 @@ void ARMouseHouse::ar_draw( void )
 	// Display the world
 	world.draw();
 
+	if(nothingSelected)
+		drawSelectionRect();
+
+
 	glDisable( GL_LIGHTING );
 	glDisable( GL_DEPTH_TEST );
 }
@@ -379,7 +389,7 @@ void ARMouseHouse::displayCB(void)
 
     //argDrawMode2D(); //gsub.h dependent
     //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
-	arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
+	///arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
     arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 
@@ -446,7 +456,8 @@ bool ARMouseHouse::idleCB()
 
 	if (k != -1) {
 		// Get the transformation between the marker and the real camera into gPatt_trans.
-		arGetTransMat(&(marker_info[k]), gPatt_center, gPatt_width, gPatt_trans);
+		arGetTransMatCont(&(marker_info[k]), gPatt_trans, gPatt_center, gPatt_width, gPatt_trans);
+		
 		gPatt_found = TRUE;
 	}
 
@@ -590,6 +601,9 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 	glPushMatrix();	    // Push The Projection Matrix 
 	glLoadIdentity();	   // Resets The Matrix 
 
+
+	std::cout<<"Pick Matrix: "<<mouse_x<<" "<<viewport[3]-mouse_y<<std::endl;
+
 	// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
 	gluPickMatrix((GLdouble) mouse_x, (GLdouble) (viewport[3]-mouse_y), 5, 5, viewport); 
 
@@ -678,6 +692,157 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 	return selected;
 
 } 
+
+
+
+
+
+int ARMouseHouse::selectionRect(int key) { 
+	GLuint   buffer[512];	// Set Up A Selection Buffer 
+	GLint   hits;	  // The Number Of Objects That We Selected 
+	double   gl_para[16];
+	// The Size Of The Viewport. [0] Is , [1] Is , [2] Is , [3] Is  
+	GLint   viewport[4]; 
+	GLdouble projMatrix[16];
+
+	int selected = -1;
+
+	glSelectBuffer(512, buffer);   // Tell OpenGL To Use Our Array For Selection 
+	// Puts OpenGL In Selection Mode. Nothing Will Be Drawn.  Object ID's and Extents Are Stored In The Buffer. 
+
+	glRenderMode(GL_SELECT);  
+
+	glInitNames();   // Initializes The Name Stack 
+	///glPushName(-1);   // Push 0 (At Least One Entry) Onto The Stack 
+
+	//argDrawMode3D(); //gsub.h dependent
+	//argDraw3dCamera( 0, 0 ); //gsub.h dependent
+	arglCameraFrustum(&gCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, projMatrix);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projMatrix);
+	glGetIntegerv(GL_VIEWPORT, viewport); 
+
+	glPushMatrix();	    // Push The Projection Matrix 
+	glLoadIdentity();	   // Resets The Matrix 
+
+
+	float winX1 = (float)x1Rect;
+	float winY1 = (float)viewport[3] - (float)y1Rect;
+	float winX2 = (float)x2Rect;
+	float winY2 = (float)viewport[3] - (float)y2Rect;
+
+	GLdouble width = abs(winX2 - winX1);
+	GLdouble height = abs(winY2 - winY1);
+	GLdouble centerX = (winX1 + winX2 )/2;
+	GLdouble centerY = (winY1 + winY2 )/2;
+
+ // glOrtho(0.0,   // left
+    //       1.0,   // right
+     //      0.0,   // bottom
+      //     1.0,   // top
+      //     1.0,  // near
+       //    -1.0);  // far
+
+	std::cout<<"Rect Pick Matrix: "<<winX1<<" "<<winY1<<" "<<winX2 - winX1<<" "<<winY2 - winY1<<std::endl;
+
+	// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
+	//gluPickMatrix((GLdouble) winX1, (GLdouble) winY1, (GLdouble) winX2 - winX1, (GLdouble) winY2 - winY1, viewport); 
+gluPickMatrix(centerX, centerY, width, height, viewport); 
+
+
+
+	//multiply the pick matrix by the projection matrix
+	glMultMatrixd(projMatrix);
+
+	//now draw everything as in ar_draw
+	glMatrixMode(GL_MODELVIEW);
+
+	glPushMatrix();
+	/* load the camera transformation matrix */
+	//argConvGlpara(gPatt_trans, gl_para); //gsub.h dependent
+	arglCameraView(gPatt_trans, gl_para, VIEW_SCALEFACTOR);
+	glLoadMatrixd( (GLdouble *) gl_para );
+
+
+	//print out gl_para
+	std::cout<<gl_para[8]<<" "<<gl_para[9]<<" "<<gl_para[10]<<std::endl;
+
+	glMatrixMode(GL_MODELVIEW);
+	//glTranslatef( 0.0, 0.0, 25.0 );
+
+	//draw the world
+	world.draw();
+
+	glPopMatrix();
+
+	//stop Picking, what did we click?
+
+	glMatrixMode(GL_PROJECTION);   // Select The Projection Matrix 
+	glPopMatrix();	   // Pop The Projection Matrix 
+	glMatrixMode(GL_MODELVIEW);   // Select The Modelview Matrix 
+	glFlush();
+	hits=glRenderMode(GL_RENDER);   // Switch To Render Mode, Find Out How Many 
+	// Objects Were Drawn Where The Mouse Was 
+
+	if (hits > 0) {	       // If There Were More Than 0 Hits 
+		int   choose = buffer[3];   // Make Our Selection The First Object 
+		int depth = buffer[1];	   // Store How Far Away It Is 
+
+		printf("hits: %d %d\n", hits, choose); 
+		if (choose >= 0 && choose < world.getNumberOfObjects())
+			world.objectPtrs[choose]->isSelected = 1;
+		for (int loop = 1; loop < hits; loop++)	    // Loop Through All The Detected Hits 
+		{ 
+			// If This Object Is Closer To Us Than The One We Have Selected 
+			//if (buffer[loop*4+1] < GLuint(depth)) 
+			//{ 
+				choose = buffer[loop*4+3];   // Select The Closer Object 
+				depth = buffer[loop*4+1];	 // Store How Far Away It Is 
+				printf("object, depth: %d %d\n", choose, depth); 
+			if (choose >= 0 && choose < world.getNumberOfObjects())
+				world.objectPtrs[choose]->isSelected = 1;
+
+			//}	   
+		} 
+		selected = choose; 
+		printf("closest: %d\n", selected); 
+
+
+		if ((selected >= 0) && (selected < world.getNumberOfObjects())) {
+			world.isSelected = 0;
+		//	if (key != GLUT_ACTIVE_SHIFT){
+		//		for (size_t i = 0; i < world.getNumberOfObjects(); i++){
+					//world.objectPtrs[i]->deselect();
+					///world.objectPtrs[i]->isSelected = 0;
+		//			world.objectPtrs[i]->isSelected = 0;
+		//		}
+
+			//}
+			// world.objectPtrs[selected]->select();
+			//world.objectPtrs[selected]->isSelected = 1;
+
+		}
+		else if (selected == -100){
+			for (int i = 0; i < world.getNumberOfObjects(); i++){
+				//world.objectPtrs[i]->deselect();
+				///world.objectPtrs[i]->isSelected = 0;
+				world.objectPtrs[i]->isSelected = 0;
+			}
+			world.isSelected = 1;
+		}
+
+
+	} else { 
+		selected = -1; 
+		printf("no hits!\n"); 
+	}	 
+
+	return selected;
+
+} 
+
+
+
 
 //void ARMouseHouse::menuCB(int item)
 //{
@@ -902,6 +1067,14 @@ int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 
 
 
+int ARMouseHouse::endDrag(int button, int x, int y){
+	std::cout<<"end drag"<<std::endl;
+
+selectionRect(specialKey);
+
+
+return 0;
+}
 
 int ARMouseHouse::initDrag(int button, int x, int y){
 	lastX = x;
@@ -913,13 +1086,28 @@ int ARMouseHouse::initDrag(int button, int x, int y){
 	std::cout<<"Drag Started at : ["<<x<<" "<<y<<" ]"<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
 
 
+	nothingSelected = 1;
+
+
+
+
 	for (int i =0; i < (int) world.objectPtrs.size(); i++){
 		if (world.objectPtrs[i]->isSelected == 1){
 			//std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
 			world.objectPtrs[i]->initSelection(lastButton, specialKey, x,y);
+			 nothingSelected = 0;
 		}
 
 	}
+
+	if (nothingSelected){
+			x1Rect = x;
+			y1Rect = y;
+			x2Rect = x;
+			y2Rect = y;
+
+	}
+
 
 	return 1;
 }
@@ -955,19 +1143,73 @@ void ARMouseHouse::motionCB(int x, int y)
 //		std::cout<<"3dPos: "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]/MAX_INT<<std::endl;
 //}
 
+		int nothingSelected = 1;
+
 		if (world.isSelected == 1){
 			world.move(gPatt_trans, lastButton, specialKey, xMove, yMove);
+			nothingSelected = 0;
 		}
 
 	for (int i =0; i < (int) world.objectPtrs.size(); i++){
 		if (world.objectPtrs[i]->isSelected == 1){
 			std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
 			world.objectPtrs[i]->move(gPatt_trans, lastButton, specialKey, xMove, yMove);
+			nothingSelected = 0;
 		}
 		
 	}
 
+			x2Rect = x;
+			y2Rect = y;
+
+	
+
+
+
 }
+
+void ARMouseHouse::drawSelectionRect(){
+
+	GLint viewport[4];
+			glGetIntegerv( GL_VIEWPORT, viewport );
+
+	float winX1 = (float)x1Rect;
+	float winY1 = (float)viewport[3] - (float)y1Rect;
+	float winX2 = (float)x2Rect;
+	float winY2 = (float)viewport[3] - (float)y2Rect;
+
+			
+			glMatrixMode (GL_PROJECTION); glPushMatrix (); glLoadIdentity ();
+	// Viewing transformation.
+   glOrtho(0.0,   // left
+           1.0,   // right
+           0.0,   // bottom
+           1.0,   // top
+           1.0,  // near
+           -1.0);  // far
+glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
+			//std::cout<<"Selection RECt: "<<winX1/viewport[2]<<" "<<winY1/viewport[3]
+			//<<" "<<winX2/viewport[2]<<" "<<winY2/viewport[3]<<std::endl;
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glRectf(winX1/viewport[2], winY1/viewport[3],winX2/viewport[2], winY2/viewport[3]);
+	  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			//  glBegin(GL_POLYGON);
+    //  glVertex2d(0.25, 0.25);
+     // glVertex2d(0.75, 0.25);
+     // glVertex2d(0.75, 0.75);
+     // glVertex2d(0.25, 0.75);
+   //glEnd();
+			glMatrixMode (GL_MODELVIEW);
+			glPopMatrix();
+
+			glMatrixMode (GL_PROJECTION);
+				glPopMatrix();
+
+				 
+}
+
+
 
 //void ARMouseHouse::initMenu(){
 //
@@ -1028,60 +1270,24 @@ void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 		specialKey = glutGetModifiers();
 	}
 
- /*int submenu1, submenu2, submenu3, submenu4, mainMenu;
-
-         submenu1 = glutCreateMenu(menuCB);
-         glutAddMenuEntry("Chair", 1);
-         glutAddMenuEntry("TV", 2);
-		 glutAddMenuEntry("Bed", 3);
-		 glutAddMenuEntry("Toilet", 4);
-		 glutAddMenuEntry("Sink", 5);
-		 glutAddMenuEntry("Sheep", 6);
-		 glutAddMenuEntry("Desk", 7);
-		  glutAddMenuEntry("Sofa", 8);
-		  glutAddMenuEntry("Stairs", 9);
-		  glutAddMenuEntry("Kitchen Table", 10);
-		  glutAddMenuEntry("Shelf", 11);
-		  glutAddMenuEntry("Door", 12);
-		glutAddMenuEntry("Window", 13);
-
-		  submenu2 = glutCreateMenu(colorMenuCB);
-		 glutAddMenuEntry("Red", 1);//
-		glutAddMenuEntry("Blue", 2);//
-		glutAddMenuEntry("Green", 3);//
-		
-		
-			submenu3 = glutCreateMenu(fileMenuCB);
-			glutAddMenuEntry("Save", 1);//
-		//glutAddMenuEntry("Blue", 2);//
-		//glutAddMenuEntry("Green", 3);//
-
-		submenu4 = glutCreateMenu(textureMenuCB);
-			glutAddMenuEntry("None", 0);//
-	glutAddMenuEntry("Steel", 1);//
-glutAddMenuEntry("Checkers", 2);//
-glutAddMenuEntry("Red Checkers",3);//
-glutAddMenuEntry("Beige Marble", 4);//
-glutAddMenuEntry("Wood", 5);//
-glutAddMenuEntry("Grass", 6);//
-glutAddMenuEntry("Cement", 7);//
-glutAddMenuEntry("Road", 8);//
-		
-			mainMenu = glutCreateMenu(menuCB);
-			glutAddSubMenu("File", submenu3);
-			glutAddSubMenu("Models", submenu1);
-			glutAddSubMenu("Colors", submenu2);//
-			glutAddSubMenu("Texture", submenu4);//
-
-
-         glutAttachMenu(GLUT_RIGHT_BUTTON);
-*/
 
 if (state == GLUT_DOWN){
-		initDrag(button, x,y);
+
+	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		world.objectPtrs[i]->isSelected = 0;
+		}
+	world.isSelected = 0;	
+
 		std::cout<<"Clicked "<<x<<" "<<y<<std::endl;
 		selection(specialKey, x,y);
+		initDrag(button, x,y);
 	}
+if (state == GLUT_UP){
+		if (nothingSelected)
+		endDrag(button, x,y);
+	}
+
+
 	
 }
 
