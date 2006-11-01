@@ -70,20 +70,6 @@ void OGLControl::OnCreateControl()
 		Diagnostics::Debug::WriteLine("Failed to active device context");
 	}
 
-	// Basic Setup:
-	//
-	// Set color to use when clearing the background.
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClearDepth(1.0f);
-
-	// Turn on backface culling
-	glFrontFace(GL_CCW);
-	glCullFace(GL_BACK);
-
-	// Turn on depth testing
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
 	// Set up timer
 	timer = gcnew System::Windows::Forms::Timer();
 	timer->Tick += gcnew EventHandler(this, &OGLControl::OnTick);
