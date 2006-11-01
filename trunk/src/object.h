@@ -239,6 +239,11 @@ public:
 			if (texture != 0) {	
 				glEnable( GL_TEXTURE_2D );	
 				glBindTexture( GL_TEXTURE_2D, texture);
+			} else {
+				glColor4f(mat_ambient[0], 
+						  mat_ambient[1], 
+						  mat_ambient[2], 
+						  mat_ambient[3]);
 			}
 
 			glPushMatrix();		
