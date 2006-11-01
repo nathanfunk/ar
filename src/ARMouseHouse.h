@@ -47,6 +47,7 @@ private:
 	double	gPatt_width;
 	double	gPatt_center[2];
 	double	gPatt_trans[3][4];
+
 	int		gPatt_id;
 	int		gPatt_found;
 
@@ -77,8 +78,11 @@ public:
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
+	int ARMouseHouse::selectionRect(int key);
 	int GetOGLPos(int x, int y, float pos[]);
 	int initDrag(int button, int x, int y);
+	void drawSelectionRect();
+	int endDrag(int button, int x, int y);
 	int keyMapping(unsigned char key);
 };
 
