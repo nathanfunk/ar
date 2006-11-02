@@ -243,7 +243,7 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 	//advanceScript();
 
 	
-	pModel->draw();
+	pModel->draw(1);
 	
 	
 	}
