@@ -634,7 +634,7 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 		printf("closest: %d\n", selected); 
 
 
-		if ((selected >= 0) && (selected < world.getNumberOfObjects())) {
+		if ((selected >= 0) && ((unsigned)selected < world.getNumberOfObjects())) {
 			world.isSelected = 0;
 			if (key != GLUT_ACTIVE_SHIFT){
 				for (size_t i = 0; i < world.getNumberOfObjects(); i++){
@@ -649,7 +649,7 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 
 		}
 		else if (selected == -100){
-			for (int i = 0; i < world.getNumberOfObjects(); i++){
+			for (size_t i = 0; i < world.getNumberOfObjects(); i++){
 				//world.objectPtrs[i]->deselect();
 				///world.objectPtrs[i]->isSelected = 0;
 				world.objectPtrs[i]->isSelected = 0;
@@ -1275,7 +1275,9 @@ int ARMouseHouse::keyMapping(unsigned char key) {
 		default: return -1;
 	}
 }
-
+void ARMouseHouse::addObject(int objectType) {
+	world.addObject(objectType);
+}
 void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 {
 	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
@@ -1292,7 +1294,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 
 	// handle most object types
 	int objectType = keyMapping(key);
-	if (objectType > 0)	world.addObject(objectType);
+	if (objectType > 0)	addObject(objectType);
 
 	if( key == 'm' ) {
 		std::cout<<"new mouse"<<std::endl;
