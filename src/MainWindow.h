@@ -628,8 +628,11 @@ private:
 
 	System::Void tsbColor_Click(System::Object^  sender, System::EventArgs^  e) {
 		ColorDialog cd;
+		// show color dialog
 		cd.ShowDialog(this);
-		//TODO: get selected color and change object
+
+		// get selected color and change object
+		controller->setColors(cd.Color.R/255.0, cd.Color.G/255.0, cd.Color.B/255.0);
 	}
 };
 }
