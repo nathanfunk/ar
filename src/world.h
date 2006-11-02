@@ -439,6 +439,9 @@ public:
 		case ObjectTypes::CUBE:
 			o = new cube2(nObjects, 0,30,60,30);
 			break;
+		case ObjectTypes::WALL:
+			o = new wall(nObjects, 0,30,60,30);
+			break;
 		case ObjectTypes::CYLINDER:
 			o = new cylinder(nObjects, 10, 10);
 			break;
