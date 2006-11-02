@@ -97,7 +97,7 @@ class Model
 		/*
 			Draw the model.
 		*/
-		void draw();
+		void draw(int advance);
 
 		/*
 			Called if OpenGL context was lost and we need to reload textures, display lists, etc.
