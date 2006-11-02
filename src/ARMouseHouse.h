@@ -75,6 +75,7 @@ public:
 	void ar_init( void );
 	void ar_cleanup(void);
 	World *getWorld() {return &world;}
+	void addObject(int objectType);
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
