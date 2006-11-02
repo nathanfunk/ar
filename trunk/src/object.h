@@ -200,6 +200,12 @@ public:
 		}
 
 
+		/**
+		Sets the color of the object, while preserving the alpha value.
+		*/
+		void setColors(GLfloat c1, GLfloat c2, GLfloat c3){
+			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3;
+		}
 
 		void setColors(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4){
 			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3; mat_ambient[3] = c4;
