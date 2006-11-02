@@ -466,14 +466,24 @@ void ARMouseHouse::reshapeCB( int width , int height )   // Create The Reshape F
 
 void ARMouseHouse::arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
 {
+
+	std::cout<< "Arrow key : "<<a_keys<<std::endl;
+
 	switch ( a_keys ) {
 	case GLUT_KEY_UP:     // When Up Arrow Is Pressed...
 		//glutFullScreen ( ); // Go Into Full Screen Mode
-		glutReshapeWindow ( 352, 288 );
+		//glutReshapeWindow ( 352, 288 );
+
+
+
+
 
 		break;
 	case GLUT_KEY_DOWN:               // When Down Arrow Is Pressed...
-		glutReshapeWindow ( 320, 240 ); // Go Into A 500 By 500 Window
+		//glutReshapeWindow ( 320, 240 ); // Go Into A 500 By 500 Window
+
+
+
 		break;
 	default:
 		break;
@@ -1279,6 +1289,7 @@ int ARMouseHouse::keyMapping(unsigned char key) {
 		case 'c': return ObjectTypes::CONE;
 		case 'o': return ObjectTypes::PYRAMID;
 		case 'l': return ObjectTypes::LINE;
+		case 'w': return ObjectTypes::WALL;
 		default: return -1;
 	}
 }
@@ -1298,6 +1309,10 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 			exit(0);
 		}
 	}
+
+
+	std::cout<<"Key: "<<key<<std::endl;
+
 
 	// handle most object types
 	int objectType = keyMapping(key);
@@ -1429,7 +1444,37 @@ if( key == 'i' ) {
     }
 
 
-   }
+}
+
+if (key == 'i'||key == 'j'||key == 'k'||key == 'l'){
+
+
+
+
+	int xMove = 0;
+	int yMove = 0;
+	if (key == 'i') yMove = 5;
+	if (key == 'k') yMove = -5;
+	if (key == 'j') xMove = 5;
+	if (key == 'l') xMove = -5;
+
+
+for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+			if ( (*it)->isSelected  == 1)
+			{
+				(*it)->move(xMove, yMove);
+				it++;
+			}
+			else ++it;
+		}
+
+}
+
+
+
+
+
+
 }
 
 
