@@ -1,5 +1,6 @@
 
 
+
 class wall:public object{
 public:
 	wall(){ 
@@ -8,7 +9,7 @@ public:
 	wall(int _name, float _x, float _y,  float _z, float _size)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 0.2; size = _size; isVisible = 1; rX = 0; rY = 0;
+		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; size = _size; isVisible = 1; rX = 0; rY = 0;
 			minI = 0;
 		XYSize = size;
 		ZSize = size;
@@ -158,11 +159,139 @@ void initHandles(){
 }
 
 
+void firstInsideSecond( GLenum face, GLenum test)
+{
+  glEnable(GL_DEPTH_TEST);
+  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+  glCullFace(face);     /* controls which face of a to use */
+  drawWall();                  /* draw a face of a into depth buffer */
+
+  /* use stencil plane to find parts of a in b */
+  glDepthMask(GL_FALSE);
+  glEnable(GL_STENCIL_TEST);
+  glStencilFunc(GL_ALWAYS, 0, 0);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+  glCullFace(GL_BACK);
+ drawHole();                  
+  /* increment the stencil where the front face of b is 
+                           drawn */
+  glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+  glCullFace(GL_FRONT);
+  drawHole();                 
+  /* decrement the stencil buffer where the back face
+                           of b is drawn */
+  glDepthMask(GL_TRUE);
+  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+  glStencilFunc(test, 0, 1);
+  //glDisable(GL_DEPTH_TEST);
+
+  glCullFace(face);
+  drawWall();                  /* draw the part of a that's in b */
+}
+
+
+
+void secondInsideFirst( GLenum face, GLenum test)
+{
+  glEnable(GL_DEPTH_TEST);
+  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+  glCullFace(face);     /* controls which face of a to use */
+ drawHole();                  /* draw a face of a into depth buffer */
+
+  /* use stencil plane to find parts of a in b */
+  glDepthMask(GL_FALSE);
+  glEnable(GL_STENCIL_TEST);
+  glStencilFunc(GL_ALWAYS, 0, 0);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+  glCullFace(GL_BACK);
+  drawWall();                  /* increment the stencil where the front face of b is 
+                           drawn */
+  glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+  glCullFace(GL_FRONT);
+ drawWall();                  /* decrement the stencil buffer where the back face
+                           of b is drawn */
+  glDepthMask(GL_TRUE);
+  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+  glStencilFunc(test, 0, 1);
+  //glDisable(GL_DEPTH_TEST);
+
+  glCullFace(face);
+  drawHole();                  /* draw the part of a that's in b */
+}
+
+
+void fixDepth()
+{
+  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+  glEnable(GL_DEPTH_TEST);
+  glDisable(GL_STENCIL_TEST);
+  glDepthFunc(GL_ALWAYS);
+  drawWall();
+  ////drawHole();                  /* draw the front face of a, fixing the depth buffer */
+  glDepthFunc(GL_LESS);
+}
+
+void and()
+{
+  firstInsideSecond(GL_BACK, GL_NOTEQUAL);
+
+  fixDepth();
+
+  secondInsideFirst( GL_BACK, GL_NOTEQUAL);
+
+  glDisable(GL_STENCIL_TEST);  /* reset things */
+}
+
+void sub()
+{
+  firstInsideSecond( GL_FRONT, GL_NOTEQUAL);
+
+  fixDepth();
+
+  secondInsideFirst( GL_BACK, GL_EQUAL);
+
+  glDisable(GL_STENCIL_TEST);  /* reset things */
+}
 
 	void	draw(){
 
 
+		glEnable(GL_CULL_FACE);
+  //glEnable(GL_LIGHTING);
+  //glEnable(GL_LIGHT0);
 
+  //glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+		sub();
+		//drawWall();
+		//drawHole();
+
+	glDisable(GL_CULL_FACE);
+
+	}
+
+
+	void drawHole(){
+
+
+		glPushMatrix();
+		glScalef(1/sX, 1/sY, 1/sZ);
+		glScalef(5.,2.5,2.5);
+		//glutSolidSphere(size/2, 10, 10);		
+glutSolidCube(size/3);	
+		glPopMatrix();
+
+
+	}
+
+
+void drawWall(){
+
+
+	glutSolidCube(size);
+/*
 //first face
 glPushMatrix();
 glTranslatef(0.0f, 0.0, size/2);
@@ -200,9 +329,13 @@ glRotatef(90,0,1,0);
 glTranslatef(0, 0, -size/2);
 drawRect();
 glPopMatrix();
+*/
 
 	}
 	float size;
+
+//Tess_Poly Poly;
+
 //	int minI;
 //	float  min;
 };
