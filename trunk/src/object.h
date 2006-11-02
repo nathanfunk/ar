@@ -59,6 +59,8 @@ public:
 	static const int PARTIALCYLINDER = 8;
 	static const int FILLARC	= 9;
 	static const int LINE		= 10;
+	static const int WALL		= 11;
+
 };
 
 
@@ -178,6 +180,23 @@ public:
 		virtual std::vector<object *> ungroup(){std::vector<object *> emptyVec; return emptyVec;};
 
 
+
+		virtual std::vector<vertex> boundingBox(){
+			std::vector<vertex> bbox;
+
+			
+			bbox.push_back(vertex(xOff - abs(sX*XYSize), yOff - abs(sY*XYSize), zOff - abs(sZ*ZSize)));
+			bbox.push_back(vertex(xOff + abs(sX*XYSize), yOff + abs(sY*XYSize), zOff - abs(sZ*ZSize)));
+
+			//bbox.push_back(vertex(sX*XYSize, sY*XYSize, sZ*ZSize));
+			//bbox.push_back(vertex(-sX*XYSize, -sY*XYSize, -sZ*ZSize));
+		return bbox;
+		};
+
+	
+
+
+
 		int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, 
 			float _rZ, double &xNew, double &yNew){
 			double wa, wb, wc;
@@ -231,7 +250,7 @@ public:
 			glScalef(psX, psY, psZ);
 
 
-
+			glEnable(GL_DEPTH_TEST);
 			if (drawMode == TRANSPARENT){
 				glEnable (GL_BLEND); 
 				glColor4f(0.85, 0.1, 0.1, 0.4f);
@@ -280,11 +299,17 @@ public:
 
 
 		virtual void snap(float snapPos, float snapRot, float snapScale){
-			//if (snapPos >0){
-			//xOff = (int) (xOff / snapPos) * snapPos;
-			//yOff = (int) (yOff / snapPos) * snapPos;
-			//zOff = (int) (zOff / snapPos) * snapPos;
-			//}
+			/*if (snapPos >0){
+			xOff = (int) (xOff / snapPos) * snapPos;
+			yOff = (int) (yOff / snapPos) * snapPos;
+			zOff = (int) (zOff / snapPos) * snapPos;
+			}
+				if (snapScale >0){
+			sX= (int) (sX/ snapScale) * snapScale;
+			sY = (int) (sY / snapScale) * snapScale;
+			sZ = (int) (sZ / snapScale) * snapScale;
+			}
+			*/
 		}
 
 
@@ -520,6 +545,13 @@ public:
 				psX *= _sX;
 				psY *= _sY;
 				psZ *= _sZ;
+		}
+
+
+
+		virtual void move(int x, int y){
+			xOff += x;
+			zOff += y;
 		}
 
 
