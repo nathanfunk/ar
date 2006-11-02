@@ -125,7 +125,7 @@ void Model::setupJoints()
 
 }
 */
-void Model::draw() 
+void Model::draw(int advance) 
 {
 
 	//glRotatef(90,1,0,0);
@@ -134,7 +134,8 @@ void Model::draw()
 	//glutSolidCube(50.0);
 	//return;
 				// { NEW }
-	advanceAnimation();
+	if (advance == 1)
+		advanceAnimation();
 					// { end NEW }
 	GLboolean texEnabled = glIsEnabled( GL_TEXTURE_2D );
 
