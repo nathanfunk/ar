@@ -873,9 +873,16 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 //
 //	 }
 //};
-//
-//
-//
+
+void ARMouseHouse::setColors(float r, float g, float b) {
+	for (size_t i = 0; i < world.getNumberOfObjects(); i++){
+		if (world.objectPtrs[i]->isSelected) {
+			world.objectPtrs[i]->setColors(r, g, b);
+		}
+	}
+}
+
+
 //void ARMouseHouse::colorMenuCB(int item)
 //{
 //
