@@ -107,6 +107,9 @@ namespace ms3dglut {
 
 
 
+
+
+
 			 ARMouseHouse *controller;
 
 	public:
@@ -169,7 +172,13 @@ namespace ms3dglut {
 			this->newToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->openToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->saveToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
+			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->objectsToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbTriangle = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbRectangle = (gcnew System::Windows::Forms::ToolStripButton());
@@ -182,18 +191,12 @@ namespace ms3dglut {
 			this->tsbPartialCylinder = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbLine = (gcnew System::Windows::Forms::ToolStripButton());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
-			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
-			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
 			this->menuStrip->SuspendLayout();
 			this->standardToolStrip->SuspendLayout();
-			this->objectsToolStrip->SuspendLayout();
 			this->propertiesToolStrip->SuspendLayout();
+			this->objectsToolStrip->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// toolStripContainer
@@ -213,8 +216,8 @@ namespace ms3dglut {
 			// 
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->menuStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
-			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
 			// 
 			// menuStrip
 			// 
@@ -242,7 +245,7 @@ namespace ms3dglut {
 			this->newToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->newToolStripMenuItem->Name = L"newToolStripMenuItem";
 			this->newToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-			this->newToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->newToolStripMenuItem->Size = System::Drawing::Size(140, 22);
 			this->newToolStripMenuItem->Text = L"&New";
 			// 
 			// openToolStripMenuItem
@@ -296,12 +299,12 @@ namespace ms3dglut {
 			// toolStripSeparator3
 			// 
 			this->toolStripSeparator3->Name = L"toolStripSeparator3";
-			this->toolStripSeparator3->Size = System::Drawing::Size(136, 6);
+			this->toolStripSeparator3->Size = System::Drawing::Size(114, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this->selectAllToolStripMenuItem->Name = L"selectAllToolStripMenuItem";
-			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(117, 22);
 			this->selectAllToolStripMenuItem->Text = L"Select &All";
 			// 
 			// toolsToolStripMenuItem
@@ -334,7 +337,7 @@ namespace ms3dglut {
 			// aboutToolStripMenuItem
 			// 
 			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(118, 22);
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(115, 22);
 			this->aboutToolStripMenuItem->Text = L"&About...";
 			// 
 			// standardToolStrip
@@ -375,6 +378,11 @@ namespace ms3dglut {
 			this->saveToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->saveToolStripButton->Text = L"&Save";
 			// 
+			// toolStripSeparator7
+			// 
+			this->toolStripSeparator7->Name = L"toolStripSeparator7";
+			this->toolStripSeparator7->Size = System::Drawing::Size(6, 25);
+			// 
 			// helpToolStripButton
 			// 
 			this->helpToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
@@ -383,6 +391,54 @@ namespace ms3dglut {
 			this->helpToolStripButton->Name = L"helpToolStripButton";
 			this->helpToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->helpToolStripButton->Text = L"He&lp";
+			// 
+			// propertiesToolStrip
+			// 
+			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
+				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
+			this->propertiesToolStrip->Location = System::Drawing::Point(113, 24);
+			this->propertiesToolStrip->Name = L"propertiesToolStrip";
+			this->propertiesToolStrip->Size = System::Drawing::Size(248, 25);
+			this->propertiesToolStrip->TabIndex = 2;
+			// 
+			// tsbColor
+			// 
+			this->tsbColor->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbColor->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbColor.Image")));
+			this->tsbColor->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbColor->Name = L"tsbColor";
+			this->tsbColor->Size = System::Drawing::Size(36, 22);
+			this->tsbColor->Text = L"Color";
+			this->tsbColor->Click += gcnew System::EventHandler(this, &MainWindow::tsbColor_Click);
+			// 
+			// tsbTransparency
+			// 
+			this->tsbTransparency->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbTransparency->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTransparency.Image")));
+			this->tsbTransparency->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbTransparency->Name = L"tsbTransparency";
+			this->tsbTransparency->Size = System::Drawing::Size(77, 22);
+			this->tsbTransparency->Text = L"Transparency";
+			this->tsbTransparency->Click += gcnew System::EventHandler(this, &MainWindow::tsbTransparency_Click);
+			// 
+			// tsbGroup
+			// 
+			this->tsbGroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbGroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbGroup.Image")));
+			this->tsbGroup->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbGroup->Name = L"tsbGroup";
+			this->tsbGroup->Size = System::Drawing::Size(40, 22);
+			this->tsbGroup->Text = L"Group";
+			// 
+			// tsbUngroup
+			// 
+			this->tsbUngroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbUngroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbUngroup.Image")));
+			this->tsbUngroup->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbUngroup->Name = L"tsbUngroup";
+			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
+			this->tsbUngroup->Text = L"Ungroup";
 			// 
 			// objectsToolStrip
 			// 
@@ -504,58 +560,6 @@ namespace ms3dglut {
 			this->statusStrip->TabIndex = 1;
 			this->statusStrip->Text = L"statusStrip";
 			// 
-			// propertiesToolStrip
-			// 
-			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
-				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(114, 24);
-			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(248, 25);
-			this->propertiesToolStrip->TabIndex = 2;
-			// 
-			// tsbColor
-			// 
-			this->tsbColor->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbColor->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbColor.Image")));
-			this->tsbColor->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbColor->Name = L"tsbColor";
-			this->tsbColor->Size = System::Drawing::Size(36, 22);
-			this->tsbColor->Text = L"Color";
-			this->tsbColor->Click += gcnew System::EventHandler(this, &MainWindow::tsbColor_Click);
-			// 
-			// tsbTransparency
-			// 
-			this->tsbTransparency->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbTransparency->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTransparency.Image")));
-			this->tsbTransparency->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbTransparency->Name = L"tsbTransparency";
-			this->tsbTransparency->Size = System::Drawing::Size(77, 22);
-			this->tsbTransparency->Text = L"Transparency";
-			// 
-			// tsbGroup
-			// 
-			this->tsbGroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbGroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbGroup.Image")));
-			this->tsbGroup->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbGroup->Name = L"tsbGroup";
-			this->tsbGroup->Size = System::Drawing::Size(40, 22);
-			this->tsbGroup->Text = L"Group";
-			// 
-			// tsbUngroup
-			// 
-			this->tsbUngroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbUngroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbUngroup.Image")));
-			this->tsbUngroup->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbUngroup->Name = L"tsbUngroup";
-			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
-			this->tsbUngroup->Text = L"Ungroup";
-			// 
-			// toolStripSeparator7
-			// 
-			this->toolStripSeparator7->Name = L"toolStripSeparator7";
-			this->toolStripSeparator7->Size = System::Drawing::Size(6, 25);
-			// 
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -574,10 +578,10 @@ namespace ms3dglut {
 			this->menuStrip->PerformLayout();
 			this->standardToolStrip->ResumeLayout(false);
 			this->standardToolStrip->PerformLayout();
-			this->objectsToolStrip->ResumeLayout(false);
-			this->objectsToolStrip->PerformLayout();
 			this->propertiesToolStrip->ResumeLayout(false);
 			this->propertiesToolStrip->PerformLayout();
+			this->objectsToolStrip->ResumeLayout(false);
+			this->objectsToolStrip->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -633,6 +637,10 @@ private:
 
 		// get selected color and change object
 		controller->setColors(cd.Color.R/255.0, cd.Color.G/255.0, cd.Color.B/255.0);
+	}
+
+	System::Void tsbTransparency_Click(System::Object^ sender, System::EventArgs^ e) {
+		controller->cycleTransparency();
 	}
 };
 }
