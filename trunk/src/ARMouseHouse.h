@@ -56,6 +56,7 @@ private:
 
 	World	world;
 	bool	useGLUTGUI;
+	bool	drawVideo;
 public:
 	ARMouseHouse(bool useGLUTGUI);
 	~ARMouseHouse();
@@ -77,6 +78,7 @@ public:
 	World *getWorld() {return &world;}
 	void addObject(int objectType);
 	void setColors(float r, float g, float b);
+	void cycleTransparency();
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
