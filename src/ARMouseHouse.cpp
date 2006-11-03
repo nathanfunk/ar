@@ -66,55 +66,6 @@ void motionCB(int x, int y) {controller->motionCB(x, y);}
 void mouseCB(int button, int state, int x, int y) {controller->mouseCB(button, state, x, y);}
 void keyboardCB( unsigned char key, int x, int y) {controller->keyboardCB(key, x, y);}
 
-void startLighting(GLfloat (&mat_ambient)[4]){
-//GLfloat   mat_ambient[]     = {0.2, 0.3, 0.5, 1.0};
-    GLfloat   mat_flash[]       = {0.3, 0.3, 0.8, 1.0};
-    GLfloat   mat_flash_shiny[] = {100.0};
-    GLfloat   light_position[]  = {20.0,-10.0,20.0,0.0};
-
-	GLfloat   light_position1[]  = {-20.0,10.0,20.0,0.0};
-
-    GLfloat   ambi[]            = {0.4, 0.4, 0.4, 1};
-    GLfloat   lightZeroColor[]  = {1, 1, 1, 0.1};
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-
-	glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightZeroColor);
-
-
-    //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    //glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-
-}
-
-void startLighting2(void){
-  
-    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny[] = {50.0};
-    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-   // glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-}
-
-
-
-
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 {
@@ -290,6 +241,7 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	gPatt_found		= false;
 	world.loadWorld("myworld.txt");
 	world.loadTextures("blah.txt");
+	drawVideo = true;
 }
 
 ARMouseHouse::~ARMouseHouse() {
@@ -319,7 +271,24 @@ void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
 
 	glInitNames(); //init the name stack for selection
 
+	// initialize lighting
+    GLfloat   light_position[]  = {0.0, 0.0, -1.0, 0.0};
+    GLfloat   ambi[]            = {0.0, 0.0, 0.0, 1.0};
+    GLfloat   diffuse[]			= {1.0, 1.0, 1.0, 1.0};
+    GLfloat   spec[]			= {1.0, 1.0, 1.0, 1.0};
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
 
+//	GLfloat   mat_ambient[]     = {1.0, 1.0, 1.0, 1.0};
+//    GLfloat   mat_flash[]       = {1.0, 1.0, 1.0, 1.0};
+//    GLfloat   mat_flash_shiny[] = {50.0};
+//    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+//    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+//	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
 }
 
 
@@ -347,7 +316,7 @@ void ARMouseHouse::ar_draw( void )
 	// Display the world
 	world.draw();
 
-	if(nothingSelected)
+	if (nothingSelected)
 		drawSelectionRect();
 }
 
@@ -361,19 +330,22 @@ void ARMouseHouse::displayCB(void)
 		// OGLControl takes care of setting the right buffer
 	}
 
-    //argDrawMode2D(); //gsub.h dependent
-    //argDispImage( dataPtr, 0,0 ); //gsub.h dependent
-	arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
+	// draw the video image
+	if (drawVideo) {
+		arglDispImage(gARTImage, &gCparam, 1.0, gArglSettings);
+	}
+
     arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 
+	// draw the world if the pattern has been found
 	if (gPatt_found) {
 		ar_draw();
 	}
+
+	// swap buffers if using GLUT (OGLControl does this itself)
 	if (useGLUTGUI) {
 		glutSwapBuffers();
-	} else {
-		//OGLControl takes care of the swapping
 	}
 }
 
@@ -1296,6 +1268,31 @@ int ARMouseHouse::keyMapping(unsigned char key) {
 void ARMouseHouse::addObject(int objectType) {
 	world.addObject(objectType);
 }
+
+void ARMouseHouse::cycleTransparency() {
+	std::cout<<"transparent"<<std::endl;
+
+	int i = 0;
+	for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+
+			if ((*it)->drawMode == NORMAL)
+				(*it)->drawMode = WIREFRAME;
+			else
+				if ((*it)->drawMode == WIREFRAME)
+					(*it)->drawMode = TRANSPARENT;
+				else
+					(*it)->drawMode = NORMAL;
+
+
+			it++;
+		}
+		else ++it;
+	}
+}
+
+
 void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 {
 	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
@@ -1421,45 +1418,19 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 		}
 
 	}
-if( key == 'i' ) {
-    std::cout<<"transparent"<<std::endl;
-       
-   int i = 0;
-    for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
-       if ( (*it)->isSelected  == 1)
-       {
 
-       if ((*it)->drawMode == NORMAL)
-               (*it)->drawMode = WIREFRAME;
-	   else
-		  if ((*it)->drawMode == WIREFRAME)
-               (*it)->drawMode = TRANSPARENT;
-		  else
-			  (*it)->drawMode = NORMAL;
+	if( key == 'i' ) { cycleTransparency();}
+
+	if (key == 'i'||key == 'j'||key == 'k'||key == 'l'){
+		int xMove = 0;
+		int yMove = 0;
+		if (key == 'i') yMove = 5;
+		if (key == 'k') yMove = -5;
+		if (key == 'j') xMove = 5;
+		if (key == 'l') xMove = -5;
 
 
-       it++;
-       }
-       else ++it;
-    }
-
-
-}
-
-if (key == 'i'||key == 'j'||key == 'k'||key == 'l'){
-
-
-
-
-	int xMove = 0;
-	int yMove = 0;
-	if (key == 'i') yMove = 5;
-	if (key == 'k') yMove = -5;
-	if (key == 'j') xMove = 5;
-	if (key == 'l') xMove = -5;
-
-
-for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
+		for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.objectPtrs.end();) {
 			if ( (*it)->isSelected  == 1)
 			{
 				(*it)->move(xMove, yMove);
@@ -1468,13 +1439,7 @@ for (std::vector<object *>::iterator it = world.objectPtrs.begin(); it!=world.ob
 			else ++it;
 		}
 
-}
-
-
-
-
-
-
+	}
 }
 
 
