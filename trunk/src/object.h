@@ -31,12 +31,6 @@ Farooq Ahmad 2006
 */
 
 
-
-void startLighting(GLfloat (&mat_ambient)[4]);
-void startLighting2(void);
-
-
-
 class vertex{
 public:
 	vertex(float _x, float _y, float _z){
@@ -264,9 +258,9 @@ public:
 
 			if (isSelected == 1){
 				highlight();
-				setHandles();
+				
 			}
-			startLighting(mat_ambient);
+			//startLighting(mat_ambient);
 
 			if (texture != 0) {	
 				glEnable( GL_TEXTURE_2D );	
@@ -276,6 +270,16 @@ public:
 						  mat_ambient[1], 
 						  mat_ambient[2], 
 						  mat_ambient[3]);
+				
+				// set material properties
+				GLfloat   ambient[]     = {0.2, 0.2, 0.2, 1.0};
+				GLfloat   diffuse[]     = {0.8, 0.8, 0.8, 1.0};
+				GLfloat   specular[]    = {0.0, 0.0, 0.0, 1.0};
+
+				glMaterialfv( GL_FRONT, GL_AMBIENT, ambient);
+				glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
+				glMaterialfv( GL_FRONT, GL_SPECULAR, specular);
+				glMaterialf( GL_FRONT, GL_SHININESS, 0.0);
 			}
 
 			glPushMatrix();		
@@ -289,7 +293,7 @@ public:
 			glPopMatrix();
 
 			glDisable(GL_BLEND);
-			glDisable ( GL_LIGHTING ) ;
+			//glDisable ( GL_LIGHTING ) ;
 			glDisable( GL_TEXTURE_2D );	
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			//if (snap_to_grid == 1)
@@ -345,14 +349,15 @@ public:
 		}
 
 		virtual void highlight(){
+			glDisable(GL_LIGHTING);
+			// draw handles for object
+			setHandles();
+
 			glPushMatrix();		
 			glTranslatef(xOff,0,zOff);
-
 			glPushMatrix();
 			//glTranslatef(0,60,0);
 
-			glDisable ( GL_LIGHTING ) ;
-			//startLighting2();
 			glColor3f(0.8, 0.3, 0.3);
 			//glutSolidSphere(3,5,5);
 
@@ -368,11 +373,9 @@ public:
 			//glutWireCube(5);
 			glutSolidCube(5);
 
-
-			glEnable ( GL_LIGHTING ) ;
 			glPopMatrix();
-
 			glPopMatrix();
+			glEnable(GL_LIGHTING);
 		}
 
 
@@ -430,7 +433,6 @@ public:
 			glRotatef(rY,1,0,0);
 			glScalef(sX, sY, sZ);
 
-			glDisable(GL_LIGHTING);
 			glColor3f(0.85, 0.1, 0.1);
 
 
