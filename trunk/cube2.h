@@ -308,83 +308,77 @@ gluProject(size/2,size/2,size/2, mMatrix, pMatrix, vPort,&winX7, &winY7, &winZ7)
 
 
 	void	draw(){
-	if (isVisible == 1){
-	if (isSelected == 1){
-		highlight();
-		initHandles();
-		highlightCorners();
-	}
-	//glPushName(name);
-	glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
-		glRotatef(rX,0,1,0);
-		glRotatef(rY,1,0,0);
-		glScalef(sX, sY, sZ);
+		if (isVisible == 1){
+			if (isSelected == 1){
+				highlight();
+				initHandles();
+				highlightCorners();
+			}
+			//glPushName(name);
+			glPushMatrix();		
+			glTranslatef(xOff,yOff,zOff);
+			glRotatef(rX,0,1,0);
+			glRotatef(rY,1,0,0);
+			glScalef(sX, sY, sZ);
+
+			//glMultMatrixf(objTrans);
+
+			setWinCoords(); //find the window coordinates of the handles
+
+			if (texture != 0) {
+				//std::cout<<"enabling texture "<<std::endl;	
+				glEnable( GL_TEXTURE_2D );	
+				glBindTexture( GL_TEXTURE_2D, texture);
+			}
+
+			//glColor3f(0.85, 0.1, 0.1);
+			//first face
+			glPushMatrix();
+			glTranslatef(0.0f, 0.0, size/2);
+			drawRect();
+			glPopMatrix();
+			//second face
+			glPushMatrix();
+			glRotatef(90,1,0,0);
+			glTranslatef(0, 0, -size/2);
+			drawRect();
+			glPopMatrix();
+			//thirdface
+			glPushMatrix();
+			glTranslatef(0.0f, 0.0, -size/2);
+			drawRect();
+			glPopMatrix();
+			//fourth face
+			glPushMatrix();
+			glRotatef(90,1,0,0);
+			glTranslatef(0, 0, size/2);
+			drawRect();
+			glPopMatrix();
+			//fifth face
+			glPushMatrix();
+			glRotatef(90,0,1,0);
+			glTranslatef(0, 0, size/2);
+			drawRect();
+			glPopMatrix();
+			//sixth face
+			glPushMatrix();
+			glRotatef(90,0,1,0);
+			glTranslatef(0, 0, -size/2);
+			drawRect();
+			glPopMatrix();
 
 
-//glMultMatrixf(objTrans);
+			///glColor3f(0.85, 0.1, 0.1);
+			///		glutSolidCube(size);
+			//glDisable ( GL_LIGHTING ) ;
+
+			glPopMatrix();
+
+			glDisable( GL_TEXTURE_2D );	
 
 
-setWinCoords(); //find the window coordinates of the handles
-startLighting(mat_ambient);
-
-if (texture != 0) {
-	//std::cout<<"enabling texture "<<std::endl;	
-	glEnable( GL_TEXTURE_2D );	
-	glBindTexture( GL_TEXTURE_2D, texture);
-
-}
-
-
-//glColor3f(0.85, 0.1, 0.1);
-//first face
-glPushMatrix();
-glTranslatef(0.0f, 0.0, size/2);
-drawRect();
-glPopMatrix();
-//second face
-glPushMatrix();
-glRotatef(90,1,0,0);
-glTranslatef(0, 0, -size/2);
-drawRect();
-glPopMatrix();
- //thirdface
-glPushMatrix();
-glTranslatef(0.0f, 0.0, -size/2);
-drawRect();
-glPopMatrix();
-   //fourth face
-glPushMatrix();
-glRotatef(90,1,0,0);
-glTranslatef(0, 0, size/2);
-drawRect();
-glPopMatrix();
-//fifth face
-   glPushMatrix();
-glRotatef(90,0,1,0);
-glTranslatef(0, 0, size/2);
-drawRect();
-glPopMatrix();
- //sixth face
-   glPushMatrix();
-glRotatef(90,0,1,0);
-glTranslatef(0, 0, -size/2);
-drawRect();
-glPopMatrix();
-
-
-
-///glColor3f(0.85, 0.1, 0.1);
-///		glutSolidCube(size);
-	glDisable ( GL_LIGHTING ) ;
-
-	glPopMatrix();
-
-glDisable( GL_TEXTURE_2D );	
-
-
-	//glPopName();
-	}
+			//glPopName();
+		}
 	}
 	float size;
 
