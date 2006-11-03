@@ -1291,7 +1291,10 @@ void ARMouseHouse::cycleTransparency() {
 		else ++it;
 	}
 }
-
+void ARMouseHouse::setDrawVideo(bool value)
+{
+	drawVideo = value;
+}
 
 void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 {

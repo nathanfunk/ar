@@ -104,6 +104,8 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripButton^  tsbGroup;
 	private: System::Windows::Forms::ToolStripButton^  tsbUngroup;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
+	private: System::Windows::Forms::ToolStripButton^  tsbHideVideo;
+
 
 
 
@@ -174,6 +176,7 @@ namespace ms3dglut {
 			this->saveToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
 			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
@@ -343,11 +346,11 @@ namespace ms3dglut {
 			// standardToolStrip
 			// 
 			this->standardToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->standardToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {this->newToolStripButton, 
-				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton});
+			this->standardToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->newToolStripButton, 
+				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
 			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
 			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(110, 25);
+			this->standardToolStrip->Size = System::Drawing::Size(202, 25);
 			this->standardToolStrip->TabIndex = 0;
 			this->standardToolStrip->Text = L"toolStrip1";
 			// 
@@ -392,14 +395,25 @@ namespace ms3dglut {
 			this->helpToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->helpToolStripButton->Text = L"He&lp";
 			// 
+			// tsbHideVideo
+			// 
+			this->tsbHideVideo->CheckOnClick = true;
+			this->tsbHideVideo->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbHideVideo->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbHideVideo.Image")));
+			this->tsbHideVideo->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbHideVideo->Name = L"tsbHideVideo";
+			this->tsbHideVideo->Size = System::Drawing::Size(61, 22);
+			this->tsbHideVideo->Text = L"Hide Video";
+			this->tsbHideVideo->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::tsbHideVideo_CheckedChanged);
+			// 
 			// propertiesToolStrip
 			// 
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
 			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
 				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(113, 24);
+			this->propertiesToolStrip->Location = System::Drawing::Point(491, 49);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(248, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbColor
@@ -641,6 +655,10 @@ private:
 
 	System::Void tsbTransparency_Click(System::Object^ sender, System::EventArgs^ e) {
 		controller->cycleTransparency();
+	}
+
+	System::Void tsbHideVideo_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+		controller->setDrawVideo(!tsbHideVideo->Checked);
 	}
 };
 }

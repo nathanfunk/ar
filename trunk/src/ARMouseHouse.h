@@ -79,6 +79,7 @@ public:
 	void addObject(int objectType);
 	void setColors(float r, float g, float b);
 	void cycleTransparency();
+	void setDrawVideo(bool value);
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
