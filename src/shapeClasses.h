@@ -13,7 +13,6 @@ extern int lastY;
 
 #include "object.h"
 #include "sphere.h"
-#include "cube.h"
 #include "cube2.h"
 #include "room.h"
 #include "wall.h"
