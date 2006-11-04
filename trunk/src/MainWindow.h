@@ -177,11 +177,6 @@ namespace ms3dglut {
 			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
-			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
-			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->objectsToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbTriangle = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbRectangle = (gcnew System::Windows::Forms::ToolStripButton());
@@ -193,13 +188,18 @@ namespace ms3dglut {
 			this->tsbFillArc = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbPartialCylinder = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbLine = (gcnew System::Windows::Forms::ToolStripButton());
+			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
+			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
 			this->menuStrip->SuspendLayout();
 			this->standardToolStrip->SuspendLayout();
-			this->propertiesToolStrip->SuspendLayout();
 			this->objectsToolStrip->SuspendLayout();
+			this->propertiesToolStrip->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// toolStripContainer
@@ -217,9 +217,9 @@ namespace ms3dglut {
 			// 
 			// toolStripContainer.TopToolStripPanel
 			// 
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->menuStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
-			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
 			// 
 			// menuStrip
@@ -350,7 +350,7 @@ namespace ms3dglut {
 				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
 			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
 			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(202, 25);
+			this->standardToolStrip->Size = System::Drawing::Size(171, 25);
 			this->standardToolStrip->TabIndex = 0;
 			this->standardToolStrip->Text = L"toolStrip1";
 			// 
@@ -406,14 +406,126 @@ namespace ms3dglut {
 			this->tsbHideVideo->Text = L"Hide Video";
 			this->tsbHideVideo->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::tsbHideVideo_CheckedChanged);
 			// 
+			// objectsToolStrip
+			// 
+			this->objectsToolStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->objectsToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {this->tsbCube, this->tsbCylinder, 
+				this->tsbCone, this->tsbSphere, this->tsbPyramid, this->tsbPartialCylinder, this->tsbRectangle, this->tsbTriangle, this->tsbFillArc, 
+				this->tsbLine});
+			this->objectsToolStrip->Location = System::Drawing::Point(3, 49);
+			this->objectsToolStrip->Name = L"objectsToolStrip";
+			this->objectsToolStrip->Size = System::Drawing::Size(242, 25);
+			this->objectsToolStrip->TabIndex = 1;
+			this->objectsToolStrip->Text = L"Objects";
+			// 
+			// tsbTriangle
+			// 
+			this->tsbTriangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbTriangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTriangle.Image")));
+			this->tsbTriangle->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbTriangle->Name = L"tsbTriangle";
+			this->tsbTriangle->Size = System::Drawing::Size(23, 22);
+			this->tsbTriangle->Text = L"Triangle";
+			this->tsbTriangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbRectangle
+			// 
+			this->tsbRectangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbRectangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRectangle.Image")));
+			this->tsbRectangle->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbRectangle->Name = L"tsbRectangle";
+			this->tsbRectangle->Size = System::Drawing::Size(23, 22);
+			this->tsbRectangle->Text = L"Rectangle";
+			this->tsbRectangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbSphere
+			// 
+			this->tsbSphere->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbSphere->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbSphere.Image")));
+			this->tsbSphere->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbSphere->Name = L"tsbSphere";
+			this->tsbSphere->Size = System::Drawing::Size(23, 22);
+			this->tsbSphere->Text = L"Sphere";
+			this->tsbSphere->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbCube
+			// 
+			this->tsbCube->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbCube->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbCube.Image")));
+			this->tsbCube->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbCube->Name = L"tsbCube";
+			this->tsbCube->Size = System::Drawing::Size(23, 22);
+			this->tsbCube->Text = L"Cube";
+			this->tsbCube->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbPyramid
+			// 
+			this->tsbPyramid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbPyramid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbPyramid.Image")));
+			this->tsbPyramid->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbPyramid->Name = L"tsbPyramid";
+			this->tsbPyramid->Size = System::Drawing::Size(23, 22);
+			this->tsbPyramid->Text = L"Pyramid";
+			this->tsbPyramid->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbCylinder
+			// 
+			this->tsbCylinder->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbCylinder->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbCylinder.Image")));
+			this->tsbCylinder->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbCylinder->Name = L"tsbCylinder";
+			this->tsbCylinder->Size = System::Drawing::Size(23, 22);
+			this->tsbCylinder->Text = L"Cylinder";
+			this->tsbCylinder->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbCone
+			// 
+			this->tsbCone->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbCone->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbCone.Image")));
+			this->tsbCone->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbCone->Name = L"tsbCone";
+			this->tsbCone->Size = System::Drawing::Size(23, 22);
+			this->tsbCone->Text = L"Cone";
+			this->tsbCone->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbFillArc
+			// 
+			this->tsbFillArc->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbFillArc->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbFillArc.Image")));
+			this->tsbFillArc->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbFillArc->Name = L"tsbFillArc";
+			this->tsbFillArc->Size = System::Drawing::Size(23, 22);
+			this->tsbFillArc->Text = L"FillArc";
+			this->tsbFillArc->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbPartialCylinder
+			// 
+			this->tsbPartialCylinder->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbPartialCylinder->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbPartialCylinder.Image")));
+			this->tsbPartialCylinder->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbPartialCylinder->Name = L"tsbPartialCylinder";
+			this->tsbPartialCylinder->Size = System::Drawing::Size(23, 22);
+			this->tsbPartialCylinder->Text = L"Partial Cylinder";
+			this->tsbPartialCylinder->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbLine
+			// 
+			this->tsbLine->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbLine->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbLine.Image")));
+			this->tsbLine->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbLine->Name = L"tsbLine";
+			this->tsbLine->Size = System::Drawing::Size(23, 22);
+			this->tsbLine->Text = L"Line";
+			this->tsbLine->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
 			// propertiesToolStrip
 			// 
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
 			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
 				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(491, 49);
+			this->propertiesToolStrip->Location = System::Drawing::Point(174, 24);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(248, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbColor
@@ -454,118 +566,6 @@ namespace ms3dglut {
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
 			// 
-			// objectsToolStrip
-			// 
-			this->objectsToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->objectsToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {this->tsbTriangle, 
-				this->tsbRectangle, this->tsbSphere, this->tsbCube, this->tsbPyramid, this->tsbCylinder, this->tsbCone, this->tsbFillArc, this->tsbPartialCylinder, 
-				this->tsbLine});
-			this->objectsToolStrip->Location = System::Drawing::Point(3, 49);
-			this->objectsToolStrip->Name = L"objectsToolStrip";
-			this->objectsToolStrip->Size = System::Drawing::Size(488, 25);
-			this->objectsToolStrip->TabIndex = 1;
-			this->objectsToolStrip->Text = L"Objects";
-			// 
-			// tsbTriangle
-			// 
-			this->tsbTriangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbTriangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTriangle.Image")));
-			this->tsbTriangle->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbTriangle->Name = L"tsbTriangle";
-			this->tsbTriangle->Size = System::Drawing::Size(49, 22);
-			this->tsbTriangle->Text = L"Triangle";
-			this->tsbTriangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbRectangle
-			// 
-			this->tsbRectangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbRectangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRectangle.Image")));
-			this->tsbRectangle->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbRectangle->Name = L"tsbRectangle";
-			this->tsbRectangle->Size = System::Drawing::Size(59, 22);
-			this->tsbRectangle->Text = L"Rectangle";
-			this->tsbRectangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbSphere
-			// 
-			this->tsbSphere->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbSphere->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbSphere.Image")));
-			this->tsbSphere->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbSphere->Name = L"tsbSphere";
-			this->tsbSphere->Size = System::Drawing::Size(45, 22);
-			this->tsbSphere->Text = L"Sphere";
-			this->tsbSphere->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbCube
-			// 
-			this->tsbCube->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbCube->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbCube.Image")));
-			this->tsbCube->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbCube->Name = L"tsbCube";
-			this->tsbCube->Size = System::Drawing::Size(36, 22);
-			this->tsbCube->Text = L"Cube";
-			this->tsbCube->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbPyramid
-			// 
-			this->tsbPyramid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbPyramid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbPyramid.Image")));
-			this->tsbPyramid->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbPyramid->Name = L"tsbPyramid";
-			this->tsbPyramid->Size = System::Drawing::Size(49, 22);
-			this->tsbPyramid->Text = L"Pyramid";
-			this->tsbPyramid->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbCylinder
-			// 
-			this->tsbCylinder->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbCylinder->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbCylinder.Image")));
-			this->tsbCylinder->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbCylinder->Name = L"tsbCylinder";
-			this->tsbCylinder->Size = System::Drawing::Size(50, 22);
-			this->tsbCylinder->Text = L"Cylinder";
-			this->tsbCylinder->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbCone
-			// 
-			this->tsbCone->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbCone->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbCone.Image")));
-			this->tsbCone->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbCone->Name = L"tsbCone";
-			this->tsbCone->Size = System::Drawing::Size(36, 22);
-			this->tsbCone->Text = L"Cone";
-			this->tsbCone->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbFillArc
-			// 
-			this->tsbFillArc->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbFillArc->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbFillArc.Image")));
-			this->tsbFillArc->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbFillArc->Name = L"tsbFillArc";
-			this->tsbFillArc->Size = System::Drawing::Size(39, 22);
-			this->tsbFillArc->Text = L"FillArc";
-			this->tsbFillArc->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbPartialCylinder
-			// 
-			this->tsbPartialCylinder->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbPartialCylinder->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbPartialCylinder.Image")));
-			this->tsbPartialCylinder->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbPartialCylinder->Name = L"tsbPartialCylinder";
-			this->tsbPartialCylinder->Size = System::Drawing::Size(83, 22);
-			this->tsbPartialCylinder->Text = L"Partial Cylinder";
-			this->tsbPartialCylinder->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbLine
-			// 
-			this->tsbLine->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbLine->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbLine.Image")));
-			this->tsbLine->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbLine->Name = L"tsbLine";
-			this->tsbLine->Size = System::Drawing::Size(30, 22);
-			this->tsbLine->Text = L"Line";
-			this->tsbLine->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
 			// statusStrip
 			// 
 			this->statusStrip->Location = System::Drawing::Point(0, 520);
@@ -592,10 +592,10 @@ namespace ms3dglut {
 			this->menuStrip->PerformLayout();
 			this->standardToolStrip->ResumeLayout(false);
 			this->standardToolStrip->PerformLayout();
-			this->propertiesToolStrip->ResumeLayout(false);
-			this->propertiesToolStrip->PerformLayout();
 			this->objectsToolStrip->ResumeLayout(false);
 			this->objectsToolStrip->PerformLayout();
+			this->propertiesToolStrip->ResumeLayout(false);
+			this->propertiesToolStrip->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
