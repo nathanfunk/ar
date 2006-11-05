@@ -21,6 +21,9 @@
 #include <iostream>
 #include <Assert.h>
 
+
+#pragma unmanaged
+
 Model::Model()
 {
 	m_numMeshes = 0;
