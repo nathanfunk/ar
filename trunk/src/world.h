@@ -439,6 +439,10 @@ public:
 		case ObjectTypes::CUBE:
 			o = new cube2(nObjects, 0,30,60,30);
 			break;
+		case ObjectTypes::TORUS:
+			o = new torus(nObjects, 0,30,60,10, 5);
+			break;
+
 		case ObjectTypes::WALL:
 			o = new wall(nObjects, 0,30,60,30);
 			break;
