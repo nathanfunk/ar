@@ -54,7 +54,7 @@ public:
 	static const int FILLARC	= 9;
 	static const int LINE		= 10;
 	static const int WALL		= 11;
-
+static const int TORUS		= 12;
 };
 
 
@@ -217,6 +217,8 @@ public:
 		Sets the color of the object, while preserving the alpha value.
 		*/
 		void setColors(GLfloat c1, GLfloat c2, GLfloat c3){
+
+			std::cout<<"Setting colors "<<std::endl;
 			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3;
 		}
 
