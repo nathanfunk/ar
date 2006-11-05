@@ -1,6 +1,7 @@
 #ifndef MYMODEL_H
 #define MYMODEL_H
 
+#include <fstream>
 #include "shapeClasses.h"
 #include "Model.h"
 #include "MilkshapeModel.h"
