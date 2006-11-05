@@ -106,12 +106,6 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
 	private: System::Windows::Forms::ToolStripButton^  tsbHideVideo;
 
-
-
-
-
-
-
 			 ARMouseHouse *controller;
 
 	public:
@@ -134,6 +128,8 @@ namespace ms3dglut {
 
 			delete controller;
 		}
+private: System::ComponentModel::IContainer^  components;
+protected: 
 
 
 	protected: 
@@ -142,7 +138,7 @@ namespace ms3dglut {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -178,15 +174,15 @@ namespace ms3dglut {
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
 			this->objectsToolStrip = (gcnew System::Windows::Forms::ToolStrip());
-			this->tsbTriangle = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbRectangle = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbSphere = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbCube = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbPyramid = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbCylinder = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbCone = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbFillArc = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbSphere = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbPyramid = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbPartialCylinder = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbRectangle = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbTriangle = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbFillArc = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbLine = (gcnew System::Windows::Forms::ToolStripButton());
 			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
@@ -207,7 +203,7 @@ namespace ms3dglut {
 			// 
 			// toolStripContainer.ContentPanel
 			// 
-			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 468);
+			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 443);
 			this->toolStripContainer->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->toolStripContainer->Location = System::Drawing::Point(0, 0);
 			this->toolStripContainer->Name = L"toolStripContainer";
@@ -217,10 +213,10 @@ namespace ms3dglut {
 			// 
 			// toolStripContainer.TopToolStripPanel
 			// 
-			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->menuStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			// 
 			// menuStrip
 			// 
@@ -248,7 +244,7 @@ namespace ms3dglut {
 			this->newToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->newToolStripMenuItem->Name = L"newToolStripMenuItem";
 			this->newToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-			this->newToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->newToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->newToolStripMenuItem->Text = L"&New";
 			// 
 			// openToolStripMenuItem
@@ -257,13 +253,14 @@ namespace ms3dglut {
 			this->openToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->openToolStripMenuItem->Name = L"openToolStripMenuItem";
 			this->openToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-			this->openToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->openToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->openToolStripMenuItem->Text = L"&Open";
+			this->openToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::open);
 			// 
 			// toolStripSeparator
 			// 
 			this->toolStripSeparator->Name = L"toolStripSeparator";
-			this->toolStripSeparator->Size = System::Drawing::Size(137, 6);
+			this->toolStripSeparator->Size = System::Drawing::Size(149, 6);
 			// 
 			// saveToolStripMenuItem
 			// 
@@ -271,25 +268,28 @@ namespace ms3dglut {
 			this->saveToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
 			this->saveToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
-			this->saveToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->saveToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->saveToolStripMenuItem->Text = L"&Save";
+			this->saveToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::save);
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this->saveAsToolStripMenuItem->Name = L"saveAsToolStripMenuItem";
-			this->saveAsToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->saveAsToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->saveAsToolStripMenuItem->Text = L"Save &As";
+			this->saveAsToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::saveAs);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(137, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(140, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->exitToolStripMenuItem->Text = L"E&xit";
+			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::exit);
 			// 
 			// editToolStripMenuItem
 			// 
@@ -362,6 +362,7 @@ namespace ms3dglut {
 			this->newToolStripButton->Name = L"newToolStripButton";
 			this->newToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->newToolStripButton->Text = L"&New";
+			this->newToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::newFile);
 			// 
 			// openToolStripButton
 			// 
@@ -371,6 +372,7 @@ namespace ms3dglut {
 			this->openToolStripButton->Name = L"openToolStripButton";
 			this->openToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->openToolStripButton->Text = L"&Open";
+			this->openToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::open);
 			// 
 			// saveToolStripButton
 			// 
@@ -380,6 +382,7 @@ namespace ms3dglut {
 			this->saveToolStripButton->Name = L"saveToolStripButton";
 			this->saveToolStripButton->Size = System::Drawing::Size(23, 22);
 			this->saveToolStripButton->Text = L"&Save";
+			this->saveToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::save);
 			// 
 			// toolStripSeparator7
 			// 
@@ -418,36 +421,6 @@ namespace ms3dglut {
 			this->objectsToolStrip->TabIndex = 1;
 			this->objectsToolStrip->Text = L"Objects";
 			// 
-			// tsbTriangle
-			// 
-			this->tsbTriangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->tsbTriangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTriangle.Image")));
-			this->tsbTriangle->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbTriangle->Name = L"tsbTriangle";
-			this->tsbTriangle->Size = System::Drawing::Size(23, 22);
-			this->tsbTriangle->Text = L"Triangle";
-			this->tsbTriangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbRectangle
-			// 
-			this->tsbRectangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->tsbRectangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRectangle.Image")));
-			this->tsbRectangle->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbRectangle->Name = L"tsbRectangle";
-			this->tsbRectangle->Size = System::Drawing::Size(23, 22);
-			this->tsbRectangle->Text = L"Rectangle";
-			this->tsbRectangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbSphere
-			// 
-			this->tsbSphere->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->tsbSphere->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbSphere.Image")));
-			this->tsbSphere->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbSphere->Name = L"tsbSphere";
-			this->tsbSphere->Size = System::Drawing::Size(23, 22);
-			this->tsbSphere->Text = L"Sphere";
-			this->tsbSphere->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
 			// tsbCube
 			// 
 			this->tsbCube->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
@@ -457,16 +430,6 @@ namespace ms3dglut {
 			this->tsbCube->Size = System::Drawing::Size(23, 22);
 			this->tsbCube->Text = L"Cube";
 			this->tsbCube->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
-			// 
-			// tsbPyramid
-			// 
-			this->tsbPyramid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->tsbPyramid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbPyramid.Image")));
-			this->tsbPyramid->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbPyramid->Name = L"tsbPyramid";
-			this->tsbPyramid->Size = System::Drawing::Size(23, 22);
-			this->tsbPyramid->Text = L"Pyramid";
-			this->tsbPyramid->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
 			// 
 			// tsbCylinder
 			// 
@@ -488,15 +451,25 @@ namespace ms3dglut {
 			this->tsbCone->Text = L"Cone";
 			this->tsbCone->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
 			// 
-			// tsbFillArc
+			// tsbSphere
 			// 
-			this->tsbFillArc->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->tsbFillArc->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbFillArc.Image")));
-			this->tsbFillArc->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbFillArc->Name = L"tsbFillArc";
-			this->tsbFillArc->Size = System::Drawing::Size(23, 22);
-			this->tsbFillArc->Text = L"FillArc";
-			this->tsbFillArc->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			this->tsbSphere->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbSphere->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbSphere.Image")));
+			this->tsbSphere->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbSphere->Name = L"tsbSphere";
+			this->tsbSphere->Size = System::Drawing::Size(23, 22);
+			this->tsbSphere->Text = L"Sphere";
+			this->tsbSphere->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbPyramid
+			// 
+			this->tsbPyramid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbPyramid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbPyramid.Image")));
+			this->tsbPyramid->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbPyramid->Name = L"tsbPyramid";
+			this->tsbPyramid->Size = System::Drawing::Size(23, 22);
+			this->tsbPyramid->Text = L"Pyramid";
+			this->tsbPyramid->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
 			// 
 			// tsbPartialCylinder
 			// 
@@ -507,6 +480,36 @@ namespace ms3dglut {
 			this->tsbPartialCylinder->Size = System::Drawing::Size(23, 22);
 			this->tsbPartialCylinder->Text = L"Partial Cylinder";
 			this->tsbPartialCylinder->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbRectangle
+			// 
+			this->tsbRectangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbRectangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRectangle.Image")));
+			this->tsbRectangle->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbRectangle->Name = L"tsbRectangle";
+			this->tsbRectangle->Size = System::Drawing::Size(23, 22);
+			this->tsbRectangle->Text = L"Rectangle";
+			this->tsbRectangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbTriangle
+			// 
+			this->tsbTriangle->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbTriangle->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTriangle.Image")));
+			this->tsbTriangle->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbTriangle->Name = L"tsbTriangle";
+			this->tsbTriangle->Size = System::Drawing::Size(23, 22);
+			this->tsbTriangle->Text = L"Triangle";
+			this->tsbTriangle->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
+			// 
+			// tsbFillArc
+			// 
+			this->tsbFillArc->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->tsbFillArc->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbFillArc.Image")));
+			this->tsbFillArc->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbFillArc->Name = L"tsbFillArc";
+			this->tsbFillArc->Size = System::Drawing::Size(23, 22);
+			this->tsbFillArc->Text = L"FillArc";
+			this->tsbFillArc->Click += gcnew System::EventHandler(this, &MainWindow::ObjectsToolStrip_Click);
 			// 
 			// tsbLine
 			// 
@@ -523,9 +526,9 @@ namespace ms3dglut {
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
 			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
 				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(174, 24);
+			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(248, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbColor
@@ -653,12 +656,80 @@ private:
 		controller->setColors(cd.Color.R/255.0, cd.Color.G/255.0, cd.Color.B/255.0);
 	}
 
+	/**
+	 * Handles a click from the transparency button.
+	 */
 	System::Void tsbTransparency_Click(System::Object^ sender, System::EventArgs^ e) {
 		controller->cycleTransparency();
 	}
 
+	/**
+	 * Handles the hide video toggle button.
+	 */
 	System::Void tsbHideVideo_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		controller->setDrawVideo(!tsbHideVideo->Checked);
 	}
+
+	/**
+	 * Function for handling a New file event from the menu or toolstrip.
+	 */
+	System::Void newFile(System::Object^  sender, System::EventArgs^  e) {
+
+	}
+
+	/**
+	 * Handles an open event from the menu or toolstrip.
+	 */
+	System::Void open(System::Object^  sender, System::EventArgs^  e) {
+		OpenFileDialog d;
+		d.ShowDialog(this);
+		printf("Open file %s", d.ToString());
+	}
+
+	/**
+	 * Handles a save event from the menu or toolstrip.
+	 */
+	System::Void save(System::Object^  sender, System::EventArgs^  e) {
+		SaveFileDialog d;
+		d.ShowDialog(this);
+		printf("Save file as %s", d.ToString());
+	}
+
+	/**
+	 * Handles a Save As click.
+	 */
+	System::Void saveAs(System::Object^  sender, System::EventArgs^  e) {
+		SaveFileDialog d;
+		d.ShowDialog(this);
+		printf("Save file as %s", d.ToString());
+	}
+
+	/**
+	 * Handles an Exit click.
+	 */
+	System::Void exit(System::Object^  sender, System::EventArgs^  e) {
+		Close();
+	}
 };
 }
+
+/*
+Open
+- select file
+- try loading
+- if name associated
+	- set file name
+
+Save
+- if has name
+  - save over old version
+- else
+  - run save as...
+
+Save As... (only enabled if necessary)
+- if has name
+  - fail
+- else
+  - open dialog box for saving
+  - associate name with file
+*/
