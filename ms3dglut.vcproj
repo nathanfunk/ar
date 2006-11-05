@@ -69,7 +69,7 @@
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
-				SubSystem="1"
+				SubSystem="0"
 				TargetMachine="1"
 			/>
 			<Tool
