@@ -3,10 +3,9 @@ ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
 */
 
-#define GLUT_GUI_MODE
-
-
+//#define GLUT_GUI_MODE
 #define _CRTDBG_MAP_ALLOC	// include for mapping allocation for detecting memory leaks
+
 #include <stdlib.h>
 #include <crtdbg.h>			// include for detecting memory leaks
 
@@ -280,7 +279,7 @@ void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
 
 	// initialize lighting
     GLfloat   light_position[]  = {0.0, 0.0, -1.0, 0.0};
-    GLfloat   ambi[]            = {0.0, 0.0, 0.0, 1.0};
+    GLfloat   ambi[]            = {0.2, 0.2, 0.2, 1.0};
     GLfloat   diffuse[]			= {1.0, 1.0, 1.0, 1.0};
     GLfloat   spec[]			= {1.0, 1.0, 1.0, 1.0};
     glEnable(GL_LIGHTING);
