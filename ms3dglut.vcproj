@@ -247,6 +247,10 @@
 				RelativePath=".\src\Win32Timer.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\world.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"

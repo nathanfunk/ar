@@ -13,8 +13,12 @@ Object class - base class for shape primitives in shapeClasses.h
 and milkshape model class in myModel.h
 */
 
-
+#include <iostream>
+#include <sstream>
 #include <string>
+#include <math.h>
+#include <AR/ar.h>
+#include <GL/glut.h>
 
 #ifndef PI
 #	define PI	3.1415926535897932384626433832795
@@ -24,7 +28,7 @@ and milkshape model class in myModel.h
 #define RADIANS(x) ((x)/180.0*3.14159265358979323)
 #endif // RADIANS
 
-
+extern int lastX, lastY;
 
 /* Shape primitives for ARMouseHouse
 Farooq Ahmad 2006
