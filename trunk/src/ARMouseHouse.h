@@ -63,11 +63,11 @@ public:
 	bool idleCB();
 	void reshapeCB( int width , int height );
 	void arrowKeysCB( int a_keys, int x, int y );
-	//void initMenu();
-	//void menuCB(int item);
-	//void colorMenuCB(int item);
-	//void textureMenuCB(int item);
-	//void fileMenuCB(int item);
+	void initMenu();
+	void menuCB(int item);
+	void colorMenuCB(int item);
+	void textureMenuCB(int item);
+	void fileMenuCB(int item);
 	void displayCB(void);
 	void motionCB(int x, int y);
 	void mouseCB(int button, int state, int x, int y);

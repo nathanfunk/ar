@@ -1,8 +1,11 @@
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
-
 */
+
+#define GLUT_GUI_MODE
+
+
 #define _CRTDBG_MAP_ALLOC	// include for mapping allocation for detecting memory leaks
 #include <stdlib.h>
 #include <crtdbg.h>			// include for detecting memory leaks
@@ -39,6 +42,7 @@ using namespace std;
 using namespace ms3dglut;
 
 //--------------------------------------------------------------------------------------
+
 int lastX;
 int lastY; 
 
@@ -48,23 +52,23 @@ int x2Rect;
 int y2Rect;
 int selectRectDefined;
 int nothingSelected;
-ARMouseHouse *controller;
-bool useGLUTGUI = false;
 
+ARMouseHouse *controller;
 
 //--------------------------------------------------------------------------------------
 
 void idleCB() {controller->idleCB();}
 void reshapeCB( int width , int height ) {controller->reshapeCB(width, height);}
 void arrowKeysCB( int a_keys, int x, int y ) {controller->arrowKeysCB(a_keys, x, y);}
-/*void menuCB(int item) {controller->menuCB(item);}
+void menuCB(int item) {controller->menuCB(item);}
 void colorMenuCB(int item) {controller->colorMenuCB(item);}
 void textureMenuCB(int item) {controller->colorMenuCB(item);}
-void fileMenuCB(int item) {controller->fileMenuCB(item);}*/
+void fileMenuCB(int item) {controller->fileMenuCB(item);}
 void displayCB(void) {controller->displayCB();}
 void motionCB(int x, int y) {controller->motionCB(x, y);}
 void mouseCB(int button, int state, int x, int y) {controller->mouseCB(button, state, x, y);}
 void keyboardCB( unsigned char key, int x, int y) {controller->keyboardCB(key, x, y);}
+
 
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
@@ -172,52 +176,55 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 
 
 
-
 //--------------------------------------------------------------------------------------
+#ifdef GLUT_GUI_MODE
 
 int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
 {
 	// enable automatic memory leak detection report on exit
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 
-	if (useGLUTGUI)
-	{
-		controller = new ARMouseHouse(true);
-		glutInit(&argc, argv);
-		controller->InitGL();
-		controller->ar_init();
-		//controller.initMenu();
+	controller = new ARMouseHouse(true);
+	glutInit(&argc, argv);
+	controller->InitGL();
+	controller->ar_init();
+	controller->initMenu();
 
-		//GLUT callbacks
-		glutMotionFunc(motionCB);
-		glutSpecialFunc(arrowKeysCB);
-		glutKeyboardFunc(keyboardCB);
-		glutMouseFunc(mouseCB);
-		glutDisplayFunc(displayCB);
-		glutReshapeFunc(reshapeCB);
-		glutIdleFunc(idleCB);
+	//GLUT callbacks
+	glutMotionFunc(motionCB);
+	glutSpecialFunc(arrowKeysCB);
+	glutKeyboardFunc(keyboardCB);
+	glutMouseFunc(mouseCB);
+	glutDisplayFunc(displayCB);
+	glutReshapeFunc(reshapeCB);
+	glutIdleFunc(idleCB);
 
-		arVideoCapStart();
+	arVideoCapStart();
 
 //		argMainLoop( ar_mouseEvent, ar_keyEvent, ar_mainLoop ); //gsub.h dependent
-		glutMainLoop();
+	glutMainLoop();
 
-		char ch = getchar();
-		delete controller;
-		return 0;
-	}
-	else
-	{
-		// Enabling Windows XP visual effects before any controls are created
-		Application::EnableVisualStyles();
-		Application::SetCompatibleTextRenderingDefault(false); 
-
-		// Create the main window and run it
-		Application::Run(gcnew ms3dglut::MainWindow());
-
-		return 0;
-	}
+	char ch = getchar();
+	delete controller;
+	return 0;
 }
+
+#else //-------------------------------------------------------------------------------------
+[STAThreadAttribute]
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
+{
+	// enable automatic memory leak detection report on exit
+	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	// Enabling Windows XP visual effects before any controls are created
+	Application::EnableVisualStyles();
+	Application::SetCompatibleTextRenderingDefault(false); 
+
+	// Create the main window and run it
+	Application::Run(gcnew ms3dglut::MainWindow());
+
+	return 0;
+}
+#endif
 
 
 
@@ -804,57 +811,57 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 
 
 
-//void ARMouseHouse::menuCB(int item)
-//{
-//     switch (item) {
-//
-//      case 1:
-//		  world.addObject(new myModel((int) world.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
-//            break;
-//      case 2:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
-//			break;
-//    case 3:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
-//			break;
-//  case 4:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
-//			break;//was toilet3.ms3d
-// case 5:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
-//			break;//was sink
-//case 6:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
-//			break;
-//
-//case 7:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
-//			break;
-//case 8:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
-//			break;
-//case 9:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
-//			break;
-//case 10:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
-//			break;
-//case 11:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
-//			break;
-//case 12:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
-//			break;
-//case 13:
-//			world.addObject(new myModel((int) world.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
-//			break;
-//
-//
-//	  default:
-//			break;
-//
-//	 }
-//};
+void ARMouseHouse::menuCB(int item)
+{
+     switch (item) {
+
+      case 1:
+		  world.addObject(new myModel((int) world.objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
+            break;
+      case 2:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
+			break;
+    case 3:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "bed2.ms3d", 50,0,-50,0,1));
+			break;
+  case 4:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "toilet3.ms3d", 50,0,-50,0,1));
+			break;//was toilet3.ms3d
+ case 5:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "sink.ms3d", 50,0,-50,0,10));
+			break;//was sink
+case 6:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "sheep2.ms3d", 50,0,-50,0,1));
+			break;
+
+case 7:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "fart.ms3d", 50,0,-50,0,1));
+			break;
+case 8:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "sofa2.ms3d", 50,0,-50,0,2));
+			break;
+case 9:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "stairs2.ms3d", 50,0,-50,0,100));
+			break;
+case 10:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "tab3.ms3d", 50,0,-50,0,1));
+			break;
+case 11:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "shelf.ms3d", 50,0,-50,0,1));
+			break;
+case 12:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "wooddoor.ms3d", 50,0,-50,0,1));
+			break;
+case 13:
+			world.addObject(new myModel((int) world.objectPtrs.size(), "window4.ms3d", 50,0,-50,0,10));
+			break;
+
+
+	  default:
+			break;
+
+	 }
+};
 
 void ARMouseHouse::setColors(float r, float g, float b) {
 	for (size_t i = 0; i < world.getNumberOfObjects(); i++){
@@ -865,149 +872,149 @@ void ARMouseHouse::setColors(float r, float g, float b) {
 }
 
 
-//void ARMouseHouse::colorMenuCB(int item)
-//{
-//
-//     switch (item) {
-//      case 1:
-//		 	for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setColors(0.8,0.3,0.3,1);
-//			}	
-//			}
-//            break;
-//      case 2:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setColors(0.2,0.3,0.5,1);
-//			}
-//			}
-//			break;
-//       case 3:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setColors(0.2,0.8,0.8,1);
-//			}
-//			}
-//			break;
-//	  default:
-//			break;
-//
-//	 }
-//};
-//
-//
-//
-//
-//void ARMouseHouse::textureMenuCB(int item)
-//{
-///*
-//	std::cout<<"item "<<item<<"texindex size "<<world.textureIndex.size()<<std::endl;
-//if ((item > 0) && (item <= world.textureIndex.size())){
-//	for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){			
-//				world.objectPtrs[i]->setTexture(world.textureIndex[item-1]);
-//			}
-//		}
-//}
-//*/
-//	     switch (item) {
-//      case 0:
-//		 		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture((GLuint) 0);
-//			}
-//			}
-//			break;
-//      case 1:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("steel01.bmp"));
-//			}
-//			}
-//			break;
-//	case 2:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b1.bmp"));
-//			}
-//			}
-//			break;
-//	case 3:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b19.bmp"));
-//			}
-//			}
-//			break;
-//	case 4:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b7.bmp"));
-//			}
-//			}
-//			break;
-//      case 5:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("panel_01.bmp"));
-//			}	
-//			}
-//            break;
-//     case 6:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("grass.bmp"));
-//			}	
-//			}
-//            break;
-//			     case 7:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("cement.bmp"));
-//			}	
-//			}
-//            break;
-//			     case 8:
-//		for (int i =0; i < (int) world.objectPtrs.size(); i++){
-//		if (world.objectPtrs[i]->isSelected == 1){
-//			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("road1.bmp"));
-//			}	
-//			}
-//            break;
-//
-//
-//
-//	  default:
-//			break;
-//
-//	 }
-//	 
-//};
-//
-//
-//
-//
-//void ARMouseHouse::fileMenuCB(int item)
-//{
-//
-//     switch (item) {
-//      case 1:
-//		 	world.saveWorld("myworld.txt");
-//            break;
-//      case 2:
-//		 	world.exportSL("SLFile.txt");
-//            break;
-//
-//
-//	  default:
-//			break;
-//
-//	 }
-//};
-//
-//
-//
+void ARMouseHouse::colorMenuCB(int item)
+{
+
+     switch (item) {
+      case 1:
+		 	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setColors(0.8,0.3,0.3,1);
+			}	
+			}
+            break;
+      case 2:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setColors(0.2,0.3,0.5,1);
+			}
+			}
+			break;
+       case 3:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setColors(0.2,0.8,0.8,1);
+			}
+			}
+			break;
+	  default:
+			break;
+
+	 }
+};
+
+
+
+
+void ARMouseHouse::textureMenuCB(int item)
+{
+/*
+	std::cout<<"item "<<item<<"texindex size "<<world.textureIndex.size()<<std::endl;
+if ((item > 0) && (item <= world.textureIndex.size())){
+	for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){			
+				world.objectPtrs[i]->setTexture(world.textureIndex[item-1]);
+			}
+		}
+}
+*/
+	     switch (item) {
+      case 0:
+		 		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture((GLuint) 0);
+			}
+			}
+			break;
+      case 1:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("steel01.bmp"));
+			}
+			}
+			break;
+	case 2:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b1.bmp"));
+			}
+			}
+			break;
+	case 3:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b19.bmp"));
+			}
+			}
+			break;
+	case 4:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("b7.bmp"));
+			}
+			}
+			break;
+      case 5:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("panel_01.bmp"));
+			}	
+			}
+            break;
+     case 6:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("grass.bmp"));
+			}	
+			}
+            break;
+			     case 7:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("cement.bmp"));
+			}	
+			}
+            break;
+			     case 8:
+		for (int i =0; i < (int) world.objectPtrs.size(); i++){
+		if (world.objectPtrs[i]->isSelected == 1){
+			world.objectPtrs[i]->setTexture(LoadGLTextureRepeat("road1.bmp"));
+			}	
+			}
+            break;
+
+
+
+	  default:
+			break;
+
+	 }
+	 
+};
+
+
+
+
+void ARMouseHouse::fileMenuCB(int item)
+{
+
+     switch (item) {
+      case 1:
+		 	world.saveWorld("myworld.txt");
+            break;
+      case 2:
+		 	world.exportSL("SLFile.txt");
+            break;
+
+
+	  default:
+			break;
+
+	 }
+};
+
+
+
 
 int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 {
@@ -1167,58 +1174,58 @@ glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
 
 
 
-//void ARMouseHouse::initMenu(){
-//
-//int submenu1, submenu2, submenu3, submenu4, mainMenu;
-//
-//submenu1 = glutCreateMenu(menuCB);
-//         glutAddMenuEntry("Chair", 1);
-//         glutAddMenuEntry("TV", 2);
-//		 glutAddMenuEntry("Bed", 3);
-//		 glutAddMenuEntry("Toilet", 4);
-//		 glutAddMenuEntry("Sink", 5);
-//		 glutAddMenuEntry("Sheep", 6);
-//		 glutAddMenuEntry("Desk", 7);
-//		  glutAddMenuEntry("Sofa", 8);
-//		  glutAddMenuEntry("Stairs", 9);
-//		  glutAddMenuEntry("Kitchen Table", 10);
-//		  glutAddMenuEntry("Shelf", 11);
-//		  glutAddMenuEntry("Door", 12);
-//		glutAddMenuEntry("Window", 13);
-//
-//		  submenu2 = glutCreateMenu(colorMenuCB);
-//		 glutAddMenuEntry("Red", 1);//
-//		glutAddMenuEntry("Blue", 2);//
-//		glutAddMenuEntry("Green", 3);//
-//		
-//		
-//			submenu3 = glutCreateMenu(fileMenuCB);
-//			glutAddMenuEntry("Save", 1);//
-//		glutAddMenuEntry("Export to SL", 2);//
-//		//glutAddMenuEntry("Green", 3);//
-//
-//		submenu4 = glutCreateMenu(textureMenuCB);
-//			glutAddMenuEntry("None", 0);//
-//	glutAddMenuEntry("Steel", 1);//
-//glutAddMenuEntry("Checkers", 2);//
-//glutAddMenuEntry("Red Checkers",3);//
-//glutAddMenuEntry("Beige Marble", 4);//
-//glutAddMenuEntry("Wood", 5);//
-//glutAddMenuEntry("Grass", 6);//
-//glutAddMenuEntry("Cement", 7);//
-//glutAddMenuEntry("Road", 8);//
-//		
-//			mainMenu = glutCreateMenu(menuCB);
-//			glutAddSubMenu("File", submenu3);
-//			glutAddSubMenu("Models", submenu1);
-//			glutAddSubMenu("Colors", submenu2);//
-//			glutAddSubMenu("Texture", submenu4);//
-//
-//
-//         glutAttachMenu(GLUT_RIGHT_BUTTON);
-//
-//}
-//
+void ARMouseHouse::initMenu(){
+
+	int submenu1, submenu2, submenu3, submenu4, mainMenu;
+
+	submenu1 = glutCreateMenu(::menuCB);
+	glutAddMenuEntry("Chair", 1);
+	glutAddMenuEntry("TV", 2);
+	glutAddMenuEntry("Bed", 3);
+	glutAddMenuEntry("Toilet", 4);
+	glutAddMenuEntry("Sink", 5);
+	glutAddMenuEntry("Sheep", 6);
+	glutAddMenuEntry("Desk", 7);
+	glutAddMenuEntry("Sofa", 8);
+	glutAddMenuEntry("Stairs", 9);
+	glutAddMenuEntry("Kitchen Table", 10);
+	glutAddMenuEntry("Shelf", 11);
+	glutAddMenuEntry("Door", 12);
+	glutAddMenuEntry("Window", 13);
+
+	submenu2 = glutCreateMenu(::colorMenuCB);
+	glutAddMenuEntry("Red", 1);//
+	glutAddMenuEntry("Blue", 2);//
+	glutAddMenuEntry("Green", 3);//
+
+
+	submenu3 = glutCreateMenu(::fileMenuCB);
+	glutAddMenuEntry("Save", 1);//
+	glutAddMenuEntry("Export to SL", 2);//
+	//glutAddMenuEntry("Green", 3);//
+
+	submenu4 = glutCreateMenu(::textureMenuCB);
+	glutAddMenuEntry("None", 0);//
+	glutAddMenuEntry("Steel", 1);//
+	glutAddMenuEntry("Checkers", 2);//
+	glutAddMenuEntry("Red Checkers",3);//
+	glutAddMenuEntry("Beige Marble", 4);//
+	glutAddMenuEntry("Wood", 5);//
+	glutAddMenuEntry("Grass", 6);//
+	glutAddMenuEntry("Cement", 7);//
+	glutAddMenuEntry("Road", 8);//
+
+	mainMenu = glutCreateMenu(::menuCB);
+	glutAddSubMenu("File", submenu3);
+	glutAddSubMenu("Models", submenu1);
+	glutAddSubMenu("Colors", submenu2);//
+	glutAddSubMenu("Texture", submenu4);//
+
+
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+}
+
 
 void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 
