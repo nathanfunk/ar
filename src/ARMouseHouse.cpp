@@ -1262,6 +1262,7 @@ int ARMouseHouse::keyMapping(unsigned char key) {
 		case 'o': return ObjectTypes::PYRAMID;
 		case 'l': return ObjectTypes::LINE;
 		case 'w': return ObjectTypes::WALL;
+		case 'h': return ObjectTypes::TORUS;
 		default: return -1;
 	}
 }
@@ -1424,6 +1425,8 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 
 	if( key == 'i' ) { cycleTransparency();}
 
+
+	/*
 	if (key == 'i'||key == 'j'||key == 'k'||key == 'l'){
 		int xMove = 0;
 		int yMove = 0;
@@ -1443,6 +1446,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 		}
 
 	}
+	*/
 }
 
 
