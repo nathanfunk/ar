@@ -1,3 +1,19 @@
+Nov 05 nf
+	- created new WinMain function for entrance as Windows app
+	- needed [STAThreadAttribute] for Save and Open dialogs to work 
+	  (something about not being able to call OLE without it)
+	- new "#define GLUT_GUI_MODE" for separating GLUT GUI interface
+	  from windows forms interface
+	- got context menus working again in GLUT GUI
+	- started with windows forms menus for open/save
+	  (not funcional yet)
+
+Oct 04 fa
+	- added torus object
+
+Oct 03 nf
+    - added icons for most primitives
+
 Oct 29 nf
 	- fixed dragging problem (needed to only call motionfunc when button depressed)
 	- added basic keyboard input (no modifier keys yet)
