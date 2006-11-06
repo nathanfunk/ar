@@ -81,6 +81,7 @@ public:
 	void cycleTransparency();
 	void setDrawVideo(bool value);
 	void newWorld();
+	bool newWorld(string fileName);
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
