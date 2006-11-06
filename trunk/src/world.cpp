@@ -26,13 +26,15 @@ World::World() {
 	xOff = 0; yOff =0; zOff= 0;rX = 0; rY = 0; rZ = 0;
 	sX = 1; sY = 1; sZ = 1;
 	isSelected = 0;
+	isDirtyFlag = false;
 }
 
-World::World(char *scriptFile) {
+World::World(string scriptFile) {
 	//loadTextures("blah.txt");
 	loadWorld(scriptFile);
 	xOff = 0; yOff =0; zOff= 0; rX = 0; rY = 0; rZ = 0;
 	sX = 1; sY = 1; sZ = 1;isSelected = 0;
+	isDirtyFlag = false;
 }
 
 World::~World(){ 
@@ -110,9 +112,15 @@ int World::getTransformedMotion( double patt_trans[3][4], int but, int key,int x
 }
 
 
+/**
+ * Moves the entire world.
+ */
 void World::move(double patt_trans[3][4],int but, int key, int x, int y){
-
 	double xNew, yNew;
+
+	// world is being modified, so set dirty flag
+	isDirtyFlag = true;
+
 	getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
 
 	if (key == GLUT_ACTIVE_ALT){
@@ -183,15 +191,17 @@ void World::initMenu(){
 }
 
 
-void World::loadWorld(char *scriptFile){
 
-	std::ifstream fin(scriptFile);
-	//	int type; 
+/**
+ * Loads a world from a file.
+ *
+ * Reads the file line by line and then sets the fileName member to the name of the file
+ */
+void World::loadWorld(string scriptFile){
+	ifstream fin(scriptFile.c_str());
+	string line;
 
-	std::string line;
-
-
-	while ( std::getline(fin,line) )
+	while ( getline(fin,line) )
 	{
 
 		std::istringstream iss(line);
@@ -261,23 +271,36 @@ void World::loadWorld(char *scriptFile){
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, startAngle, arcAngle));
 		}
 	}
+
+	// set file name
+	fileName = scriptFile;
+	// file is not dirty after being opened
+	isDirtyFlag = false;
 }
 
+//void World::loadWorld(){
+//
+//	objectPtrs.push_back(new myModel((int) objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
+//	objectPtrs.push_back(new myModel((int) objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
+//
+//	//objects.push_back(new myModel((int) objectPtrs.size(), "chair.ms3d", 50,-10,-50,0,1));
+//	//objectPtrs.push_back(new rectangle(objectPtrs.size(), 0,0,100, 100, 90));
+//}
 
-
-
-void World::loadWorld(){
-
-	objectPtrs.push_back(new myModel((int) objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
-	objectPtrs.push_back(new myModel((int) objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
-
-	//objects.push_back(new myModel((int) objectPtrs.size(), "chair.ms3d", 50,-10,-50,0,1));
-	//objectPtrs.push_back(new rectangle(objectPtrs.size(), 0,0,100, 100, 90));
+/**
+ * Saves the world under the current file name if one exists.
+ */
+void World::saveWorld() {
+	if (!fileName.empty()) {
+		saveWorld(fileName);
+	}
 }
 
-
-void World::saveWorld(char *scriptFile){
-	std::ofstream outfile(scriptFile);
+/**
+ * Saves the world under a specific file name.
+ */
+void World::saveWorld(string scriptFile){
+	std::ofstream outfile(scriptFile.c_str());
 
 	if (outfile.is_open())
 	{
@@ -287,12 +310,17 @@ void World::saveWorld(char *scriptFile){
 		}
 		outfile.close();
 	}
+
+	// set file name
+	fileName = scriptFile;
+	// file is no longer dirty
+	isDirtyFlag = false;
 }
 
 
-void World::exportSL(char *scriptFile){
+void World::exportSL(string scriptFile){
 
-	std::ofstream outfile(scriptFile);
+	std::ofstream outfile(scriptFile.c_str());
 	if (outfile.is_open())
 	{
 		for (int i = 0; i< (int) objectPtrs.size(); i++){
@@ -330,6 +358,7 @@ void World::draw(){
 	glRotatef(rY,1,0,0);
 	glRotatef(rZ,0,0,1);
 	glScalef(sX, sY, sZ);
+
 	//draw the floor
 	glPushMatrix();
 
@@ -370,8 +399,6 @@ void World::draw(){
 			objectPtrs[i]->drawTopLevel(5,5,5);
 			glPopName();
 		}
-
-
 	}
 
 	glPopMatrix();
@@ -381,6 +408,10 @@ void World::draw(){
 Adds an object to the world
 */
 void World::addObject(object *o) {
+	// set dirty flag
+	isDirtyFlag = false;
+
+	// add the object
 	objectPtrs.push_back(o);
 }
 
@@ -388,6 +419,10 @@ void World::addObject(object *o) {
 Adds and object of specified type
 */
 void World::addObject(int objectType) {
+	// set dirty flag
+	isDirtyFlag = false;
+
+	// add the object
 	addObject(createObject(objectType));
 }
 
@@ -439,8 +474,4 @@ object *World::createObject(int objectType) {
 	}
 
 	return o;
-}
-
-size_t World::getNumberOfObjects() {
-	return objectPtrs.size();
 }

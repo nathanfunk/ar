@@ -674,16 +674,20 @@ private:
 	 * Function for handling a New file event from the menu or toolstrip.
 	 */
 	System::Void newFile(System::Object^  sender, System::EventArgs^  e) {
-
+		if (proceedThoughDirty()) {
+			controller->newWorld();
+		}
 	}
 
 	/**
 	 * Handles an open event from the menu or toolstrip.
 	 */
 	System::Void open(System::Object^  sender, System::EventArgs^  e) {
-		OpenFileDialog d;
-		d.ShowDialog(this);
-		printf("Open file %s", d.ToString());
+		if (proceedThoughDirty()) {
+			OpenFileDialog d;
+			d.ShowDialog(this);
+			printf("Open file %s", d.ToString());
+		}
 	}
 
 	/**
@@ -708,13 +712,40 @@ private:
 	 * Handles an Exit click.
 	 */
 	System::Void exit(System::Object^  sender, System::EventArgs^  e) {
-		Close();
+		if (proceedThoughDirty()) {
+			Close();
+		}
+	}
+
+	/**
+	 * Pops up a message box if the world has been changed.
+	 */
+	bool proceedThoughDirty() {
+		if (controller->getWorld()->isDirty()) {
+			System::Windows::Forms::DialogResult result = MessageBox::Show(
+				"You have unsaved changes. Are you sure you want to proceed?", "Unsaved changes",
+				MessageBoxButtons::YesNo, MessageBoxIcon::Question );
+			if (result == System::Windows::Forms::DialogResult::Yes) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 };
 }
 
 /*
+New
+- if file has changed
+  - ask whether to discard changes
+- load new world
+
 Open
+- if file has changed
+  - ask whether to discard changes
 - select file
 - try loading
 - if name associated
