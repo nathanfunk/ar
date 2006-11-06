@@ -245,7 +245,8 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	patt_center[0]	= 0.0;
 	patt_center[1] = 0.0;
 	patt_found		= false;
-	world = new World("myworld.txt");
+	world = new World();
+	world->loadWorld("myworld.txt");
 	world->loadTextures("blah.txt");
 	drawVideo = true;
 }
@@ -1462,4 +1463,16 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 void ARMouseHouse::newWorld() {
 	if (world) delete world;
 	world = new World();
+}
+
+/**
+ * Creates a new world from a file. Just like that.
+ *
+ * Returns true if successful, false otherwise.
+ */
+bool ARMouseHouse::newWorld(string fileName) {
+	if (world) delete world;
+	world = new World();
+	// TODO: add code for checking if unsuccessful
+	return world->loadWorld(fileName);
 }
