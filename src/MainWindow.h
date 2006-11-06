@@ -683,10 +683,19 @@ private:
 	 * Handles an open event from the menu or toolstrip.
 	 */
 	System::Void open(System::Object^  sender, System::EventArgs^  e) {
+		// check if current world has unsaved changes
 		if (proceedThoughDirty()) {
+			// it's ok to proceed
+			// show open dialog
 			OpenFileDialog d;
-			d.ShowDialog(this);
-			printf("Open file %s", d.ToString());
+			d.Filter = "Script file (*.txt)|*.txt|All Files (*.*)|*.*";
+			// TODO: add switches that ensure file type...
+			if (d.ShowDialog(this) == Windows::Forms::DialogResult::OK) {
+				// user selected a file and pressed OK
+				string fileName;
+				MarshalString(d.FileName, fileName);
+				controller->newWorld(fileName);
+			}
 		}
 	}
 
@@ -694,9 +703,14 @@ private:
 	 * Handles a save event from the menu or toolstrip.
 	 */
 	System::Void save(System::Object^  sender, System::EventArgs^  e) {
-		SaveFileDialog d;
-		d.ShowDialog(this);
-		printf("Save file as %s", d.ToString());
+		if (controller->getWorld()->hasFileName()) {
+			// world has file name associated with it
+			controller->getWorld()->saveWorld();
+		} else {
+			// world does not have name yet
+			// use saveAs function instead
+			saveAs(sender, e);
+		}
 	}
 
 	/**
@@ -704,8 +718,10 @@ private:
 	 */
 	System::Void saveAs(System::Object^  sender, System::EventArgs^  e) {
 		SaveFileDialog d;
-		d.ShowDialog(this);
-		printf("Save file as %s", d.ToString());
+		if (d.ShowDialog(this) == Windows::Forms::DialogResult::OK) {
+			string fileName;
+			controller->getWorld()->saveWorld(fileName);
+		}
 	}
 
 	/**
@@ -717,13 +733,15 @@ private:
 		}
 	}
 
+
 	/**
 	 * Pops up a message box if the world has been changed.
 	 */
 	bool proceedThoughDirty() {
 		if (controller->getWorld()->isDirty()) {
-			System::Windows::Forms::DialogResult result = MessageBox::Show(
-				"You have unsaved changes. Are you sure you want to proceed?", "Unsaved changes",
+			Windows::Forms::DialogResult result = MessageBox::Show(
+				"You have unsaved changes. Are you sure you want to proceed?",
+				"Unsaved changes",
 				MessageBoxButtons::YesNo, MessageBoxIcon::Question );
 			if (result == System::Windows::Forms::DialogResult::Yes) {
 				return true;
@@ -733,6 +751,18 @@ private:
 		} else {
 			return true;
 		}
+	}
+	/**
+	 * Converts a System::String to a C++ style string.
+	 *
+	 * http://msdn2.microsoft.com/en-us/library/1b4az623(VS.80).aspx
+	 */
+	void MarshalString ( String ^ s, string& os ) {
+		using namespace Runtime::InteropServices;
+		const char* chars = 
+			(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+		os = chars;
+		Marshal::FreeHGlobal(IntPtr((void*)chars));
 	}
 };
 }
