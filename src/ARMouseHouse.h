@@ -38,23 +38,23 @@ private:
 	int		thresh;
 	int		ar_count;
 
-	ARUint8					*gARTImage; // current image
-	char					*gCparam_name;
-	ARParam					 gCparam;				// camera parameters
-	ARGL_CONTEXT_SETTINGS_REF gArglSettings;
+	ARUint8					*ARTImage; // current image
+	char					*cparam_name;
+	ARParam					 cparam;				// camera parameters
+	ARGL_CONTEXT_SETTINGS_REF arglSettings;
 
-	char	*gPatt_name;
-	double	gPatt_width;
-	double	gPatt_center[2];
-	double	gPatt_trans[3][4];
+	char	*patt_name;
+	double	patt_width;
+	double	patt_center[2];
+	double	patt_trans[3][4];
 
-	int		gPatt_id;
-	int		gPatt_found;
+	int		patt_id;
+	int		patt_found;
 
 	int		lastButton;
 	int		specialKey;
 
-	World	world;
+	World	*world;
 	bool	useGLUTGUI;
 	bool	drawVideo;
 public:
@@ -75,11 +75,12 @@ public:
 	void InitGL ( GLvoid );
 	void ar_init( void );
 	void ar_cleanup(void);
-	World *getWorld() {return &world;}
+	World *getWorld() {return world;}
 	void addObject(int objectType);
 	void setColors(float r, float g, float b);
 	void cycleTransparency();
 	void setDrawVideo(bool value);
+	void newWorld();
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
