@@ -13,6 +13,9 @@
 #include "myModel.h"
 #include "world.h"
 
+
+#pragma unmanaged
+
 using namespace std;
 using namespace ms3dglut;
 
@@ -28,14 +31,18 @@ World::World() {
 	isSelected = 0;
 	isDirtyFlag = false;
 }
-
+/*
+Got rid of this because loading from a file can potentially fail.
+Would need to notify caller that it has failed, which is not possible
+through a constructor. So instead, first construct, then call
+loadWorld().
 World::World(string scriptFile) {
 	//loadTextures("blah.txt");
 	loadWorld(scriptFile);
 	xOff = 0; yOff =0; zOff= 0; rX = 0; rY = 0; rZ = 0;
 	sX = 1; sY = 1; sZ = 1;isSelected = 0;
 	isDirtyFlag = false;
-}
+}*/
 
 World::~World(){ 
 	for (int i = 0; i < (int) objectPtrs.size(); i++){
@@ -101,13 +108,13 @@ int World::getTransformedMotion( double patt_trans[3][4], int but, int key,int x
 	object::getRotFromTrans(patt_trans, rotMat);
 	arGetAngle(rotMat, &wa, &wb, &wc);
 
-	//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
-	//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
+	//cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
+	//cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<endl;
 
-	//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
+	//cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
 	xNew = 1*(x*cos(wc) - y * sin(wc));
 	yNew = 1*(x*sin(wc) + y * cos(wc));
-	//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
+	//cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<endl;	
 	return 1;
 }
 
@@ -160,25 +167,25 @@ void World::loadTextures(char *textureFile){
 	textureIndex.push_back(LoadGLTextureRepeat("steel01.bmp"));
 
 	GLuint blah = LoadGLTextureRepeat("cement.bmp");
-	std::cout<<"blah "<<blah<<std::endl;
+	cout<<"blah "<<blah<<endl;
 	textureIndex.push_back(blah);
-	std::cout<<"texindex at 1 "<<textureIndex[1]<<std::endl;
+	cout<<"texindex at 1 "<<textureIndex[1]<<endl;
 
-	//std::cout<<LoadGLTextureRepeat("steel01.bmp")<<std::endl;
+	//cout<<LoadGLTextureRepeat("steel01.bmp")<<endl;
 
 
-	/*std::ifstream fin(textureFile);
-	std::string line;
-	while ( std::getline(fin,line) )
+	/*ifstream fin(textureFile);
+	string line;
+	while ( getline(fin,line) )
 	{
 
-	std::istringstream iss(line);
-	std::string type;	
+	istringstream iss(line);
+	string type;	
 	iss>>type;
 	if (type == "TEXTURE") {
-	std::string filename;
+	string filename;
 	iss>>filename;
-	std::cout<<filename<<std::endl;
+	cout<<filename<<endl;
 	textureIndex.push_back(LoadGLTextureRepeat(filename.c_str()));
 	}
 	}
@@ -195,23 +202,24 @@ void World::initMenu(){
 /**
  * Loads a world from a file.
  *
- * Reads the file line by line and then sets the fileName member to the name of the file
+ * Reads the file line by line and then sets the fileName member to the name of the file.
+ * Returns true if load was sucessful, false otherwise.
  */
-void World::loadWorld(string scriptFile){
+bool World::loadWorld(string scriptFile){
 	ifstream fin(scriptFile.c_str());
 	string line;
 
 	while ( getline(fin,line) )
 	{
 
-		std::istringstream iss(line);
-		std::string type;	
+		istringstream iss(line);
+		string type;	
 		iss>>type;
 		if (type == "MS3D") {
-			std::string filename;
+			string filename;
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
 			iss>>filename>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ;
-			std::cout<<filename<<xOff<<yOff<<zOff<<rX<<sX<<std::endl;
+			cout<<filename<<xOff<<yOff<<zOff<<rX<<sX<<endl;
 			objectPtrs.push_back(new myModel((int) objectPtrs.size(), (char *) filename.c_str(), xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
 		}
 		else if (type == "RECTANGLE"){
@@ -269,6 +277,8 @@ void World::loadWorld(string scriptFile){
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>startAngle>>arcAngle;
 			objectPtrs.push_back( new fillArc((int) objectPtrs.size(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, startAngle, arcAngle));
+		} else {
+			return false;
 		}
 	}
 
@@ -276,6 +286,7 @@ void World::loadWorld(string scriptFile){
 	fileName = scriptFile;
 	// file is not dirty after being opened
 	isDirtyFlag = false;
+	return true;
 }
 
 //void World::loadWorld(){
@@ -300,13 +311,13 @@ void World::saveWorld() {
  * Saves the world under a specific file name.
  */
 void World::saveWorld(string scriptFile){
-	std::ofstream outfile(scriptFile.c_str());
+	ofstream outfile(scriptFile.c_str());
 
 	if (outfile.is_open())
 	{
 		for (int i = 0; i< (int) objectPtrs.size(); i++){
 
-			outfile << objectPtrs[i]->getDataString()<<std::endl;
+			outfile << objectPtrs[i]->getDataString()<<endl;
 		}
 		outfile.close();
 	}
@@ -320,28 +331,28 @@ void World::saveWorld(string scriptFile){
 
 void World::exportSL(string scriptFile){
 
-	std::ofstream outfile(scriptFile.c_str());
+	ofstream outfile(scriptFile.c_str());
 	if (outfile.is_open())
 	{
 		for (int i = 0; i< (int) objectPtrs.size(); i++){
-			outfile<< "<primitive name=\"Object\" description=\"\" key=\"Num_231670488\" version=\"1\"> "<<std::endl;
-			outfile<< "<states> "<< std::endl;
-			outfile<<"<physics params=\"\">FALSE</physics> "<< std::endl;
-			outfile<<"<temporary params=\"\">FALSE</temporary>"<<std::endl;
-			outfile << "<phantom params=\"\">FALSE</phantom> "<<std::endl;
-			outfile<< "</states>"<<std::endl;
+			outfile<< "<primitive name=\"Object\" description=\"\" key=\"Num_231670488\" version=\"1\"> "<<endl;
+			outfile<< "<states> "<< endl;
+			outfile<<"<physics params=\"\">FALSE</physics> "<< endl;
+			outfile<<"<temporary params=\"\">FALSE</temporary>"<<endl;
+			outfile << "<phantom params=\"\">FALSE</phantom> "<<endl;
+			outfile<< "</states>"<<endl;
 
-			outfile<<  "<properties>"<<std::endl;
-			outfile<<"<levelofdetail val=\"9\">"<<std::endl;
+			outfile<<  "<properties>"<<endl;
+			outfile<<"<levelofdetail val=\"9\">"<<endl;
 
 			outfile << objectPtrs[i]->getSLDataString();
 
-			outfile<<"<textures params=\"\">"<<std::endl;
-			outfile<<"</textures>"<<std::endl;
-			outfile<<"<scripts params=\"\">"<<std::endl;
-			outfile<<"</scripts>"<<std::endl;
-			outfile<<"</properties>"<<std::endl;
-			outfile<<"</primitive>"<<std::endl;
+			outfile<<"<textures params=\"\">"<<endl;
+			outfile<<"</textures>"<<endl;
+			outfile<<"<scripts params=\"\">"<<endl;
+			outfile<<"</scripts>"<<endl;
+			outfile<<"</properties>"<<endl;
+			outfile<<"</primitive>"<<endl;
 
 		}
 

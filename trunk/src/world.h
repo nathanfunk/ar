@@ -31,7 +31,7 @@ public:
 	void loadTextures(char *textureFile);
 	void initMenu();
 	//void loadWorld();
-	void loadWorld(string scriptFile);
+	bool loadWorld(string scriptFile);
 	void saveWorld();
 	void saveWorld(string scriptFile);
 	void exportSL(string scriptFile);
@@ -42,6 +42,7 @@ public:
 	size_t getNumberOfObjects() {return objectPtrs.size();}
 	string getFileName() {return fileName;}
 	bool isDirty() {return isDirtyFlag;}
+	bool hasFileName() {return !fileName.empty();}
 };
 }
 #endif
