@@ -19,7 +19,7 @@
 #include "Vector.h"
 #include "Timer.h"
 
-class Model
+class __declspec(dllexport) Model
 {
 	public:
 		//	Mesh

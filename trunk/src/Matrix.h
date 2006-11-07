@@ -26,7 +26,7 @@ namespace PL3D
 {
 
 #include "Quaternion.h"
-class Matrix
+class __declspec(dllexport) Matrix
 {
 	public:
 		/*	Constructor. */
