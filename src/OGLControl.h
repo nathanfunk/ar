@@ -40,6 +40,7 @@ public:
 	virtual ~OGLControl(void);
 private:
 	int getGLUTButton(System::Windows::Forms::MouseButtons b);
+	int getModifierKeys();
 };
 
 }

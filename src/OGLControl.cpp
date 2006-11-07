@@ -92,13 +92,13 @@ int OGLControl::getGLUTButton(System::Windows::Forms::MouseButtons b) {
 
 void OGLControl::OnMouseDown(MouseEventArgs ^e)
 {
-	controller->mouseCB(getGLUTButton(e->Button), GLUT_DOWN, e->X, e->Y);
+	controller->mouseCBwithModifier(getGLUTButton(e->Button), GLUT_DOWN, e->X, e->Y, getModifierKeys());
 	UserControl::OnMouseDown(e);
 }
 
 void OGLControl::OnMouseUp(MouseEventArgs ^e)
 {
-	controller->mouseCB(getGLUTButton(e->Button), GLUT_UP, e->X, e->Y);
+	controller->mouseCBwithModifier(getGLUTButton(e->Button), GLUT_UP, e->X, e->Y, getModifierKeys());
 	UserControl::OnMouseDown(e);
 }
 
@@ -109,6 +109,17 @@ void OGLControl::OnMouseMove(MouseEventArgs ^e)
 		controller->motionCB(e->X, e->Y);
 	}
 	UserControl::OnMouseMove(e);
+}
+
+int OGLControl::getModifierKeys()
+{
+	if ((Control::ModifierKeys & Keys::Shift) == Keys::Shift) {
+		return GLUT_ACTIVE_SHIFT;
+	} else if ((Control::ModifierKeys & Keys::Alt) == Keys::Alt) {
+		return GLUT_ACTIVE_ALT;
+	} else if ((Control::ModifierKeys & Keys::Control) == Keys::Control) {
+		return GLUT_ACTIVE_CTRL;
+	}
 }
 
 void OGLControl::OnKeyDown(KeyEventArgs ^e)
