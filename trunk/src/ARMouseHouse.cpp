@@ -226,11 +226,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 #endif
 
 
-
-
-
-
 //--------------------------------------------------------------------------------------
+#pragma unmanaged
 
 
 ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
@@ -1006,8 +1003,6 @@ void ARMouseHouse::fileMenuCB(int item)
       case 2:
 		 	world->exportSL("SLFile.txt");
             break;
-
-
 	  default:
 			break;
 
@@ -1045,10 +1040,9 @@ int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 int ARMouseHouse::endDrag(int button, int x, int y){
 	std::cout<<"end drag"<<std::endl;
 
-selectionRect(specialKey);
+	selectionRect(specialKey);
 
-
-return 0;
+	return 0;
 }
 
 int ARMouseHouse::initDrag(int button, int x, int y){
@@ -1229,32 +1223,30 @@ void ARMouseHouse::initMenu(){
 
 
 void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
-
 	if (useGLUTGUI) {
-		specialKey = glutGetModifiers();
+		mouseCBwithModifier(button, state, x, y, glutGetModifiers());
 	}
+}
 
-
-if (state == GLUT_DOWN){
-
-	//if (selectRectDefined == 0){
-	for (int i =0; i < (int) world->objectPtrs.size(); i++){
-		world->objectPtrs[i]->isSelected = 0;
+void ARMouseHouse::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
+	specialKey = modifier;
+	if (state == GLUT_DOWN){
+		//if (selectRectDefined == 0){
+		for (int i =0; i < (int) world->objectPtrs.size(); i++){
+			world->objectPtrs[i]->isSelected = 0;
 		}
-	world->isSelected = 0;	
-	//}
+		world->isSelected = 0;	
+		//}
 
-		std::cout<<"Clicked "<<x<<" "<<y<<std::endl;
-		selection(specialKey, x,y);
-		initDrag(button, x,y);
+		std::cout << "Clicked " << x << " " << y << endl;
+		selection(modifier, x, y);
+		initDrag(button, x, y);
 	}
-if (state == GLUT_UP){
+
+	if (state == GLUT_UP){
 		if (nothingSelected)
-		endDrag(button, x,y);
+			endDrag(button, x,y);
 	}
-
-
-	
 }
 
 int ARMouseHouse::keyMapping(unsigned char key) {
