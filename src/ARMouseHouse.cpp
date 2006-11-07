@@ -753,7 +753,7 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 		int depth = buffer[1];	   // Store How Far Away It Is 
 
 		printf("hits: %d %d\n", hits, choose); 
-		if (choose >= 0 && choose < world->getNumberOfObjects())
+		if (choose >= 0 && choose < (int) world->getNumberOfObjects())
 			world->objectPtrs[choose]->isSelected = 1;
 		for (int loop = 1; loop < hits; loop++)	    // Loop Through All The Detected Hits 
 		{ 
@@ -763,7 +763,7 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 				choose = buffer[loop*4+3];   // Select The Closer Object 
 				depth = buffer[loop*4+1];	 // Store How Far Away It Is 
 				printf("object, depth: %d %d\n", choose, depth); 
-			if (choose >= 0 && choose < world->getNumberOfObjects())
+			if (choose >= 0 && choose < (int) world->getNumberOfObjects())
 				world->objectPtrs[choose]->isSelected = 1;
 
 			//}	   
@@ -772,7 +772,7 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 		printf("closest: %d\n", selected); 
 
 
-		if ((selected >= 0) && (selected < world->getNumberOfObjects())) {
+		if ((selected >= 0) && (selected < (int) world->getNumberOfObjects())) {
 			world->isSelected = 0;
 		//	if (key != GLUT_ACTIVE_SHIFT){
 		//		for (size_t i = 0; i < world->getNumberOfObjects(); i++){
@@ -787,7 +787,7 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 
 		}
 		else if (selected == -100){
-			for (int i = 0; i < world->getNumberOfObjects(); i++){
+			for (int i = 0; i < (int) world->getNumberOfObjects(); i++){
 				//world->objectPtrs[i]->deselect();
 				///world->objectPtrs[i]->isSelected = 0;
 				world->objectPtrs[i]->isSelected = 0;
