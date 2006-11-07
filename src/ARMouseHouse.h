@@ -71,6 +71,7 @@ public:
 	void displayCB(void);
 	void motionCB(int x, int y);
 	void mouseCB(int button, int state, int x, int y);
+	void mouseCBwithModifier(int button, int state, int x, int y, int modifier);
 	void keyboardCB( unsigned char key, int x, int y);
 	void InitGL ( GLvoid );
 	void ar_init( void );
