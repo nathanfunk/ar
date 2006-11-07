@@ -16,7 +16,7 @@
 #include <gl\glaux.h>
 #include "Model.h"
 #include "Lesson31.h"
-#include "debug.h"
+//#include "debug.h"
 #include "Win32Timer.h"
 #include <iostream>
 #include <Assert.h>
