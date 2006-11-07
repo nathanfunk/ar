@@ -18,7 +18,7 @@
 #ifndef PORTALIB3D_TIMER_H
 #define PORTALIB3D_TIMER_H
 
-class Timer
+class __declspec(dllexport) Timer
 {
 	public:
 		/*	Constructor. */

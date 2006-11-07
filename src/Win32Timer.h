@@ -24,7 +24,7 @@
 
 #include "Timer.h"
 
-class Win32Timer : public Timer
+class __declspec(dllexport) Win32Timer : public Timer
 {
 	private:
 		//	Time frequency

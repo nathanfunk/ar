@@ -23,7 +23,7 @@
 
 namespace PL3D{
 
-class Vector
+class __declspec(dllexport) Vector
 {
 	public:
 		/*	Constructor. (0, 0, 0, 1) */

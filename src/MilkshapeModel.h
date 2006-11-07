@@ -16,7 +16,7 @@
 
 #include "Model.h"
 
-class MilkshapeModel : public Model
+class __declspec(dllexport) MilkshapeModel : public Model
 {
 	public:
 		/*	Constructor. */
