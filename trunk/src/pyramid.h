@@ -13,6 +13,9 @@ public:
 	
 			XYSize = size;
 		ZSize = size;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
 	}
 	pyramid(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -26,6 +29,9 @@ public:
 
 				XYSize = size;
 		ZSize = size;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
 	}
 
 
@@ -49,7 +55,7 @@ std::string getDataString(){
 
 
 
-
+/*
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -113,6 +119,7 @@ if (min > 10||handles.empty()){
 		}
 
 	}
+	*/
 
 void drawTri(){
 
