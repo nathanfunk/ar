@@ -17,6 +17,8 @@
 
 #include "Quaternion.h"
 
+
+#pragma unmanaged
 void Quaternion::fromAngles( const float *angles )
 {
 	float angle;
