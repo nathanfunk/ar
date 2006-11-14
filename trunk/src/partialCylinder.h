@@ -13,6 +13,16 @@ public:
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		zOff = 0; rZ = 0;
+
+
+				XYSize = _rad;
+		ZSize = _height;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, 0);
+		rotMat.loadIdentity();
+
+
 	}
 	partialCylinder(int _name, float _xOff, float _yOff,float _zOff,  
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -26,6 +36,14 @@ public:
 		radius= _rad; height = _height;
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
 		isVisible = 1; 
+
+		XYSize = _rad;
+		ZSize = _height;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
+		rotMat.loadIdentity();
+
 	}
 
 
@@ -48,7 +66,7 @@ std::string getDataString(){
 	}
 
 
-
+/*
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -93,7 +111,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		}
 
 	}
-
+*/
 
 
 	void	draw(){
