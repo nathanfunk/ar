@@ -24,6 +24,9 @@ public:
 		initial.push_back(rX);initial.push_back(sX);initial.push_back(0); //timestep
 		script.push_back(initial);
 
+tMatrix.loadIdentity();
+		//tMatrix.translate(_xOff, _yOff, _zOff);
+
 		}
 	myModel(int _name, char *modelFile, float x, float y, float z, float r, float s){
 		name = _name;  
@@ -41,7 +44,8 @@ public:
 		//initial[3] = 15; initial[5] = 20; script.push_back(initial);
 		//initial[3] = 30;initial[5] = 2;script.push_back(initial);
 
-
+tMatrix.loadIdentity();
+		tMatrix.translate(x, y, z);
 	}
 
 
@@ -62,7 +66,8 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 		script.push_back(initial);
 		//initial[3] = 15; initial[5] = 20; script.push_back(initial);
 		//initial[3] = 30;initial[5] = 2;script.push_back(initial);
-
+tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
 
 	}
 
@@ -84,7 +89,8 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 		loadScript(scriptFile);	
 
 		///setGoal(-100,-100, 180, 1, 1);
-
+tMatrix.loadIdentity();
+		tMatrix.translate(x, y, z);
 
 	}
 	object* clone()   { return new myModel(*this); }
@@ -243,7 +249,7 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 
 	//advanceScript();
 
-	
+	glEnable( GL_TEXTURE_2D );
 	pModel->draw(1);
 	
 	
