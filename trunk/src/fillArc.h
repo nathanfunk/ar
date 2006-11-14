@@ -19,6 +19,9 @@ public:
 		XYSize = radius;
 		ZSize = 0;
 
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, 0);
+
 	}
 
 fillArc(int _name, float _xOff, float _yOff,  float _zOff, 
@@ -37,6 +40,8 @@ fillArc(int _name, float _xOff, float _yOff,  float _zOff,
 
 		XYSize = radius;
 		ZSize = 0;
+		tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
 
 	}
 
