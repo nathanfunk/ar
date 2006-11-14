@@ -38,7 +38,9 @@ public:
 	void draw();
 	void addObject(object *o);
 	void addObject(int objectType);
+	void addObject(std::string modelName);
 	object *createObject(int objectType);
+	object *createObject(std::string modelName);
 	size_t getNumberOfObjects() {return objectPtrs.size();}
 	string getFileName() {return fileName;}
 	bool isDirty() {return isDirtyFlag;}
