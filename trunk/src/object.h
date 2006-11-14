@@ -5,7 +5,7 @@
 #define NORMAL 0
 #define TRANSPARENT 1
 #define WIREFRAME 2
-
+#define OUTLINE 3
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
@@ -19,6 +19,8 @@ and milkshape model class in myModel.h
 #include <math.h>
 #include <AR/ar.h>
 #include <GL/glut.h>
+
+#include "Matrix.h"
 
 #ifndef PI
 #	define PI	3.1415926535897932384626433832795
@@ -37,6 +39,8 @@ Farooq Ahmad 2006
 
 class vertex{
 public:
+
+	vertex(){x = 0; y = 0; z = 0;}
 	vertex(float _x, float _y, float _z){
 		x = _x; y = _y; z = _z;
 	};
@@ -71,9 +75,9 @@ public:
 		sX = 1; sY = 1; sZ = 1;
 
 		std::cout<<"Object constructor 1"<<std::endl;
-		pxOff = 0; pyOff = 0; pzOff = 0;
-		prX = 0; prY =0; prZ = 0;
-		psX = 1; psY = 1; psZ = 1;
+		//pxOff = 0; pyOff = 0; pzOff = 0;
+		//prX = 0; prY =0; prZ = 0;
+		//psX = 1; psY = 1; psZ = 1;
 
 
 		isVisible = 1; isSelected = 0;
@@ -83,6 +87,10 @@ public:
 
 		minI = 0;
 		drawMode = NORMAL;
+		tMatrix.loadIdentity();
+		rotMat.loadIdentity();
+		scaleMat.loadIdentity();
+	
 
 	};
 
@@ -94,15 +102,27 @@ public:
 
 
 			std::cout<<"Object constructor 2"<<std::endl;
-			pxOff = 0; pyOff = 0; pzOff = 0;
-			prX = 0; prY =0; prZ = 0;
-			psX = 1; psY = 1; psZ = 1;
-
+			quadratic =  gluNewQuadric();
 
 			texture = 0;
 			minI = 0;
 
 			drawMode = NORMAL;
+			tMatrix.loadIdentity();
+			tMatrix.translate(_xOff, _yOff, _zOff);
+
+
+
+
+		rotate(_rX,1,0,0);
+		rotate(_rY,0,1,0);
+		rotate(_rZ,0,0,1);
+
+
+		scaleMat.loadIdentity();
+		//scale(_sX,_sY, _sZ);
+
+
 	}
 
 	object(GLfloat _objTrans[16]){
@@ -111,6 +131,13 @@ public:
 		std::memcpy(&objTrans, &_objTrans, sizeof(objTrans));
 	}
 
+	object(PL3D::Matrix _tMatrix){
+		//objTrans = _objTrans;
+
+		std::memcpy(&tMatrix, &_tMatrix, sizeof(objTrans));
+	}
+
+	object::~object(){ gluDeleteQuadric(quadratic);}
 
 
 
@@ -244,11 +271,6 @@ public:
 		void drawTopLevel(float snapPos, float snapRot, float snapScale){
 
 			glPushMatrix();		
-			glTranslatef(pxOff,pyOff,pzOff);
-			glRotatef(prX,0,1,0);
-			glRotatef(prY,1,0,0);
-			glScalef(psX, psY, psZ);
-
 
 			glEnable(GL_DEPTH_TEST);
 			if (drawMode == TRANSPARENT){
@@ -260,7 +282,6 @@ public:
 		 if (drawMode == WIREFRAME){
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			}
-
 
 			if (isSelected == 1){
 				highlight();
@@ -289,12 +310,36 @@ public:
 			}
 
 			glPushMatrix();		
-			glTranslatef(xOff,yOff,zOff);
-			glRotatef(rX,0,1,0);
-			glRotatef(rY,1,0,0);
+			//glTranslatef(xOff,yOff,zOff);
+			//glRotatef(rX,0,1,0);
+			//glRotatef(rY,1,0,0);
+	
+			glMultMatrixf(tMatrix.getMatrix());
+			
+			
 			glScalef(sX, sY, sZ);
 
+
+			//drawnormally
+glEnable(GL_POLYGON_OFFSET_FILL);
+			glPolygonOffset(1.0, 1.0);
+
+
 			draw();
+
+
+glDisable(GL_POLYGON_OFFSET_FILL);
+
+	if (isSelected == 1||drawMode == OUTLINE){
+		//draw wireframe
+		glDisable(GL_LIGHTING);
+		glColor3f (1.0, 1.0, 1.0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		draw();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_LIGHTING);
+	}
+
 
 			glPopMatrix();
 
@@ -354,13 +399,19 @@ public:
 			return data.str(); 
 		}
 
+
+
+
+
+
 		virtual void highlight(){
 			glDisable(GL_LIGHTING);
 			// draw handles for object
 			setHandles();
 
 			glPushMatrix();		
-			glTranslatef(xOff,0,zOff);
+			//glTranslatef(xOff,0,zOff);
+			glMultMatrixf(tMatrix.getMatrix());
 			glPushMatrix();
 			//glTranslatef(0,60,0);
 
@@ -434,9 +485,10 @@ public:
 
 		void highlightCorners(){
 			glPushMatrix();
-			glTranslatef(xOff,yOff,zOff);
-			glRotatef(rX,0,1,0);
-			glRotatef(rY,1,0,0);
+//			glTranslatef(xOff,yOff,zOff);
+			glMultMatrixf(tMatrix.getMatrix());
+			//glRotatef(rX,0,1,0);
+			//glRotatef(rY,1,0,0);
 			glScalef(sX, sY, sZ);
 
 			glColor3f(0.85, 0.1, 0.1);
@@ -462,9 +514,10 @@ public:
 			//	GLdouble  winZ;
 
 			glPushMatrix();
-			glTranslatef(xOff,yOff,zOff);
-			glRotatef(rX,0,1,0);
-			glRotatef(rY,1,0,0);
+			glMultMatrixf(tMatrix.getMatrix());
+			//glTranslatef(xOff,yOff,zOff);
+			//glRotatef(rX,0,1,0);
+			//glRotatef(rY,1,0,0);
 			glScalef(sX, sY, sZ);
 
 
@@ -498,7 +551,7 @@ public:
 			//of the new larger/smaller shape, and convert back to world coordinates
 			//(rotation matrix with r = -rotation of object
 			float rzRad = RADIANS(rX);
-			std::cout<<"rX : "<<rX<<std::endl;
+			std::cout<<"rX : "<<rX<<"oSize "<<oSize<<std::endl;
 
 			float xScaleInc = xGrow/20;float yScaleInc = yGrow / 20;
 			float xOffInc = xScaleInc*oSize/2*cos(-rzRad) - yScaleInc*oSize/2*sin(-rzRad);
@@ -507,7 +560,10 @@ public:
 			if (handles[minI].x < 0) xScaleInc *=-1;
 			if (handles[minI].z < 0) yScaleInc *=-1;
 			sX += xScaleInc; sZ+= yScaleInc;
-			xOff+= xOffInc; zOff += yOffInc;
+			//xOff+= xOffInc; zOff += yOffInc;
+			tMatrix.translate(xOffInc, 0, yOffInc);
+
+
 		}
 
 
@@ -525,7 +581,10 @@ public:
 
 			if (handles[minI].x < 0) xScaleInc *=-1;
 			sX += xScaleInc; 
-			xOff+= xOffInc; zOff += yOffInc;
+			//xOff+= xOffInc; zOff += yOffInc;
+			//move(xOffInc, 0, yOffInc);
+			tMatrix.translate(xOffInc, 0, yOffInc);
+
 		}
 
 
@@ -535,11 +594,13 @@ public:
 			float yOffInc = yScaleInc*oSize/2;
 			if (handles[minI].y < 0) yScaleInc *=-1;
 			sY += yScaleInc;
-			yOff += yOffInc;
+			//yOff += yOffInc;
+			//move(0, yOffInc, 0);
+			tMatrix.translate(0, yOffInc, 0);
 		}
 
 
-
+/*
 		virtual void transform(float _x, float _y, float _z, float _rX, float _rY, float _rZ,
 			float _sX, float _sY, float _sZ){
 
@@ -554,13 +615,75 @@ public:
 				psY *= _sY;
 				psZ *= _sZ;
 		}
+*/
 
 
+		//virtual void move(float x, float y, float z){
+			//xOff += x;
+			//yOff += y;
+			//zOff += z;
 
-		virtual void move(int x, int y){
-			xOff += x;
-			zOff += y;
+			//tMatrix.translate(x, y, z);
+		//}
+
+		//rotate rX degrees around x axis, rY degrees around y axis..etc
+		void rotate(float _rX, float _rY, float _rZ){
+			//set the rotation matrix
+			rotMat.setRotationDegrees(_rX, _rY,_rZ);
+			//multiply by tmatrix.
+			///tMatrix.postMultiply(rotMat);
+			rotMat.postMultiply(tMatrix);
+			tMatrix.set(rotMat.getMatrix());
+
+
 		}
+
+		void scale(float _sX, float _sY, float _sZ){
+			scaleMat.loadIdentity();
+			scaleMat.setScale(_sX, _sY, _sZ);
+			scaleMat.postMultiply(tMatrix);
+			tMatrix.set(scaleMat.getMatrix());
+		}
+
+
+
+
+	
+		//rotate theta degrees around axis defined by (x,y,z) at point(xOff,yOff,zOff)
+		void rotate(float theta, float x, float y, float z){
+			
+			rX+=theta;
+			rotMat.loadIdentity();
+			//rotMat.setRotationDegrees(theta,x,y,z);
+			rotMat.setRotationDegrees(theta, tMatrix.m_matrix[12], tMatrix.m_matrix[13], 
+				tMatrix.m_matrix[14], x, y, z);
+
+			rotMat.postMultiply(tMatrix);
+			tMatrix.set(rotMat.getMatrix());
+			//tMatrix.postMultiply(rotMat);
+
+		}
+
+
+				//rotate theta degrees around axis defined by (x,y,z) at point(a,b,c)
+		void rotate(float theta, float a, float b, float c, float x, float y, float z){
+			
+			std::cout<<"Rotate around "<<a<<" "<<b<<" "<<c<<std::endl;
+			rX+=theta;
+			rotMat.loadIdentity();
+			//rotMat.setRotationDegrees(theta,x,y,z);
+			rotMat.setRotationDegrees(theta, a, b, 
+				c, x, y, z);
+
+			rotMat.postMultiply(tMatrix);
+			tMatrix.set(rotMat.getMatrix());
+			//tMatrix.postMultiply(rotMat);
+
+		}
+
+		
+
+
 
 
 		virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
@@ -578,9 +701,6 @@ public:
 				if (but == GLUT_LEFT_BUTTON){
 					sX += (float)x / 25; sZ -= (float)y / 25; //yOff += y;
 				}
-				else if (but == GLUT_RIGHT_BUTTON){
-					sY -= (float)y / 25;
-				}
 				else if (but == GLUT_MIDDLE_BUTTON){
 					//sX -= (float)y / 25; sZ -= (float)y / 25;
 					sY -= (float)y / 25;
@@ -588,14 +708,19 @@ public:
 			}
 			else if (key == GLUT_ACTIVE_CTRL){
 				if (but == GLUT_LEFT_BUTTON){
-					rX += x; 
+					//rX += x; 
+
+					std::cout<<"ROTATING"<<std::endl;
+					rotate(x, 0, 1, 0);
+					//rotate(0, x, 0);
+
 					////rY+=y; //yOff += y;
 				}
-				else if (but == GLUT_RIGHT_BUTTON){
-					rY += x;
-				}
 				else if (but == GLUT_MIDDLE_BUTTON){
-					rX+=x;
+					//rX+=x;
+					////rotate(x,0,y);
+					rotate(x,1,0,0);
+					rotate(y,0,0,1);
 				}
 			}
 			//	}
@@ -604,7 +729,10 @@ public:
 				if (but == GLUT_LEFT_BUTTON){
 
 					if (min > 10 || handles.empty()){
-						xOff += xNew; zOff += yNew;
+						//xOff += xNew; zOff += yNew;
+						//move(xNew, 0, yNew);
+						tMatrix.translate(xNew, 0, yNew);
+
 					}
 					else{
 						std::cout<<"--------------SCALING------------------"<<std::endl;
@@ -616,7 +744,10 @@ public:
 				}
 				else if (but == GLUT_MIDDLE_BUTTON){
 					if (min > 10||handles.empty()){
-						yOff -= y;
+						//yOff -= y;
+						//move(0, -y, 0);
+					tMatrix.translate(0, -y, 0);
+
 					}
 					else{
 						scaleZ(y, ZSize);
@@ -640,7 +771,7 @@ public:
 
 		GLfloat  objTrans[16];
 
-		float pxOff, pyOff, pzOff, prX, prY, prZ, psX, psY, psZ; 
+		////float pxOff, pyOff, pzOff, prX, prY, prZ, psX, psY, psZ; 
 
 		float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ; //x1, y1, x2, y2;
 		GLfloat   mat_ambient[4];   //  = {0.2, 0.3, 0.5, 1.0};
@@ -661,6 +792,11 @@ public:
 		float min;
 
 		float XYSize, ZSize;
+		PL3D::Matrix tMatrix; 
+
+		PL3D::Matrix rotMat;
+
+		PL3D::Matrix scaleMat;
 
 };
 
