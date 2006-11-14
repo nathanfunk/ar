@@ -17,7 +17,11 @@ using namespace System::Collections;
 using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
+ using namespace System::Runtime::InteropServices;
 
+ using namespace System::IO;
+
+#undef GetCurrentDirectory
 
 namespace ms3dglut {
 
@@ -105,6 +109,8 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripButton^  tsbUngroup;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
 	private: System::Windows::Forms::ToolStripButton^  tsbHideVideo;
+	private: System::Windows::Forms::ComboBox^  comboBox1;
+
 
 			 ARMouseHouse *controller;
 
@@ -149,6 +155,7 @@ protected:
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWindow::typeid));
 			this->toolStripContainer = (gcnew System::Windows::Forms::ToolStripContainer());
+			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -190,6 +197,7 @@ protected:
 			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
+			this->toolStripContainer->ContentPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
 			this->menuStrip->SuspendLayout();
@@ -203,7 +211,8 @@ protected:
 			// 
 			// toolStripContainer.ContentPanel
 			// 
-			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 443);
+			this->toolStripContainer->ContentPanel->Controls->Add(this->comboBox1);
+			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 493);
 			this->toolStripContainer->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->toolStripContainer->Location = System::Drawing::Point(0, 0);
 			this->toolStripContainer->Name = L"toolStripContainer";
@@ -217,6 +226,19 @@ protected:
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
+			// 
+			// comboBox1
+			// 
+			this->comboBox1->FormattingEnabled = true;
+			//this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(9) {L"shower", L"Kitchen Sink", L"Fridge", L"Table", 
+			//	L"Chair", L"Lamp", L"Bathroom Sink", L"Toilet", L"Sheep"});
+			this->comboBox1->Items->AddRange(System::IO::Directory::GetFiles(Directory::GetCurrentDirectory() + "/models", "*.ms3d"));
+
+			this->comboBox1->Location = System::Drawing::Point(3, 3);
+			this->comboBox1->Name = L"comboBox1";
+			this->comboBox1->Size = System::Drawing::Size(521, 21);
+			this->comboBox1->TabIndex = 0;
+			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MainWindow::comboBox1_SelectedIndexChanged);
 			// 
 			// menuStrip
 			// 
@@ -244,7 +266,7 @@ protected:
 			this->newToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->newToolStripMenuItem->Name = L"newToolStripMenuItem";
 			this->newToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-			this->newToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->newToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->newToolStripMenuItem->Text = L"&New";
 			// 
 			// openToolStripMenuItem
@@ -253,14 +275,14 @@ protected:
 			this->openToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->openToolStripMenuItem->Name = L"openToolStripMenuItem";
 			this->openToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-			this->openToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->openToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->openToolStripMenuItem->Text = L"&Open";
 			this->openToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::open);
 			// 
 			// toolStripSeparator
 			// 
 			this->toolStripSeparator->Name = L"toolStripSeparator";
-			this->toolStripSeparator->Size = System::Drawing::Size(149, 6);
+			this->toolStripSeparator->Size = System::Drawing::Size(148, 6);
 			// 
 			// saveToolStripMenuItem
 			// 
@@ -268,26 +290,26 @@ protected:
 			this->saveToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
 			this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
 			this->saveToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
-			this->saveToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->saveToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->saveToolStripMenuItem->Text = L"&Save";
 			this->saveToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::save);
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this->saveAsToolStripMenuItem->Name = L"saveAsToolStripMenuItem";
-			this->saveAsToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->saveAsToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->saveAsToolStripMenuItem->Text = L"Save &As";
 			this->saveAsToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::saveAs);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(148, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->exitToolStripMenuItem->Text = L"E&xit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::exit);
 			// 
@@ -302,12 +324,12 @@ protected:
 			// toolStripSeparator3
 			// 
 			this->toolStripSeparator3->Name = L"toolStripSeparator3";
-			this->toolStripSeparator3->Size = System::Drawing::Size(114, 6);
+			this->toolStripSeparator3->Size = System::Drawing::Size(125, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this->selectAllToolStripMenuItem->Name = L"selectAllToolStripMenuItem";
-			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(117, 22);
+			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(128, 22);
 			this->selectAllToolStripMenuItem->Text = L"Select &All";
 			// 
 			// toolsToolStripMenuItem
@@ -321,13 +343,13 @@ protected:
 			// customizeToolStripMenuItem
 			// 
 			this->customizeToolStripMenuItem->Name = L"customizeToolStripMenuItem";
-			this->customizeToolStripMenuItem->Size = System::Drawing::Size(123, 22);
+			this->customizeToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 			this->customizeToolStripMenuItem->Text = L"&Customize";
 			// 
 			// optionsToolStripMenuItem
 			// 
 			this->optionsToolStripMenuItem->Name = L"optionsToolStripMenuItem";
-			this->optionsToolStripMenuItem->Size = System::Drawing::Size(123, 22);
+			this->optionsToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 			this->optionsToolStripMenuItem->Text = L"&Options";
 			// 
 			// helpToolStripMenuItem
@@ -340,7 +362,7 @@ protected:
 			// aboutToolStripMenuItem
 			// 
 			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(115, 22);
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(126, 22);
 			this->aboutToolStripMenuItem->Text = L"&About...";
 			// 
 			// standardToolStrip
@@ -350,7 +372,7 @@ protected:
 				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
 			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
 			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(171, 25);
+			this->standardToolStrip->Size = System::Drawing::Size(169, 25);
 			this->standardToolStrip->TabIndex = 0;
 			this->standardToolStrip->Text = L"toolStrip1";
 			// 
@@ -415,9 +437,9 @@ protected:
 			this->objectsToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {this->tsbCube, this->tsbCylinder, 
 				this->tsbCone, this->tsbSphere, this->tsbPyramid, this->tsbPartialCylinder, this->tsbRectangle, this->tsbTriangle, this->tsbFillArc, 
 				this->tsbLine});
-			this->objectsToolStrip->Location = System::Drawing::Point(3, 49);
+			this->objectsToolStrip->Location = System::Drawing::Point(388, 24);
 			this->objectsToolStrip->Name = L"objectsToolStrip";
-			this->objectsToolStrip->Size = System::Drawing::Size(242, 25);
+			this->objectsToolStrip->Size = System::Drawing::Size(240, 25);
 			this->objectsToolStrip->TabIndex = 1;
 			this->objectsToolStrip->Text = L"Objects";
 			// 
@@ -526,9 +548,9 @@ protected:
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
 			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
 				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
+			this->propertiesToolStrip->Location = System::Drawing::Point(172, 24);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(215, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbColor
@@ -587,6 +609,7 @@ protected:
 			this->Name = L"MainWindow";
 			this->Text = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
+			this->toolStripContainer->ContentPanel->ResumeLayout(false);
 			this->toolStripContainer->TopToolStripPanel->ResumeLayout(false);
 			this->toolStripContainer->TopToolStripPanel->PerformLayout();
 			this->toolStripContainer->ResumeLayout(false);
@@ -764,6 +787,25 @@ private:
 		os = chars;
 		Marshal::FreeHGlobal(IntPtr((void*)chars));
 	}
+private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+	
+			 System::String ^name = ((ComboBox^)sender)->SelectedItem->ToString();
+			 //System::String ^name = (sender)->SelectedItem;
+			 //int index = comboBox1->selectedIndex;
+			 //string modelName = stringConv::ManagedToSTL(name);
+
+			 char* chars = (char*)Marshal::StringToHGlobalAnsi(name).ToPointer();
+
+    //assign the array to an STL string
+    std::string stlName = chars; 
+
+    //free the memory used by the array
+    //since the array is not managed, it will not be claimed by the garbage collector
+    Marshal::FreeHGlobal(IntPtr((void*)chars));
+		 //if (name == "Stove") {
+			controller->addObject(stlName);
+		//} 
+		 }
 };
 }
 
