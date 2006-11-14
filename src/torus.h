@@ -18,6 +18,9 @@ public:
 		TorusDL = 0;
 initDisplayList();
 
+tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
+
 	}
 	torus(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -38,12 +41,15 @@ TorusDL = 0;
 	Radius = _radius;
 		TubeRadius = _tubeRad;
 		initDisplayList();
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
 	}
 
 
 object* clone()   { 
 	
-	std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
+	//std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
 	std::cout<<"CLONE xValues "<<xOff<<" "<<yOff<<" "<<zOff<<std::endl;
 	return new torus(*this); }
 
@@ -66,7 +72,7 @@ std::string getDataString(){
 
 
 
-
+/*
 
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
@@ -132,7 +138,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 	}
 
-
+*/
 
 
 void initDisplayList(){
@@ -209,7 +215,25 @@ void initHandles(){
 
 	void	draw(){
 
+		   glEnable(GL_POLYGON_OFFSET_FILL);
+			glPolygonOffset(1.0, 1.0);
+
 		glCallList(TorusDL);
+
+glDisable(GL_POLYGON_OFFSET_FILL);
+
+   glDisable(GL_LIGHTING);
+
+glColor3f (1.0, 1.0, 1.0);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+   glCallList (TorusDL);
+   
+   
+   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+   glEnable(GL_LIGHTING);
+
 		/*int numc = 20;
 		int numt = 20;
 
