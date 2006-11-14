@@ -47,11 +47,25 @@ class __declspec(dllexport) Matrix
 		/*	Set the translation of the current matrix. Will erase any previous values. */
 		void setTranslation( const float *translation );
 
+		/*	translate the current matrix, add to previous values */
+		void Matrix::translate( float x, float y, float z);
+
 		/*	Set the inverse translation of the current matrix. Will erase any previous values. */
 		void setInverseTranslation( const float *translation );
 
 		/*	Make a rotation matrix from Euler angles. The 4th row and column are unmodified. */
 		void setRotationRadians( const float *angles );
+
+void Matrix::setRotationDegrees( float rX, float rY, float rZ);
+
+void Matrix::setRotationDegrees(float theta, float a, float b, float c,
+								float u, float v, float w);
+void Matrix::setRotationRadians(float radians,  float a, float b, float c,
+								float u, float v, float w);
+
+
+		void Matrix::setRotationDegrees(float theta, float x, float y, float z);
+		void Matrix::setRotationRadians(float radians,  float x, float y, float z);
 
 		/*	Make a rotation matrix from Euler angles. The 4th row and column are unmodified. */
 		void setRotationDegrees( const float *angles );
@@ -64,6 +78,9 @@ class __declspec(dllexport) Matrix
 
 		/*	Make an inverted rotation matrix from Euler angles. The 4th row and column are unmodified. */
 		void setInverseRotationDegrees( const float *angles );
+
+
+void Matrix::setScale(float sX, float sY, float sZ);
 
 		/*	Get the matrix data. */
 		const float *getMatrix() const { return m_matrix; }
