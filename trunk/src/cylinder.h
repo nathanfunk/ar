@@ -2,15 +2,18 @@
 class cylinder:public object{
 public:
 	cylinder(){ 
-	quadratic =  gluNewQuadric();
+	//quadratic =  gluNewQuadric();
 	};
 	cylinder(int _name, float _rad, float _height)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; rad = _rad; height = _height; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = 0;
-		quadratic =  gluNewQuadric();
+		//quadratic =  gluNewQuadric();
 		XYSize = rad;
 		ZSize = height;
+				tMatrix.loadIdentity();
+				rotMat.loadIdentity();
+		
 	}
 	cylinder(int _name, 
 		float _xOff, float _yOff, float _zOff,
@@ -23,10 +26,14 @@ public:
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ;
 		rad = _rad; height = _height; isVisible = 1;
-		quadratic =  gluNewQuadric();
+		//quadratic =  gluNewQuadric();
 
 				XYSize = rad;
 		ZSize = height;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
+		rotMat.loadIdentity();
 	}
 
 
@@ -49,7 +56,7 @@ public:
 	}
 
 
-
+/*
 	virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
 		//int specialKey = glutGetModifiers();
 		double xNew, yNew;
@@ -103,7 +110,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 		}
 
 	}
-
+*/
 
 
 void initHandles(){
@@ -120,11 +127,17 @@ void initHandles(){
 
 
 	void	draw(){
+
+		glPushMatrix();
+		glRotatef(90, 1, 0, 0);
 		gluDisk(quadratic, 0, rad, 15, 15);
 		gluCylinder(quadratic, rad, rad,  height, 15, 15);
 
+		glPushMatrix();
 		glTranslatef(0,0,height);
 		gluDisk(quadratic, 0, rad, 15, 15);
+		glPopMatrix();
+		glPopMatrix();
 	}
-	float rad, height; GLUquadricObj *quadratic;
+	float rad, height;
 };
