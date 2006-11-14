@@ -35,7 +35,7 @@ public:
 
 object* clone()   { 
 	
-	std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
+//	std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
 	std::cout<<"CLONE xValues "<<xOff<<" "<<yOff<<" "<<zOff<<std::endl;
 	return new wall(*this); }
 
@@ -184,7 +184,7 @@ void firstInsideSecond( GLenum face, GLenum test)
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
   glStencilFunc(test, 0, 1);
-  //glDisable(GL_DEPTH_TEST);
+  glDisable(GL_DEPTH_TEST);
 
   glCullFace(face);
   drawWall();                  /* draw the part of a that's in b */
@@ -215,7 +215,7 @@ void secondInsideFirst( GLenum face, GLenum test)
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
   glStencilFunc(test, 0, 1);
-  //glDisable(GL_DEPTH_TEST);
+  glDisable(GL_DEPTH_TEST);
 
   glCullFace(face);
   drawHole();                  /* draw the part of a that's in b */
@@ -228,8 +228,8 @@ void fixDepth()
   glEnable(GL_DEPTH_TEST);
   glDisable(GL_STENCIL_TEST);
   glDepthFunc(GL_ALWAYS);
-  drawWall();
-  ////drawHole();                  /* draw the front face of a, fixing the depth buffer */
+  ///drawWall();
+  drawHole();                  /* draw the front face of a, fixing the depth buffer */
   glDepthFunc(GL_LESS);
 }
 
