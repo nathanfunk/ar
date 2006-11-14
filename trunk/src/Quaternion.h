@@ -28,6 +28,8 @@
 #	define PI_ON_180	(PI/180.0)
 #endif
 
+
+
 class Quaternion
 {
 	public:
