@@ -14,6 +14,9 @@ using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
 
+
+
+
 namespace ms3dglut {
 
 ref class OGLControl : public UserControl
