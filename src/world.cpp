@@ -394,7 +394,7 @@ void World::draw(){
 
 	//draw the models
 	for (int i = 0; i < (int) objectPtrs.size(); i++){
-		if (objectPtrs[i]->drawMode == NORMAL||objectPtrs[i]->drawMode == WIREFRAME){
+		if (objectPtrs[i]->drawMode == NORMAL||objectPtrs[i]->drawMode == WIREFRAME||objectPtrs[i]->drawMode == OUTLINE){
 			//push i onto namestack
 			glPushName(i);
 			objectPtrs[i]->drawTopLevel(5,5,5);
@@ -437,6 +437,16 @@ void World::addObject(int objectType) {
 	addObject(createObject(objectType));
 }
 
+void World::addObject(std::string modelName) {
+	// set dirty flag
+	isDirtyFlag = false;
+
+	// add the object
+	addObject(createObject(modelName));
+}
+
+
+
 /**
 Creates an object of specified type
 */
@@ -462,11 +472,11 @@ object *World::createObject(int objectType) {
 			break;
 		case ObjectTypes::CUBE:
 			o = new cube2(nObjects, 0,30,60,30);
+			 //PlaySound("squish.wav", NULL, SND_FILENAME | SND_SYNC);
 			break;
 		case ObjectTypes::TORUS:
 			o = new torus(nObjects, 0,30,60,10, 5);
 			break;
-
 		case ObjectTypes::WALL:
 			o = new wall(nObjects, 0,30,60,30);
 			break;
@@ -482,7 +492,47 @@ object *World::createObject(int objectType) {
 		case ObjectTypes::LINE:
 			o = new line(nObjects, 0, 0, 30, 30);
 			break;
+
+/*
+
+		case ObjectTypes::STOVE:
+			o = new rectangle(nObjects, -10,-10,50, 50, 90);
+			break;
+		case ObjectTypes::TRIANGLE:
+			o = new triangle(nObjects, -50,50,-50, -50,-50,50, -50, 0,50, 45);
+			break;
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 
+	return o;
+}
+
+
+
+object *World::createObject(std::string modelName) {
+	int nObjects = (int)getNumberOfObjects();
+	object *o;
+
+	
+	//std::string fullPath("models/");
+
+//fullPath.append(modelName);
+//fullPath.append(".ms3d");
+
+o = new myModel(nObjects, (char *) modelName.c_str(), 0,0,0,0,1.5);
+//o = new pyramid(nObjects, 0,30,60, 30);
 	return o;
 }
