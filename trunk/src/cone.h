@@ -7,7 +7,13 @@ public:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 1;sY = 1; sZ= 1; rad= _rad; height = _height; isVisible = 1; rX = 0; rY = 0;rZ = 0;
-			
+		
+		XYSize = _rad;
+		ZSize = _height;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
+		rotMat.loadIdentity();
 	}
 cone(int _name, float _x, float _y,  float _z,
 	 	float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -18,6 +24,13 @@ cone(int _name, float _x, float _y,  float _z,
 	rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ; 
 	rad= _rad; height = _height; isVisible = 1;
+
+		XYSize = _rad;
+		ZSize = _height;
+
+			tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
+		rotMat.loadIdentity();
 			
 	}
 
@@ -31,7 +44,7 @@ std::string getDataString(){
 	}
 
 
-
+/*
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -89,7 +102,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 	}
 
-
+*/
 	void initHandles(){
 
 	handles.clear();
@@ -104,7 +117,10 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 
 	void	draw(){
+		glPushMatrix();
+		glRotatef(90,1,0,0);
 		glutSolidCone(rad, height, 5, 15);
+		glPopMatrix();
 	}
 
 	float rad, height;
