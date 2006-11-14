@@ -246,6 +246,8 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	world->loadWorld("myworld.txt");
 	world->loadTextures("blah.txt");
 	drawVideo = true;
+
+	gotImage = 0;
 }
 
 ARMouseHouse::~ARMouseHouse() {
@@ -258,7 +260,9 @@ void ARMouseHouse::ar_cleanup(void)
 	if (arglSettings) {
 		arglCleanup(arglSettings);
 	}
+	//if (gotImage){
     arVideoCapStop();
+	//}
     arVideoClose();
 //    argCleanup(); //gsub.h dependent
 }
@@ -340,7 +344,11 @@ void ARMouseHouse::displayCB(void)
 		arglDispImage(ARTImage, &cparam, 1.0, arglSettings);
 	}
 
-    arVideoCapNext();
+	if (gotImage){
+		arVideoCapNext();
+		gotImage = 0;
+	}
+	else {return;}
 	ARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 
 	// draw the world if the pattern has been found
@@ -382,6 +390,9 @@ bool ARMouseHouse::idleCB()
 	if ((dataPtr = (ARUint8 *)arVideoGetImage()) == NULL) {
 		return false;
 	}
+
+	gotImage = 1;
+
 	ARTImage = dataPtr;	// Save the fetched image.
 	patt_found = FALSE;	// Invalidate any previous detected markers.
 
@@ -1270,6 +1281,10 @@ void ARMouseHouse::addObject(int objectType) {
 	world->addObject(objectType);
 }
 
+void ARMouseHouse::addObject(std::string modelName) {
+	world->addObject(modelName);
+}
+
 void ARMouseHouse::cycleTransparency() {
 	std::cout<<"transparent"<<std::endl;
 
@@ -1284,8 +1299,10 @@ void ARMouseHouse::cycleTransparency() {
 				if ((*it)->drawMode == WIREFRAME)
 					(*it)->drawMode = TRANSPARENT;
 				else
-					(*it)->drawMode = NORMAL;
-
+					if ((*it)->drawMode == TRANSPARENT)
+					(*it)->drawMode = OUTLINE;
+					else
+						(*it)->drawMode = NORMAL;
 
 			it++;
 		}
@@ -1321,7 +1338,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 
 	if( key == 'm' ) {
 		std::cout<<"new mouse"<<std::endl;
-		world->addObject(new myModel(nObjects, "mouse2.ms3d", 0,0,0,0,1.5));	
+		world->addObject(new myModel(nObjects, "fart.ms3d", 0,0,0,0,1.5));	
 	}
 
 
