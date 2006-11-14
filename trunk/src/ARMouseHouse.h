@@ -78,6 +78,7 @@ public:
 	void ar_cleanup(void);
 	World *getWorld() {return world;}
 	void addObject(int objectType);
+	void addObject(std::string modelName);
 	void setColors(float r, float g, float b);
 	void cycleTransparency();
 	void setDrawVideo(bool value);
@@ -92,6 +93,9 @@ private:
 	void drawSelectionRect();
 	int endDrag(int button, int x, int y);
 	int keyMapping(unsigned char key);
+
+	int gotImage; ///get rid of iter!= mb.end bug
+
 };
 
 }
