@@ -6,13 +6,15 @@ public:
 	
 	};
 	cube2(int _name, float _x, float _y,  float _z, float _size)//:
-		//object(_name, _x1, _y1, _x2, _y2, _r)
+		//object( _x, _y, _z, 0,0,0, 1,1,1)
 	{
 		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; size = _size; isVisible = 1; rX = 0; rY = 0;
 			minI = 0;
 		XYSize = size;
 		ZSize = size;
 
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
 
 	}
 	cube2(int _name, float _x, float _y,  float _z, 
@@ -29,19 +31,27 @@ public:
 
 		XYSize = size;
 		ZSize = size;
+
+	tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);
+
+				rotate(_rX,1,0,0);
+		rotate(_rY,0,1,0);
+		rotate(_rZ,0,0,1);
+
 	}
 
 
 object* clone()   { 
 	
-	std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
+//	std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
 	std::cout<<"CLONE xValues "<<xOff<<" "<<yOff<<" "<<zOff<<std::endl;
 	return new cube2(*this); }
 
 
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"CUBE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<size;	
+		data<<"CUBE2 "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<size;	
 		return data.str(); 
 	}
 
@@ -58,7 +68,7 @@ std::string getDataString(){
 
 
 
-
+/*
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -82,7 +92,8 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 		}
 	else if (key == GLUT_ACTIVE_CTRL){
 		if (but == GLUT_LEFT_BUTTON){
-		rX += x;   ////rY -= y;
+		//rX += x;   ////rY -= y;
+		rotate(x, 0, 1, 0);
 		////rY-=y; //yOff += y;
 		}
 		else if (but == GLUT_RIGHT_BUTTON){
@@ -122,7 +133,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 		}
 
 	}
-
+*/
 
 void drawRect(){
 
