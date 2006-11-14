@@ -1,3 +1,10 @@
+Nov 9 fa
+	-- added combobox to gui that lists all ms3d files in /models, select them to insert model
+	-- adding functions to matrix class to allow rotation around arbitrary point/line etc.
+	-- changed object class to use tMatrix for transforms, rather than variables
+	-- changed grouping for multishapes - finds centroid of multishapes, rotate each component around centroid
+
+
 Nov 05 nf
 	- created new WinMain function for entrance as Windows app
 	- needed [STAThreadAttribute] for Save and Open dialogs to work 
