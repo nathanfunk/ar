@@ -16,6 +16,9 @@ public:
 		XYSize = 1;
 		ZSize = 1;
 
+		tMatrix.loadIdentity();
+		
+
 	}
 	triangle(int _name, float _xOff, float _yOff, float _zOff, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
@@ -27,6 +30,8 @@ public:
 
 				XYSize = 1;
 		ZSize = 1;
+		tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
 	}
 	triangle(int _name, float _xOff, float _yOff, float _zOff, 
 		
@@ -43,6 +48,8 @@ public:
 
 		XYSize = 1;
 		ZSize = 1;
+tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
 	}
 
 

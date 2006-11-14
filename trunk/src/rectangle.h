@@ -10,6 +10,7 @@ public:
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
 		xOff = 0; yOff = 0; zOff = 0;
+		tMatrix.loadIdentity();
 	}
 	rectangle(int _name, float _xOff, float _yOff, float _zOff, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -20,6 +21,9 @@ public:
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ; isVisible = 1; 
 		xOff = _xOff; yOff = _yOff; zOff = _zOff;
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
 	}
 
 
