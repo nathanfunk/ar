@@ -20,17 +20,8 @@ OGLControl::OGLControl(void)
 
 void OGLControl::OnPaint(PaintEventArgs ^e)
 {
-	glDrawBuffer(GL_BACK);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Draw OpenGL scene
-	controller->displayCB();
-
-	// Swap buffers
-	if (!SwapBuffers(hdc))
-	{
-		System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
-	}
+	// Leaving this empty so nothing happens when a paint event occurs
+	// All painting happens on Tick events
 }
 
 
@@ -78,8 +69,8 @@ void OGLControl::OnCreateControl()
 }
 
 /**
-Gets the GLUT button id from the Windows Forms id
-*/
+ * Gets the GLUT button id from the Windows Forms id
+ */
 int OGLControl::getGLUTButton(System::Windows::Forms::MouseButtons b) {
 	if (b == ::MouseButtons::Left) {
 		return GLUT_LEFT_BUTTON;
@@ -147,13 +138,27 @@ void OGLControl::OnSizeChanged(System::EventArgs ^e)
 
 }
 
-/** Event handler for timer ticks
-*/
+/**
+ * Event handler for timer ticks. Tries to get a new image from the camera
+ * and then redisplay the image if necessary.
+ */
 void OGLControl::OnTick(Object ^sender, EventArgs ^e)
 {
 	if (controller->idleCB()) {
-		// new video frame is available
-		Invalidate();
+		// a new picture is available from the camera
+		// so draw it and the model (if marker is detected)
+
+		glDrawBuffer(GL_BACK);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Draw OpenGL scene
+		controller->displayCB();
+
+		// Swap buffers
+		if (!SwapBuffers(hdc))
+		{
+			System::Diagnostics::Debug::WriteLine("SwapBuffers failed: " + GetLastError());
+		}
 	}
 }
 
