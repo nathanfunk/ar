@@ -220,62 +220,62 @@ bool World::loadWorld(string scriptFile){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
 			iss>>filename>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ;
 			cout<<filename<<xOff<<yOff<<zOff<<rX<<sX<<endl;
-			objectPtrs.push_back(new myModel((int) getNumberOfObjects(), (char *) filename.c_str(), xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
+			addObject(new myModel((int) getNumberOfObjects(), (char *) filename.c_str(), xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
 		}
 		else if (type == "RECTANGLE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>x1>>y1>>x2>>y2;
-			objectPtrs.push_back( new rectangle((int) getNumberOfObjects(), 
+			addObject( new rectangle((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2));
 		}
 		else if (type == "SPHERE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius;
-			objectPtrs.push_back( new sphere((int) getNumberOfObjects(), 
+			addObject( new sphere((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius));
 		}
 		else if (type == "CUBE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-			objectPtrs.push_back( new cube2((int) getNumberOfObjects(), 
+			addObject( new cube2((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 		}
 		else if (type == "PYRAMID"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-			objectPtrs.push_back( new pyramid((int) getNumberOfObjects(), 
+			addObject( new pyramid((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 		}
 
 		else if (type == "CONE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height;
-			objectPtrs.push_back( new cone((int) getNumberOfObjects(), 
+			addObject( new cone((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius, height));
 		}
 		else if (type == "TRIANGLE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2, x3, y3;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>x1>>y1>>x2>>y2>>x3>>y3;
-			objectPtrs.push_back( new triangle((int) getNumberOfObjects(), 
+			addObject( new triangle((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2, x3, y3));
 		}
 		else if (type == "CYLINDER"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height;
-			objectPtrs.push_back( new cylinder((int) getNumberOfObjects(), 
+			addObject( new cylinder((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, height));
 		}
 
 		else if (type == "PARTIALCYLINDER"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height, startAngle, arcAngle;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height>>startAngle>>arcAngle;
-			objectPtrs.push_back( new  partialCylinder((int) getNumberOfObjects(), 
+			addObject( new  partialCylinder((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, height, startAngle, arcAngle));
 		}
 		else if (type == "FILLARC"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, startAngle, arcAngle;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>startAngle>>arcAngle;
-			objectPtrs.push_back( new fillArc((int) getNumberOfObjects(), 
+			addObject( new fillArc((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, startAngle, arcAngle));
 		} else {
 			return false;
@@ -284,6 +284,8 @@ bool World::loadWorld(string scriptFile){
 
 	// set file name
 	fileName = scriptFile;
+
+	// world will have been marked dirty while adding objects
 	// file is not dirty after being opened
 	isDirtyFlag = false;
 	return true;
@@ -416,8 +418,9 @@ void World::draw(){
 }
 
 /**
-Adds an object to the world
-*/
+ * Adds an object to the world and attaches the world as an observer
+ * of the object.
+ */
 void World::addObject(object *o) {
 	// set dirty flag
 	isDirtyFlag = true;
