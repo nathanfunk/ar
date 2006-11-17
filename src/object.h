@@ -20,6 +20,7 @@ and milkshape model class in myModel.h
 #include <AR/ar.h>
 #include <GL/glut.h>
 
+#include "ISubject.h"
 #include "Matrix.h"
 
 #ifndef PI
@@ -67,7 +68,7 @@ static const int TORUS		= 12;
 
 
 
-class object{
+class object : public ISubject {
 public:
 	object(){
 		xOff = 0; yOff = 0; zOff = 0;
@@ -140,20 +141,21 @@ public:
 	object::~object(){ gluDeleteQuadric(quadratic);}
 
 
-
 	virtual object * clone(){
 
 		std::cout<<" OBJECT CLONE "<<std::endl;
-		return new object(*this);};
+		return new object(*this);
+	};
 
 
-		static void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
-			for (int i = 0; i < 3; i++){
-				for (int j = 0; j < 3; j++){
-					rotMat[i][j]  = patt_trans[i][j];
-				}
+	static void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
+		for (int i = 0; i < 3; i++){
+			for (int j = 0; j < 3; j++){
+				rotMat[i][j]  = patt_trans[i][j];
 			}
 		}
+	}
+
 		int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
 			//		double wa, wb, wc;
 			double rotMat[3][3];
@@ -202,7 +204,11 @@ public:
 
 
 
-		virtual std::vector<object *> ungroup(){std::vector<object *> emptyVec; return emptyVec;};
+		virtual std::vector<object *> ungroup() {
+			std::vector<object *> emptyVec;
+			notifyObservers();
+			return emptyVec;
+		};
 
 
 
@@ -251,10 +257,12 @@ public:
 
 			std::cout<<"Setting colors "<<std::endl;
 			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3;
+			notifyObservers();
 		}
 
 		void setColors(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4){
 			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3; mat_ambient[3] = c4;
+			notifyObservers();
 		}
 
 		void setTexture(GLuint _texture){
@@ -266,6 +274,7 @@ public:
 			texture = _texture;
 			//glBindTexture( GL_TEXTURE_2D, texture );
 
+			notifyObservers();
 		}
 
 		void drawTopLevel(float snapPos, float snapRot, float snapScale){
@@ -563,7 +572,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			//xOff+= xOffInc; zOff += yOffInc;
 			tMatrix.translate(xOffInc, 0, yOffInc);
 
-
+			notifyObservers();
 		}
 
 
@@ -585,6 +594,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			//move(xOffInc, 0, yOffInc);
 			tMatrix.translate(xOffInc, 0, yOffInc);
 
+			notifyObservers();
 		}
 
 
@@ -597,6 +607,8 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			//yOff += yOffInc;
 			//move(0, yOffInc, 0);
 			tMatrix.translate(0, yOffInc, 0);
+
+			notifyObservers();
 		}
 
 
@@ -635,7 +647,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			rotMat.postMultiply(tMatrix);
 			tMatrix.set(rotMat.getMatrix());
 
-
+			notifyObservers();
 		}
 
 		void scale(float _sX, float _sY, float _sZ){
@@ -643,6 +655,8 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			scaleMat.setScale(_sX, _sY, _sZ);
 			scaleMat.postMultiply(tMatrix);
 			tMatrix.set(scaleMat.getMatrix());
+
+			notifyObservers();
 		}
 
 
@@ -662,6 +676,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			tMatrix.set(rotMat.getMatrix());
 			//tMatrix.postMultiply(rotMat);
 
+			notifyObservers();
 		}
 
 
@@ -679,6 +694,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			tMatrix.set(rotMat.getMatrix());
 			//tMatrix.postMultiply(rotMat);
 
+			notifyObservers();
 		}
 
 		
@@ -755,7 +771,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 					}
 				}
 			}
-
+			notifyObservers();
 		}
 
 
