@@ -24,11 +24,17 @@ AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 
 	fopen_s(&File, Filename,"r");									// Check To See If The File Exists
 
+
 	if (File)														// Does The File Exist?
 	{
 		fclose(File);												// Close The Handle
 		return auxDIBImageLoad((LPCWSTR)Filename);							// Load The Bitmap And Return A Pointer
 	}
+	else{
+		std::cout<<"LoadBMP: file does not exist"<<std::endl;
+
+	}
+
 
 	return NULL;													// If Load Failed Return NULL
 };
@@ -37,6 +43,8 @@ GLuint LoadGLTexture( const char *filename )						// Load Bitmaps And Convert To
 {
 	AUX_RGBImageRec *pImage;										// Create Storage Space For The Texture
 	GLuint texture = 0;												// Texture ID
+
+	std::cout<<"Texture: "<<filename<<std::endl;
 
 	pImage = LoadBMP( filename );									// Loads The Bitmap Specified By filename
 
@@ -64,6 +72,8 @@ glbmp_t bitmap;
 	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
 	if ( pImage != NULL && pImage->data != NULL )					// If Texture Image Exists
 	{
+
+		std::cout<<"the image loaded"<<std::endl;
 		glGenTextures(1, &texture);									// Create The Texture
 
 		// Typical Texture Generation Using Data From The Bitmap
@@ -74,6 +84,9 @@ glbmp_t bitmap;
 
 		free(pImage->data);											// Free The Texture Image Memory
 		free(pImage);												// Free The Image Structure
+	}
+	else{
+		std::cout<<"the texture is NULL"<<std::endl;
 	}
 
 	return texture;													// Return The Status

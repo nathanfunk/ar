@@ -16,6 +16,8 @@ public:
 		tMatrix.loadIdentity();
 		tMatrix.translate(_x, _y, _z);
 
+
+setTexture(LoadGLTextureRepeat("steel01.bmp"));
 	}
 	cube2(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -38,6 +40,9 @@ public:
 				rotate(_rX,1,0,0);
 		rotate(_rY,0,1,0);
 		rotate(_rZ,0,0,1);
+
+
+		setTexture(LoadGLTextureRepeat("steel01.bmp"));
 
 	}
 

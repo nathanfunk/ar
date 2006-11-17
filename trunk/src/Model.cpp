@@ -21,6 +21,8 @@
 #include <iostream>
 #include <Assert.h>
 
+//#include "Tga.h"
+//GLuint LoadTGA(char * filename);
 
 #pragma unmanaged
 
@@ -242,6 +244,7 @@ void Model::reloadTextures()
 	for ( int i = 0; i < m_numMaterials; i++ )
 		if ( strlen( m_pMaterials[i].m_pTextureFilename ) > 0 )
 			m_pMaterials[i].m_texture = LoadGLTexture( m_pMaterials[i].m_pTextureFilename );
+			//m_pMaterials[i].m_texture = LoadTGA( m_pMaterials[i].m_pTextureFilename );
 		else
 			m_pMaterials[i].m_texture = 0;
 }

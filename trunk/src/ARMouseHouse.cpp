@@ -20,7 +20,9 @@ class GLUquadric {};// avoids "warning LNK4248: unresolved typeref token (010000
 struct _ARGL_CONTEXT_SETTINGS {}; // avoids "warning LNK4248: unresolved typeref token (01000031) for '_ARGL_CONTEXT_SETTINGS'; image may not run"
 
 #include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
-#include <gl/glaux.h>
+
+#include "bmp.h"
+//#include <gl/glaux.h>
 //#include <GL/glui.h>
 
 #include <AR/gsub_lite.h>
@@ -74,6 +76,8 @@ AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 {
 	FILE *File=NULL;												// File Handle
 
+std::cout<<"file: "<<Filename<<std::endl;
+
 	if (!Filename)													// Make Sure A Filename Was Given
 	{
 		return NULL;												// If Not Return NULL
@@ -81,10 +85,13 @@ AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 
 	fopen_s(&File, Filename,"r");									// Check To See If The File Exists
 
+
+	
+
 	if (File)														// Does The File Exist?
 	{
 		fclose(File);												// Close The Handle
-		return auxDIBImageLoad(Filename);							// Load The Bitmap And Return A Pointer
+		return myAuxDIBImageLoad(Filename);							// Load The Bitmap And Return A Pointer
 	}
 
 	return NULL;													// If Load Failed Return NULL
@@ -186,8 +193,16 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 	controller = new ARMouseHouse(true);
 	glutInit(&argc, argv);
 	controller->InitGL();
+
+	
+
 	controller->ar_init();
 	controller->initMenu();
+
+controller->LoadWorld();
+
+
+Console::WriteLine(Environment::CurrentDirectory );
 
 	//GLUT callbacks
 	glutMotionFunc(motionCB);
@@ -237,18 +252,24 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	cparam_name	= "Data/camera_para.dat";
 	ARTImage		= NULL; // current image
 	arglSettings	= NULL;
-	patt_name		= "Data/patt.triangle";
+	patt_name		= "Data/patt.sample1";
 	patt_width		= 80.0;
 	patt_center[0]	= 0.0;
 	patt_center[1] = 0.0;
 	patt_found		= false;
 	world = new World();
-	world->loadWorld("myworld.txt");
-	world->loadTextures("blah.txt");
+	//world->loadWorld("myworld.txt");
+	
 	drawVideo = true;
-
 	gotImage = 0;
 }
+
+void ARMouseHouse::LoadWorld(){
+world->loadWorld("myworld.txt");
+world->loadTextures("blah.txt");
+}
+
+
 
 ARMouseHouse::~ARMouseHouse() {
 	ar_cleanup();
@@ -298,6 +319,10 @@ void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
 //    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
 //    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
 //	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
+
+
+
 }
 
 
@@ -1279,6 +1304,11 @@ void ARMouseHouse::addObject(int objectType) {
 void ARMouseHouse::addObject(std::string modelName) {
 	world->addObject(modelName);
 }
+
+void ARMouseHouse::setTexture(std::string modelName) {
+	world->setTexture(modelName);
+}
+
 
 void ARMouseHouse::cycleTransparency() {
 	std::cout<<"transparent"<<std::endl;

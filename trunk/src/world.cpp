@@ -164,34 +164,70 @@ void World::move(double patt_trans[3][4],int but, int key, int x, int y){
 
 void World::loadTextures(char *textureFile){
 
-	textureIndex.push_back(LoadGLTextureRepeat("steel01.bmp"));
+//if (LoadTGA(&texture[0], "Textures/Uncompressed.tga") &&
+	//	LoadTGA(&texture[1], "Textures/Compressed.tga"))
 
-	GLuint blah = LoadGLTextureRepeat("cement.bmp");
-	cout<<"blah "<<blah<<endl;
-	textureIndex.push_back(blah);
-	cout<<"texindex at 1 "<<textureIndex[1]<<endl;
+//{
+	std::cout<<"Loading Textures "<<std::endl;
+//}
+	///textureIndex.push_back(LoadGLTextureRepeat("steel01.bmp"));
+
+	///GLuint blah = LoadGLTextureRepeat("cement.bmp");
+	///cout<<"blah "<<blah<<endl;
+	///textureIndex.push_back(blah);
+	///cout<<"texindex at 1 "<<textureIndex[1]<<endl;
 
 	//cout<<LoadGLTextureRepeat("steel01.bmp")<<endl;
 
 
-	/*ifstream fin(textureFile);
+	ifstream fin(textureFile);
 	string line;
+	int i = 0;
 	while ( getline(fin,line) )
 	{
 
 	istringstream iss(line);
 	string type;	
 	iss>>type;
-	if (type == "TEXTURE") {
+	if (type == "TGA") {
 	string filename;
 	iss>>filename;
 	cout<<filename<<endl;
-	textureIndex.push_back(LoadGLTextureRepeat(filename.c_str()));
-	}
-	}
-	*/
+	//Texture *tex = LoadTGA((char *) filename.c_str());
+	/////GLuint texNo = LoadTGA((char *) filename.c_str());
+	////if (texNo){
+	///	textureIndex.push_back(texNo);
+	///}
+	//texturePtrs.push_back(tex);
+	//cout<<"texture loaded successfully"<<std::endl;
+/*
+	glGenTextures(1, &(texture->texID));				// Create The Texture ( CHANGE )
+	glBindTexture(GL_TEXTURE_2D, texture->texID);
+	glTexImage2D(GL_TEXTURE_2D, 0, texture->bpp / 8, texture->width, texture->height, 0, texture->type, GL_UNSIGNED_BYTE, texture->imageData);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	//if (texture->imageData)						// If Texture Image Exists ( CHANGE )
+	//{
+	//	free(texture->imageData);					// Free The Texture Image Memory ( CHANGE )
+	//}
+*/
 
-}
+
+
+
+
+
+
+	//}
+//	else std::cout<<"Bad Texture"<<std::endl;
+
+
+	//LoadTGA(&texturePtrs[texturePtrs.size()], filename.c_str()));
+	}
+	}
+	
+
+	}
 
 
 void World::initMenu(){
@@ -452,6 +488,17 @@ void World::addObject(std::string modelName) {
 
 	// add the object
 	addObject(createObject(modelName));
+}
+
+
+void World::setTexture(std::string modelName) {
+	// set dirty flag
+	isDirtyFlag = false;
+	for (int i = 0; i < (int) getNumberOfObjects(); i ++){
+		if (objectPtrs[i]->isSelected == 1)
+			objectPtrs[i]->setTexture(LoadGLTextureRepeat(modelName.c_str()));
+	}
+
 }
 
 
