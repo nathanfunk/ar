@@ -1,3 +1,11 @@
+Nov 16 nf
+	- applied service pack 1 beta
+	- got linker errors
+	  "LIBCMT.lib(...) : error LNK2005: ... already defined in MSVCRTD.lib(MSVCR80D.dll)"
+	- Farooq found workaround by excluding libcmt.lib in project settings
+	- added file saving functionality
+	- added code for setting window title
+
 Nov 9 fa
 	-- added combobox to gui that lists all ms3d files in /models, select them to insert model
 	-- adding functions to matrix class to allow rotation around arbitrary point/line etc.
