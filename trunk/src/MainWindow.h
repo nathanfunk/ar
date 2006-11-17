@@ -36,56 +36,35 @@ namespace ms3dglut {
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
 	private:
-		OGLControl oglControl;
+		OGLControl						oglControl;
+		System::Windows::Forms::Timer	^titleTimer;
+		ARMouseHouse					*controller;
+
 	private: System::Windows::Forms::ToolStripContainer^  toolStripContainer;
-
 	private: System::Windows::Forms::MenuStrip^  menuStrip;
-
 	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  newToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator;
 	private: System::Windows::Forms::ToolStripMenuItem^  saveToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  saveAsToolStripMenuItem;
-
-
-
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator2;
 	private: System::Windows::Forms::ToolStripMenuItem^  exitToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  editToolStripMenuItem;
-
-
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator3;
-
-
-
-
 	private: System::Windows::Forms::ToolStripMenuItem^  selectAllToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  toolsToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  customizeToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  optionsToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  helpToolStripMenuItem;
-
-
-
-
 	private: System::Windows::Forms::ToolStripMenuItem^  aboutToolStripMenuItem;
 	private: System::Windows::Forms::ToolStrip^  standardToolStrip;
-
-
 	private: System::Windows::Forms::ToolStripButton^  newToolStripButton;
 	private: System::Windows::Forms::ToolStripButton^  openToolStripButton;
 	private: System::Windows::Forms::ToolStripButton^  saveToolStripButton;
-
-
-
-
-
-
 	private: System::Windows::Forms::ToolStripButton^  helpToolStripButton;
 	private: System::Windows::Forms::StatusStrip^  statusStrip;
 	private: System::Windows::Forms::ToolStripButton^  tsbPartialCylinder;
-
 	private: System::Windows::Forms::ToolStripButton^  tsbFillArc;
 	private: System::Windows::Forms::ToolStripButton^  tsbLine;
 	private: System::Windows::Forms::ToolStripButton^  tsbPyramid;
@@ -108,19 +87,8 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripButton^  tsbUngroup;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
 	private: System::Windows::Forms::ToolStripButton^  tsbHideVideo;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::ToolStripDropDownButton^  tsddbModel;
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
-
-
-
-			 ARMouseHouse *controller;
 
 	public:
 		MainWindow(void)
@@ -656,6 +624,15 @@ private:
 		// Start video capture now that everything's set up
 		arVideoCapStart();
 
+		// Set up timer to poll for changes in world and update window title
+		titleTimer = gcnew System::Windows::Forms::Timer();
+		titleTimer->Tick += gcnew EventHandler(this, &MainWindow::OnTitleTimerTick);
+		titleTimer->Interval = 1000; //every second
+		titleTimer->Start();
+	}
+
+	void OnTitleTimerTick(Object ^sender, EventArgs ^e)
+	{
 		updateWindowTitle();
 	}
 
@@ -843,15 +820,17 @@ private:
 		String ^title = "";
 
 		// contruct string
-		if (name != "") {
-			if (controller->getWorld()->isDirty())
-				title = name + L"*";
-			else 
-				title = name;
+		if (name->Length > 0) {
+			title = name;
 		} else {
 			title = L"Untitled";
 		}
-		title += L" - New Reality";
+
+		// add star if unsaved changes
+		if (controller->getWorld()->isDirty())
+			title = title + L"*";
+
+		title += L" - Modifeyed";
 		// set window title to constructed string
 		Text = title;
 	}
