@@ -168,6 +168,7 @@ void setWinCoords(){
 		}
 		}
 
+		notifyObservers();
 	}
 
 	void	draw(){

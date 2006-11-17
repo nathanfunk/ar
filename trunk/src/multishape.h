@@ -106,6 +106,8 @@ for (int i = 0 ; i < (int) shapePtrs.size(); i++){
 
 		}
 		}
+		
+		notifyObservers();
 
 	}
 
