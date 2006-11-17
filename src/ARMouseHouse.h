@@ -77,6 +77,11 @@ public:
 	void ar_init( void );
 	void ar_cleanup(void);
 	World *getWorld() {return world;}
+
+void ARMouseHouse::LoadWorld();
+void ARMouseHouse::setTexture(std::string modelName);
+
+
 	void addObject(int objectType);
 	void addObject(std::string modelName);
 	void setColors(float r, float g, float b);

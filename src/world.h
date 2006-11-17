@@ -5,6 +5,12 @@
 #include <string>
 #include "object.h"
 #include "IObserver.h"
+
+#include "Texture.h"
+
+//Texture * LoadTGA(char *);
+GLuint LoadTGA(char *);
+
 using namespace std;
 
 namespace ms3dglut {
@@ -20,6 +26,12 @@ public:
 	//std::vector <myModel> modelVec;
 	vector <GLuint> textureIndex;
 
+Texture texture[2];
+
+
+	vector<Texture *> texturePtrs;
+
+
 	float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
 	int isSelected;
 
@@ -32,6 +44,7 @@ public:
 	void loadTextures(char *textureFile);
 	void initMenu();
 	//void loadWorld();
+	void World::setTexture(std::string modelName);
 	bool loadWorld(string scriptFile);
 	void saveWorld();
 	void saveWorld(string scriptFile);
@@ -42,7 +55,7 @@ public:
 	void addObject(std::string modelName);
 	object *createObject(int objectType);
 	object *createObject(std::string modelName);
-	int getNumberOfObjects() {return (int)objectPtrs.size();}
+	size_t getNumberOfObjects() {return objectPtrs.size();}
 	object *getObject(int i) {return objectPtrs[i];}
 	string getFileName() {return fileName;}
 	bool isDirty() {return isDirtyFlag;}

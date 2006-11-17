@@ -139,7 +139,7 @@ tMatrix.loadIdentity();
 			return 0;													// If Model Didn't Load Quit
 		}
 
-		//pModel->reloadTextures();
+		pModel->reloadTextures();
 
 		return 1;
 	}
