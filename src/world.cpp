@@ -45,8 +45,8 @@ World::World(string scriptFile) {
 }*/
 
 World::~World(){ 
-	for (int i = 0; i < (int) objectPtrs.size(); i++){
-		delete objectPtrs[i];
+	for (int i = 0; i < (int) getNumberOfObjects(); i++){
+		delete getObject(i);
 	}
 
 }
@@ -220,62 +220,62 @@ bool World::loadWorld(string scriptFile){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
 			iss>>filename>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ;
 			cout<<filename<<xOff<<yOff<<zOff<<rX<<sX<<endl;
-			objectPtrs.push_back(new myModel((int) objectPtrs.size(), (char *) filename.c_str(), xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
+			objectPtrs.push_back(new myModel((int) getNumberOfObjects(), (char *) filename.c_str(), xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
 		}
 		else if (type == "RECTANGLE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>x1>>y1>>x2>>y2;
-			objectPtrs.push_back( new rectangle((int) objectPtrs.size(), 
+			objectPtrs.push_back( new rectangle((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2));
 		}
 		else if (type == "SPHERE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius;
-			objectPtrs.push_back( new sphere((int) objectPtrs.size(), 
+			objectPtrs.push_back( new sphere((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius));
 		}
 		else if (type == "CUBE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-			objectPtrs.push_back( new cube2((int) objectPtrs.size(), 
+			objectPtrs.push_back( new cube2((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 		}
 		else if (type == "PYRAMID"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
-			objectPtrs.push_back( new pyramid((int) objectPtrs.size(), 
+			objectPtrs.push_back( new pyramid((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, size));
 		}
 
 		else if (type == "CONE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height;
-			objectPtrs.push_back( new cone((int) objectPtrs.size(), 
+			objectPtrs.push_back( new cone((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius, height));
 		}
 		else if (type == "TRIANGLE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2, x3, y3;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>x1>>y1>>x2>>y2>>x3>>y3;
-			objectPtrs.push_back( new triangle((int) objectPtrs.size(), 
+			objectPtrs.push_back( new triangle((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2, x3, y3));
 		}
 		else if (type == "CYLINDER"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height;
-			objectPtrs.push_back( new cylinder((int) objectPtrs.size(), 
+			objectPtrs.push_back( new cylinder((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, height));
 		}
 
 		else if (type == "PARTIALCYLINDER"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, height, startAngle, arcAngle;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>height>>startAngle>>arcAngle;
-			objectPtrs.push_back( new  partialCylinder((int) objectPtrs.size(), 
+			objectPtrs.push_back( new  partialCylinder((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, height, startAngle, arcAngle));
 		}
 		else if (type == "FILLARC"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, radius, startAngle, arcAngle;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>radius>>startAngle>>arcAngle;
-			objectPtrs.push_back( new fillArc((int) objectPtrs.size(), 
+			objectPtrs.push_back( new fillArc((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ,radius, startAngle, arcAngle));
 		} else {
 			return false;
@@ -291,11 +291,11 @@ bool World::loadWorld(string scriptFile){
 
 //void World::loadWorld(){
 //
-//	objectPtrs.push_back(new myModel((int) objectPtrs.size(), "chair.ms3d", 50,0,-50,0,1));
-//	objectPtrs.push_back(new myModel((int) objectPtrs.size(), "lcdtv2.ms3d", 50,0,-50,0,1));
+//	objectPtrs.push_back(new myModel((int) getNumberOfObjects(), "chair.ms3d", 50,0,-50,0,1));
+//	objectPtrs.push_back(new myModel((int) getNumberOfObjects(), "lcdtv2.ms3d", 50,0,-50,0,1));
 //
-//	//objects.push_back(new myModel((int) objectPtrs.size(), "chair.ms3d", 50,-10,-50,0,1));
-//	//objectPtrs.push_back(new rectangle(objectPtrs.size(), 0,0,100, 100, 90));
+//	//objects.push_back(new myModel((int) getNumberOfObjects(), "chair.ms3d", 50,-10,-50,0,1));
+//	//objectPtrs.push_back(new rectangle(getNumberOfObjects(), 0,0,100, 100, 90));
 //}
 
 /**
@@ -315,9 +315,9 @@ void World::saveWorld(string scriptFile){
 
 	if (outfile.is_open())
 	{
-		for (int i = 0; i< (int) objectPtrs.size(); i++){
+		for (int i = 0; i< (int) getNumberOfObjects(); i++){
 
-			outfile << objectPtrs[i]->getDataString()<<endl;
+			outfile << getObject(i)->getDataString()<<endl;
 		}
 		outfile.close();
 	}
@@ -334,7 +334,7 @@ void World::exportSL(string scriptFile){
 	ofstream outfile(scriptFile.c_str());
 	if (outfile.is_open())
 	{
-		for (int i = 0; i< (int) objectPtrs.size(); i++){
+		for (int i = 0; i< (int) getNumberOfObjects(); i++){
 			outfile<< "<primitive name=\"Object\" description=\"\" key=\"Num_231670488\" version=\"1\"> "<<endl;
 			outfile<< "<states> "<< endl;
 			outfile<<"<physics params=\"\">FALSE</physics> "<< endl;
@@ -345,7 +345,7 @@ void World::exportSL(string scriptFile){
 			outfile<<  "<properties>"<<endl;
 			outfile<<"<levelofdetail val=\"9\">"<<endl;
 
-			outfile << objectPtrs[i]->getSLDataString();
+			outfile << getObject(i)->getSLDataString();
 
 			outfile<<"<textures params=\"\">"<<endl;
 			outfile<<"</textures>"<<endl;
@@ -393,21 +393,21 @@ void World::draw(){
 	glRotatef(90,1,0,0);
 
 	//draw the models
-	for (int i = 0; i < (int) objectPtrs.size(); i++){
-		if (objectPtrs[i]->drawMode == NORMAL||objectPtrs[i]->drawMode == WIREFRAME||objectPtrs[i]->drawMode == OUTLINE){
+	for (int i = 0; i < (int) getNumberOfObjects(); i++){
+		if (getObject(i)->drawMode == NORMAL||getObject(i)->drawMode == WIREFRAME||getObject(i)->drawMode == OUTLINE){
 			//push i onto namestack
 			glPushName(i);
-			objectPtrs[i]->drawTopLevel(5,5,5);
+			getObject(i)->drawTopLevel(5,5,5);
 			glPopName();
 		}
 
 	}
 
-	for (int i = 0; i < (int) objectPtrs.size(); i++){
-		if (objectPtrs[i]->drawMode == TRANSPARENT){
+	for (int i = 0; i < (int) getNumberOfObjects(); i++){
+		if (getObject(i)->drawMode == TRANSPARENT){
 			//push i onto namestack
 			glPushName(i);
-			objectPtrs[i]->drawTopLevel(5,5,5);
+			getObject(i)->drawTopLevel(5,5,5);
 			glPopName();
 		}
 	}
@@ -420,26 +420,32 @@ Adds an object to the world
 */
 void World::addObject(object *o) {
 	// set dirty flag
-	isDirtyFlag = false;
+	isDirtyFlag = true;
+
+	// observe the object
+	o->attachObserver(*this);
 
 	// add the object
 	objectPtrs.push_back(o);
 }
 
 /**
-Adds and object of specified type
-*/
+ * Adds and object of specified type
+ */
 void World::addObject(int objectType) {
 	// set dirty flag
-	isDirtyFlag = false;
+	isDirtyFlag = true;
 
 	// add the object
 	addObject(createObject(objectType));
 }
 
+/**
+ * Adds an object from a model
+ */
 void World::addObject(std::string modelName) {
 	// set dirty flag
-	isDirtyFlag = false;
+	isDirtyFlag = true;
 
 	// add the object
 	addObject(createObject(modelName));
@@ -448,8 +454,8 @@ void World::addObject(std::string modelName) {
 
 
 /**
-Creates an object of specified type
-*/
+ * Creates an object of specified type
+ */
 object *World::createObject(int objectType) {
 	int nObjects = (int)getNumberOfObjects();
 	object *o;
@@ -535,4 +541,8 @@ object *World::createObject(std::string modelName) {
 o = new myModel(nObjects, (char *) modelName.c_str(), 0,0,0,0,1.5);
 //o = new pyramid(nObjects, 0,30,60, 30);
 	return o;
+}
+
+void World::update(const ISubject &subject) {
+	isDirtyFlag = true;
 }
