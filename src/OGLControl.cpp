@@ -104,13 +104,15 @@ void OGLControl::OnMouseMove(MouseEventArgs ^e)
 
 int OGLControl::getModifierKeys()
 {
-	if ((Control::ModifierKeys & Keys::Shift) == Keys::Shift) {
-		return GLUT_ACTIVE_SHIFT;
-	} else if ((Control::ModifierKeys & Keys::Alt) == Keys::Alt) {
-		return GLUT_ACTIVE_ALT;
-	} else if ((Control::ModifierKeys & Keys::Control) == Keys::Control) {
-		return GLUT_ACTIVE_CTRL;
-	}
+	int value = 0;
+	if ((Control::ModifierKeys & Keys::Shift) == Keys::Shift) 
+		value += GLUT_ACTIVE_SHIFT;
+	if ((Control::ModifierKeys & Keys::Alt) == Keys::Alt)
+		value += GLUT_ACTIVE_ALT;
+	if ((Control::ModifierKeys & Keys::Control) == Keys::Control)
+		value += GLUT_ACTIVE_CTRL;
+	
+	return value;
 }
 
 void OGLControl::OnKeyDown(KeyEventArgs ^e)
