@@ -5,7 +5,7 @@
 #include <conio.h>
 #include <vector>
 #include <fstream>
-#include <iostream>
+//#include <iostream>
 #include <sstream>
 
 #include "ARMouseHouse.h"
@@ -17,8 +17,8 @@ using namespace System::Collections;
 using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
-using namespace System::Runtime::InteropServices;
 using namespace System::IO;
+using namespace Runtime::InteropServices;
 
 #undef GetCurrentDirectory
 
@@ -229,9 +229,9 @@ protected:
 			// toolStripContainer.TopToolStripPanel
 			// 
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->menuStrip);
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
-			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
 			// 
 			// menuStrip
 			// 
@@ -363,7 +363,7 @@ protected:
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
 			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
 				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(174, 24);
+			this->propertiesToolStrip->Location = System::Drawing::Point(325, 49);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
 			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
 			this->propertiesToolStrip->TabIndex = 2;
@@ -609,7 +609,6 @@ protected:
 			this->Controls->Add(this->statusStrip);
 			this->Controls->Add(this->toolStripContainer);
 			this->Name = L"MainWindow";
-			this->Text = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
 			this->toolStripContainer->TopToolStripPanel->ResumeLayout(false);
 			this->toolStripContainer->TopToolStripPanel->PerformLayout();
@@ -656,6 +655,8 @@ private:
 
 		// Start video capture now that everything's set up
 		arVideoCapStart();
+
+		updateWindowTitle();
 	}
 
 	System::Void ObjectsToolStrip_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -682,6 +683,8 @@ private:
 		} else if (name == "tsbTriangle" ) {
 			controller->addObject(ObjectTypes::TRIANGLE);
 		}
+
+		updateWindowTitle();
 	}
 
 	System::Void tsbColor_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -691,6 +694,8 @@ private:
 
 		// get selected color and change object
 		controller->setColors(cd.Color.R/255.0, cd.Color.G/255.0, cd.Color.B/255.0);
+
+		updateWindowTitle();
 	}
 
 	/**
@@ -698,6 +703,8 @@ private:
 	 */
 	System::Void tsbTransparency_Click(System::Object^ sender, System::EventArgs^ e) {
 		controller->cycleTransparency();
+
+		updateWindowTitle();
 	}
 
 	/**
@@ -707,6 +714,10 @@ private:
 		controller->setDrawVideo(!tsbHideVideo->Checked);
 	}
 
+//----------------------------------------------------------------------------
+// File IO methods
+//----------------------------------------------------------------------------
+
 	/**
 	 * Function for handling a New file event from the menu or toolstrip.
 	 */
@@ -714,6 +725,7 @@ private:
 		if (proceedThoughDirty()) {
 			controller->newWorld();
 		}
+		updateWindowTitle();
 	}
 
 	/**
@@ -734,6 +746,7 @@ private:
 				controller->newWorld(fileName);
 			}
 		}
+		updateWindowTitle();
 	}
 
 	/**
@@ -743,6 +756,7 @@ private:
 		if (controller->getWorld()->hasFileName()) {
 			// world has file name associated with it
 			controller->getWorld()->saveWorld();
+			updateWindowTitle();
 		} else {
 			// world does not have name yet
 			// use saveAs function instead
@@ -755,10 +769,13 @@ private:
 	 */
 	System::Void saveAs(System::Object^  sender, System::EventArgs^  e) {
 		SaveFileDialog d;
+		d.Filter = "Script file (*.txt)|*.txt|All Files (*.*)|*.*";
 		if (d.ShowDialog(this) == Windows::Forms::DialogResult::OK) {
 			string fileName;
+			MarshalString(d.FileName, fileName);
 			controller->getWorld()->saveWorld(fileName);
 		}
+		updateWindowTitle();
 	}
 
 	/**
@@ -794,13 +811,18 @@ private:
 	 *
 	 * http://msdn2.microsoft.com/en-us/library/1b4az623(VS.80).aspx
 	 */
-	void MarshalString ( String ^ s, string& os ) {
-		using namespace Runtime::InteropServices;
+	void MarshalString ( String ^ managed, string& stl ) {
 		const char* chars = 
-			(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
-		os = chars;
+			(const char*)(Marshal::StringToHGlobalAnsi(managed)).ToPointer();
+		stl = chars;
 		Marshal::FreeHGlobal(IntPtr((void*)chars));
 	}
+	/**
+	 * Converts a stl string to a System::String.
+	System::String^ MarshalString ( const string& stl ) {
+		return Marshal::PtrToStringAnsi((System::IntPtr)stl.c_str());
+	}
+	 */
 
 	/**
 	 * Event handler for Insert Model items
@@ -810,6 +832,28 @@ private:
 		string stlName;
 		MarshalString(name, stlName);
 		controller->addObject(stlName);
+	}
+
+	/**
+	 * Updates the window title dependent on the file name and whether the world
+	 * has unsaved changes.
+	 */
+	void updateWindowTitle() {
+		String ^name = gcnew String((controller->getWorld()->getFileName()).c_str());
+		String ^title = "";
+
+		// contruct string
+		if (name != "") {
+			if (controller->getWorld()->isDirty())
+				title = name + L"*";
+			else 
+				title = name;
+		} else {
+			title = L"Untitled";
+		}
+		title += L" - New Reality";
+		// set window title to constructed string
+		Text = title;
 	}
 };
 }
