@@ -151,7 +151,8 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 		}
 		}
-
+		
+		notifyObservers();
 	}
 
 

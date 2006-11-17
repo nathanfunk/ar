@@ -98,6 +98,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		}
 		}
 
+		notifyObservers();
 	}
 
 
