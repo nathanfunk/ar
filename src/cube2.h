@@ -1,4 +1,7 @@
+#ifndef CUBE2_H
+#define CUBE2_H
 
+#include "textureloader.h"
 
 class cube2:public object{
 public:
@@ -219,3 +222,5 @@ glPopMatrix();
 //	int minI;
 //	float  min;
 };
+
+#endif
