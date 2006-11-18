@@ -225,6 +225,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\textureloader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Timer.cpp"
 				>
 			</File>
@@ -338,6 +342,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sphere.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\textureloader.h"
 				>
 			</File>
 			<File
