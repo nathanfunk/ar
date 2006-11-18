@@ -830,7 +830,7 @@ private:
 		if (controller->getWorld()->isDirty())
 			title = title + L"*";
 
-		title += L" - Modifeyed";
+		title += L" - ARRR Modeler";
 		// set window title to constructed string
 		Text = title;
 	}
