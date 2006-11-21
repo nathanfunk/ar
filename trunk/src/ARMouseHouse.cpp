@@ -54,9 +54,11 @@ int y2Rect;
 int selectRectDefined;
 int nothingSelected;
 
-ARMouseHouse *controller;
 
 //--------------------------------------------------------------------------------------
+#ifdef GLUT_GUI_MODE
+
+ARMouseHouse *controller;
 
 void idleCB() {controller->idleCB();}
 void reshapeCB( int width , int height ) {controller->reshapeCB(width, height);}
@@ -72,7 +74,6 @@ void keyboardCB( unsigned char key, int x, int y) {controller->keyboardCB(key, x
 
 
 //--------------------------------------------------------------------------------------
-#ifdef GLUT_GUI_MODE
 
 int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
 {
@@ -147,6 +148,8 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	patt_center[1] = 0.0;
 	patt_found		= false;
 	world = new World();
+	xsize = 1;
+	ysize = 1;
 	//world->loadWorld("myworld.txt");
 	
 	drawVideo = true;
@@ -345,23 +348,35 @@ bool ARMouseHouse::idleCB()
 }
 
 
-void ARMouseHouse::reshapeCB( int width , int height )   // Create The Reshape Function (the viewport)
+void ARMouseHouse::reshapeCB(int width , int height)   // Create The Reshape Function (the viewport)
 {
-	if (height==0)										// Prevent A Divide By Zero By
-	{
-		height=1;													// Making Height Equal One
+	GLdouble aspectRatio;
+	GLint finalW, finalH;
+
+	// Calculate The Aspect Ratio of the video
+	if (xsize == 0)								// Prevent A Divide By Zero By
+		xsize = 1;
+	aspectRatio = (GLdouble)xsize/(GLdouble)ysize;
+
+	if (width*1.0/height > xsize*1.0/ysize) {
+		// window is too wide
+		finalH = height;
+		finalW = aspectRatio*height;
+		glViewport((width-finalW)/2,0,finalW,finalH);
+	} else {
+		// window is good or too high
+		finalW = width;
+		finalH = width/aspectRatio;
+		glViewport(0,(height-finalH)/2,finalW,finalH);
 	}
 
-	glViewport(0,0,width,height);									// Reset The Current Viewport
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glLoadIdentity();									// Reset The Projection Matrix
 
-	glMatrixMode(GL_PROJECTION);									// Select The Projection Matrix
-	glLoadIdentity();												// Reset The Projection Matrix
+	gluPerspective(15.0f, aspectRatio, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX);	// View Depth of 1000
 
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(15.0f,(GLfloat)width/(GLfloat)height,VIEW_DISTANCE_MIN,VIEW_DISTANCE_MAX);	// View Depth of 1000
-
-	glMatrixMode(GL_MODELVIEW);										// Select The Modelview Matrix
-	glLoadIdentity();												// Reset The Modelview Matrix
+	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+	glLoadIdentity();									// Reset The Modelview Matrix
 }
 
 
@@ -396,38 +411,42 @@ void ARMouseHouse::arrowKeysCB( int a_keys, int x, int y )  // Create Special Fu
 
 
 
-
-void ARMouseHouse::ar_init( void )
+/**
+ * Initializes ARToolKit.
+ *
+ * Returns a negative number if an error occurs.
+ */
+int ARMouseHouse::ar_init( void )
 {
     ARParam  wparam;
+	int error;
     /* open the video path */
 	//if( arVideoOpen( vconf ) < 0 ){
-	if( arVideoOpen("Data\\WDM_camera_flipV.xml") < 0 ){
-        printf("arVideoOpen failed!! Press any key to exit...\n");
-		_getch();
-		exit(0);
+	if( (error = arVideoOpen("Data\\WDM_camera_flipV.xml")) < 0 ){
+        printf("arVideoOpen failed!\n");
+		return error;
 	}
 
     /* find the size of the window */
-    if( arVideoInqSize(&xsize, &ysize) < 0 ) exit(0);
+	if( (error = arVideoInqSize(&xsize, &ysize)) < 0 ) {
+		return error;
+	}
     printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
 
     /* set the initial camera parameters */
-    if( arParamLoad(cparam_name, 1, &wparam) < 0 ) {
-        printf("Camera parameter load error!! Press any key to exit...\n");
-		_getch();
-        exit(0);
-    }
+    if( (error = arParamLoad(cparam_name, 1, &wparam)) < 0 ) {
+        printf("Camera parameter load error!\n");
+		return error;
+	}
 
     arParamChangeSize( &wparam, xsize, ysize, &cparam );
     arInitCparam( &cparam );
     printf("*** Camera Parameter ***\n");
     arParamDisp( &cparam );
 
-    if( (patt_id=arLoadPatt(patt_name)) < 0 ) {
-        printf("Pattern load error!! Press any key to exit...\n");
-		_getch();
-        exit(0);
+    if( (patt_id = arLoadPatt(patt_name)) < 0 ) {
+        printf("Pattern load error!\n");
+		return patt_id;
     }
 
     /* open the graphics window */
@@ -440,18 +459,19 @@ void ARMouseHouse::ar_init( void )
 	if (useGLUTGUI) {
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 		glutInitWindowSize(cparam.xsize, cparam.ysize);
-		glutCreateWindow("AR Window");
+		glutCreateWindow("ARRR Modeler");
 	}
 
 	// Setup argl library for current context.
 	if ((arglSettings = arglSetupForCurrentContext()) == NULL) {
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
-		exit(-1);
+		return -1;
 	}
+
 	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
 
-	// ----------------------------------------------------------------------------
+	return 0;
 }
 
 
@@ -734,6 +754,62 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 
 
 
+#ifdef GLUT_GUI_MODE
+
+void ARMouseHouse::initMenu(){
+
+	int submenu1, submenu2, submenu3, submenu4, mainMenu;
+
+	submenu1 = glutCreateMenu(::menuCB);
+	glutAddMenuEntry("Chair", 1);
+	glutAddMenuEntry("TV", 2);
+	glutAddMenuEntry("Bed", 3);
+	glutAddMenuEntry("Toilet", 4);
+	glutAddMenuEntry("Sink", 5);
+	glutAddMenuEntry("Sheep", 6);
+	glutAddMenuEntry("Desk", 7);
+	glutAddMenuEntry("Sofa", 8);
+	glutAddMenuEntry("Stairs", 9);
+	glutAddMenuEntry("Kitchen Table", 10);
+	glutAddMenuEntry("Shelf", 11);
+	glutAddMenuEntry("Door", 12);
+	glutAddMenuEntry("Window", 13);
+
+	submenu2 = glutCreateMenu(::colorMenuCB);
+	glutAddMenuEntry("Red", 1);//
+	glutAddMenuEntry("Blue", 2);//
+	glutAddMenuEntry("Green", 3);//
+
+
+	submenu3 = glutCreateMenu(::fileMenuCB);
+	glutAddMenuEntry("Save", 1);//
+	glutAddMenuEntry("Export to SL", 2);//
+	//glutAddMenuEntry("Green", 3);//
+
+	submenu4 = glutCreateMenu(::textureMenuCB);
+	glutAddMenuEntry("None", 0);//
+	glutAddMenuEntry("Steel", 1);//
+	glutAddMenuEntry("Checkers", 2);//
+	glutAddMenuEntry("Red Checkers",3);//
+	glutAddMenuEntry("Beige Marble", 4);//
+	glutAddMenuEntry("Wood", 5);//
+	glutAddMenuEntry("Grass", 6);//
+	glutAddMenuEntry("Cement", 7);//
+	glutAddMenuEntry("Road", 8);//
+
+	mainMenu = glutCreateMenu(::menuCB);
+	glutAddSubMenu("File", submenu3);
+	glutAddSubMenu("Models", submenu1);
+	glutAddSubMenu("Colors", submenu2);//
+	glutAddSubMenu("Texture", submenu4);//
+
+
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+}
+
+
+
 void ARMouseHouse::menuCB(int item)
 {
      switch (item) {
@@ -786,13 +862,7 @@ case 13:
 	 }
 };
 
-void ARMouseHouse::setColors(float r, float g, float b) {
-	for (int i = 0; i < (int) world->getNumberOfObjects(); i++){
-		if (world->getObject(i)->isSelected) {
-			world->getObject(i)->setColors(r, g, b);
-		}
-	}
-}
+
 
 
 void ARMouseHouse::colorMenuCB(int item)
@@ -936,6 +1006,16 @@ void ARMouseHouse::fileMenuCB(int item)
 
 
 
+
+#endif
+
+void ARMouseHouse::setColors(float r, float g, float b) {
+	for (int i = 0; i < (int) world->getNumberOfObjects(); i++){
+		if (world->getObject(i)->isSelected) {
+			world->getObject(i)->setColors(r, g, b);
+		}
+	}
+}
 
 int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 {
@@ -1085,60 +1165,6 @@ glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
 				glPopMatrix();
 
 				 
-}
-
-
-
-void ARMouseHouse::initMenu(){
-
-	int submenu1, submenu2, submenu3, submenu4, mainMenu;
-
-	submenu1 = glutCreateMenu(::menuCB);
-	glutAddMenuEntry("Chair", 1);
-	glutAddMenuEntry("TV", 2);
-	glutAddMenuEntry("Bed", 3);
-	glutAddMenuEntry("Toilet", 4);
-	glutAddMenuEntry("Sink", 5);
-	glutAddMenuEntry("Sheep", 6);
-	glutAddMenuEntry("Desk", 7);
-	glutAddMenuEntry("Sofa", 8);
-	glutAddMenuEntry("Stairs", 9);
-	glutAddMenuEntry("Kitchen Table", 10);
-	glutAddMenuEntry("Shelf", 11);
-	glutAddMenuEntry("Door", 12);
-	glutAddMenuEntry("Window", 13);
-
-	submenu2 = glutCreateMenu(::colorMenuCB);
-	glutAddMenuEntry("Red", 1);//
-	glutAddMenuEntry("Blue", 2);//
-	glutAddMenuEntry("Green", 3);//
-
-
-	submenu3 = glutCreateMenu(::fileMenuCB);
-	glutAddMenuEntry("Save", 1);//
-	glutAddMenuEntry("Export to SL", 2);//
-	//glutAddMenuEntry("Green", 3);//
-
-	submenu4 = glutCreateMenu(::textureMenuCB);
-	glutAddMenuEntry("None", 0);//
-	glutAddMenuEntry("Steel", 1);//
-	glutAddMenuEntry("Checkers", 2);//
-	glutAddMenuEntry("Red Checkers",3);//
-	glutAddMenuEntry("Beige Marble", 4);//
-	glutAddMenuEntry("Wood", 5);//
-	glutAddMenuEntry("Grass", 6);//
-	glutAddMenuEntry("Cement", 7);//
-	glutAddMenuEntry("Road", 8);//
-
-	mainMenu = glutCreateMenu(::menuCB);
-	glutAddSubMenu("File", submenu3);
-	glutAddSubMenu("Models", submenu1);
-	glutAddSubMenu("Colors", submenu2);//
-	glutAddSubMenu("Texture", submenu4);//
-
-
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
-
 }
 
 
