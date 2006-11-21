@@ -148,8 +148,8 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	patt_center[1] = 0.0;
 	patt_found		= false;
 	world = new World();
-	xsize = 1;
-	ysize = 1;
+	video_w = 1;
+	video_h = 1;
 	//world->loadWorld("myworld.txt");
 	
 	drawVideo = true;
@@ -352,13 +352,14 @@ void ARMouseHouse::reshapeCB(int width , int height)   // Create The Reshape Fun
 {
 	GLdouble aspectRatio;
 	GLint finalW, finalH;
+	// Prevent potential Divide By Zeros
+	if (video_h == 0) video_h = 1;
+	if (height == 0) height = 1;
 
 	// Calculate The Aspect Ratio of the video
-	if (xsize == 0)								// Prevent A Divide By Zero By
-		xsize = 1;
-	aspectRatio = (GLdouble)xsize/(GLdouble)ysize;
+	aspectRatio = (GLdouble)video_w/(GLdouble)video_h;
 
-	if (width*1.0/height > xsize*1.0/ysize) {
+	if (width*1.0/height > video_w*1.0/video_h) {
 		// window is too wide
 		finalH = height;
 		finalW = aspectRatio*height;
@@ -428,10 +429,10 @@ int ARMouseHouse::ar_init( void )
 	}
 
     /* find the size of the window */
-	if( (error = arVideoInqSize(&xsize, &ysize)) < 0 ) {
+	if( (error = arVideoInqSize(&video_w, &video_h)) < 0 ) {
 		return error;
 	}
-    printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
+    printf("Image size (x,y) = (%d,%d)\n", video_w, video_h);
 
     /* set the initial camera parameters */
     if( (error = arParamLoad(cparam_name, 1, &wparam)) < 0 ) {
@@ -439,7 +440,7 @@ int ARMouseHouse::ar_init( void )
 		return error;
 	}
 
-    arParamChangeSize( &wparam, xsize, ysize, &cparam );
+    arParamChangeSize( &wparam, video_w, video_h, &cparam );
     arInitCparam( &cparam );
     printf("*** Camera Parameter ***\n");
     arParamDisp( &cparam );
@@ -468,7 +469,6 @@ int ARMouseHouse::ar_init( void )
 		return -1;
 	}
 
-	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
 
 	return 0;

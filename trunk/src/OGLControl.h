@@ -40,6 +40,7 @@ public:
 	virtual void OnKeyDown(KeyEventArgs ^e) override;
 	void OnTick(Object ^sender, EventArgs ^e);
 	void setController(ARMouseHouse *controller) {this->controller = controller;}
+	void resizeViewport() {if (controller) controller->reshapeCB(Width, Height);}
 	virtual ~OGLControl(void);
 private:
 	int getGLUTButton(System::Windows::Forms::MouseButtons b);

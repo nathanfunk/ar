@@ -34,7 +34,7 @@ namespace ms3dglut {
 
 class ARMouseHouse {
 private:
-	int		xsize, ysize;
+	int		video_w, video_h;
 	int		thresh;
 	int		ar_count;
 

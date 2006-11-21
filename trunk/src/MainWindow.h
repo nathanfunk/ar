@@ -36,7 +36,7 @@ namespace ms3dglut {
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
 	private:
-		OGLControl						oglControl;
+		OGLControl						^oglControl;
 		System::Windows::Forms::Timer	^titleTimer;
 		ARMouseHouse					*controller;
 
@@ -605,14 +605,16 @@ protected:
 private:
 	System::Void MainWindow_Load(System::Object^  sender, System::EventArgs^  e) {
 		// Add the openGL control to the content panel of the toolstrip container
-		this->toolStripContainer->ContentPanel->Controls->Add(%oglControl);
-		oglControl.Name = L"OpenGL Control";	// give some name
-		oglControl.Dock = DockStyle::Fill;		// set to fill contentpanel
+		oglControl = gcnew OGLControl();
+		this->toolStripContainer->ContentPanel->Controls->Add(oglControl);
+		oglControl->Name = L"OpenGL Control";	// give some name
+		oglControl->Dock = DockStyle::Fill;		// set to fill contentpanel
 
 		// Initialize controller and hook together OpenGL control to the controller
 		controller->InitGL();
 		controller->ar_init();
-		oglControl.setController(controller);
+		oglControl->setController(controller);
+		oglControl->resizeViewport();
 
 		// Populate models combo box with files
 		array<String^>^dirs = Directory::GetFiles(Directory::GetCurrentDirectory() + "/models", "*.ms3d");
