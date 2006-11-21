@@ -124,20 +124,7 @@ void OGLControl::OnKeyDown(KeyEventArgs ^e)
 void OGLControl::OnSizeChanged(System::EventArgs ^e)
 {
 	UserControl::OnSizeChanged(e);
-	
-	if (0 >= Width || 0 >= Height) return;
-
-	glViewport(0,0,Width,Height);							// Reset The Current Viewport
-
-	glMatrixMode(GL_PROJECTION);							// Select The Projection Matrix
-	glLoadIdentity();										// Reset The Projection Matrix
-
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(15.0f,(GLfloat)Width/(GLfloat)Height,1.0f,1000.0f);	// View Depth of 1000
-
-	glMatrixMode(GL_MODELVIEW);								// Select The Modelview Matrix
-	glLoadIdentity();										// Reset The Modelview Matrix
-
+	if (controller) controller->reshapeCB(Width, Height);
 }
 
 /**
