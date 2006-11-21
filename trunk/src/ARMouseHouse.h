@@ -37,6 +37,7 @@ private:
 	int		video_w, video_h;
 	int		thresh;
 	int		ar_count;
+	int		fps;
 
 	ARUint8					*ARTImage; // current image
 	char					*cparam_name;
@@ -72,6 +73,7 @@ public:
 	void motionCB(int x, int y);
 	void mouseCB(int button, int state, int x, int y);
 	void mouseCBwithModifier(int button, int state, int x, int y, int modifier);
+	int getFPS();
 	void keyboardCB( unsigned char key, int x, int y);
 	void InitGL ( GLvoid );
 	int  ar_init( void );
