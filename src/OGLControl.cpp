@@ -124,7 +124,7 @@ void OGLControl::OnKeyDown(KeyEventArgs ^e)
 void OGLControl::OnSizeChanged(System::EventArgs ^e)
 {
 	UserControl::OnSizeChanged(e);
-	if (controller) controller->reshapeCB(Width, Height);
+	resizeViewport();
 }
 
 /**
