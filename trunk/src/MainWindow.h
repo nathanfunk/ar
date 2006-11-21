@@ -148,6 +148,13 @@ protected:
 			this->optionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->standardToolStrip = (gcnew System::Windows::Forms::ToolStrip());
+			this->newToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->openToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->saveToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
+			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
 			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
@@ -165,28 +172,26 @@ protected:
 			this->tsbFillArc = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbLine = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsddbModel = (gcnew System::Windows::Forms::ToolStripDropDownButton());
-			this->standardToolStrip = (gcnew System::Windows::Forms::ToolStrip());
-			this->newToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
-			this->openToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
-			this->saveToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
-			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
-			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
+			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
 			this->menuStrip->SuspendLayout();
+			this->standardToolStrip->SuspendLayout();
 			this->propertiesToolStrip->SuspendLayout();
 			this->objectsToolStrip->SuspendLayout();
-			this->standardToolStrip->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// toolStripContainer
 			// 
 			// 
+			// toolStripContainer.BottomToolStripPanel
+			// 
+			this->toolStripContainer->BottomToolStripPanel->Controls->Add(this->statusStrip);
+			// 
 			// toolStripContainer.ContentPanel
 			// 
-			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 468);
+			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 421);
 			this->toolStripContainer->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->toolStripContainer->Location = System::Drawing::Point(0, 0);
 			this->toolStripContainer->Name = L"toolStripContainer";
@@ -198,8 +203,8 @@ protected:
 			// 
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->menuStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
-			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
+			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
 			// 
 			// menuStrip
 			// 
@@ -326,12 +331,78 @@ protected:
 			this->aboutToolStripMenuItem->Size = System::Drawing::Size(115, 22);
 			this->aboutToolStripMenuItem->Text = L"&About...";
 			// 
+			// standardToolStrip
+			// 
+			this->standardToolStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->standardToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->newToolStripButton, 
+				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
+			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
+			this->standardToolStrip->Name = L"standardToolStrip";
+			this->standardToolStrip->Size = System::Drawing::Size(171, 25);
+			this->standardToolStrip->TabIndex = 0;
+			this->standardToolStrip->Text = L"toolStrip1";
+			// 
+			// newToolStripButton
+			// 
+			this->newToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->newToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"newToolStripButton.Image")));
+			this->newToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->newToolStripButton->Name = L"newToolStripButton";
+			this->newToolStripButton->Size = System::Drawing::Size(23, 22);
+			this->newToolStripButton->Text = L"&New";
+			this->newToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::newFile);
+			// 
+			// openToolStripButton
+			// 
+			this->openToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->openToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"openToolStripButton.Image")));
+			this->openToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->openToolStripButton->Name = L"openToolStripButton";
+			this->openToolStripButton->Size = System::Drawing::Size(23, 22);
+			this->openToolStripButton->Text = L"&Open";
+			this->openToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::open);
+			// 
+			// saveToolStripButton
+			// 
+			this->saveToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->saveToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"saveToolStripButton.Image")));
+			this->saveToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->saveToolStripButton->Name = L"saveToolStripButton";
+			this->saveToolStripButton->Size = System::Drawing::Size(23, 22);
+			this->saveToolStripButton->Text = L"&Save";
+			this->saveToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::save);
+			// 
+			// toolStripSeparator7
+			// 
+			this->toolStripSeparator7->Name = L"toolStripSeparator7";
+			this->toolStripSeparator7->Size = System::Drawing::Size(6, 25);
+			// 
+			// helpToolStripButton
+			// 
+			this->helpToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->helpToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"helpToolStripButton.Image")));
+			this->helpToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->helpToolStripButton->Name = L"helpToolStripButton";
+			this->helpToolStripButton->Size = System::Drawing::Size(23, 22);
+			this->helpToolStripButton->Text = L"He&lp";
+			// 
+			// tsbHideVideo
+			// 
+			this->tsbHideVideo->CheckOnClick = true;
+			this->tsbHideVideo->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbHideVideo->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbHideVideo.Image")));
+			this->tsbHideVideo->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbHideVideo->Name = L"tsbHideVideo";
+			this->tsbHideVideo->Size = System::Drawing::Size(61, 22);
+			this->tsbHideVideo->Text = L"Hide Video";
+			this->tsbHideVideo->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::tsbHideVideo_CheckedChanged);
+			// 
 			// propertiesToolStrip
 			// 
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
 			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
 				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(325, 49);
+			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
 			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
 			this->propertiesToolStrip->TabIndex = 2;
@@ -495,75 +566,10 @@ protected:
 			this->tsddbModel->Size = System::Drawing::Size(80, 22);
 			this->tsddbModel->Text = L"Insert Model";
 			// 
-			// standardToolStrip
-			// 
-			this->standardToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->standardToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->newToolStripButton, 
-				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
-			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
-			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(171, 25);
-			this->standardToolStrip->TabIndex = 0;
-			this->standardToolStrip->Text = L"toolStrip1";
-			// 
-			// newToolStripButton
-			// 
-			this->newToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->newToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"newToolStripButton.Image")));
-			this->newToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->newToolStripButton->Name = L"newToolStripButton";
-			this->newToolStripButton->Size = System::Drawing::Size(23, 22);
-			this->newToolStripButton->Text = L"&New";
-			this->newToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::newFile);
-			// 
-			// openToolStripButton
-			// 
-			this->openToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->openToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"openToolStripButton.Image")));
-			this->openToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->openToolStripButton->Name = L"openToolStripButton";
-			this->openToolStripButton->Size = System::Drawing::Size(23, 22);
-			this->openToolStripButton->Text = L"&Open";
-			this->openToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::open);
-			// 
-			// saveToolStripButton
-			// 
-			this->saveToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->saveToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"saveToolStripButton.Image")));
-			this->saveToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->saveToolStripButton->Name = L"saveToolStripButton";
-			this->saveToolStripButton->Size = System::Drawing::Size(23, 22);
-			this->saveToolStripButton->Text = L"&Save";
-			this->saveToolStripButton->Click += gcnew System::EventHandler(this, &MainWindow::save);
-			// 
-			// toolStripSeparator7
-			// 
-			this->toolStripSeparator7->Name = L"toolStripSeparator7";
-			this->toolStripSeparator7->Size = System::Drawing::Size(6, 25);
-			// 
-			// helpToolStripButton
-			// 
-			this->helpToolStripButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->helpToolStripButton->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"helpToolStripButton.Image")));
-			this->helpToolStripButton->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->helpToolStripButton->Name = L"helpToolStripButton";
-			this->helpToolStripButton->Size = System::Drawing::Size(23, 22);
-			this->helpToolStripButton->Text = L"He&lp";
-			// 
-			// tsbHideVideo
-			// 
-			this->tsbHideVideo->CheckOnClick = true;
-			this->tsbHideVideo->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbHideVideo->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbHideVideo.Image")));
-			this->tsbHideVideo->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbHideVideo->Name = L"tsbHideVideo";
-			this->tsbHideVideo->Size = System::Drawing::Size(61, 22);
-			this->tsbHideVideo->Text = L"Hide Video";
-			this->tsbHideVideo->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::tsbHideVideo_CheckedChanged);
-			// 
 			// statusStrip
 			// 
-			this->statusStrip->Location = System::Drawing::Point(0, 520);
+			this->statusStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->statusStrip->Location = System::Drawing::Point(0, 0);
 			this->statusStrip->Name = L"statusStrip";
 			this->statusStrip->Size = System::Drawing::Size(723, 22);
 			this->statusStrip->TabIndex = 1;
@@ -574,24 +580,24 @@ protected:
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(723, 542);
-			this->Controls->Add(this->statusStrip);
 			this->Controls->Add(this->toolStripContainer);
 			this->Name = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
+			this->toolStripContainer->BottomToolStripPanel->ResumeLayout(false);
+			this->toolStripContainer->BottomToolStripPanel->PerformLayout();
 			this->toolStripContainer->TopToolStripPanel->ResumeLayout(false);
 			this->toolStripContainer->TopToolStripPanel->PerformLayout();
 			this->toolStripContainer->ResumeLayout(false);
 			this->toolStripContainer->PerformLayout();
 			this->menuStrip->ResumeLayout(false);
 			this->menuStrip->PerformLayout();
+			this->standardToolStrip->ResumeLayout(false);
+			this->standardToolStrip->PerformLayout();
 			this->propertiesToolStrip->ResumeLayout(false);
 			this->propertiesToolStrip->PerformLayout();
 			this->objectsToolStrip->ResumeLayout(false);
 			this->objectsToolStrip->PerformLayout();
-			this->standardToolStrip->ResumeLayout(false);
-			this->standardToolStrip->PerformLayout();
 			this->ResumeLayout(false);
-			this->PerformLayout();
 
 		}
 #pragma endregion
