@@ -139,6 +139,7 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	this->useGLUTGUI = useGLUTGUI;
 	thresh = 100;
 	ar_count = 0;
+	fps = 0;
 	cparam_name	= "Data/camera_para.dat";
 	ARTImage		= NULL; // current image
 	arglSettings	= NULL;
@@ -313,7 +314,13 @@ bool ARMouseHouse::idleCB()
 	ARTImage = dataPtr;	// Save the fetched image.
 	patt_found = FALSE;	// Invalidate any previous detected markers.
 
-	if( ar_count == 0 ) arUtilTimerReset();
+	// fps calculation
+	// update fps value every 3 seconds
+	if (arUtilTimer() > 3) {
+		fps = ar_count / arUtilTimer();
+		arUtilTimerReset();
+		ar_count = 0;
+	}
     ar_count++;
 
     // detect the markers in the video frame
@@ -1250,6 +1257,11 @@ void ARMouseHouse::cycleTransparency() {
 void ARMouseHouse::setDrawVideo(bool value)
 {
 	drawVideo = value;
+}
+
+int ARMouseHouse::getFPS()
+{
+	return fps;
 }
 
 void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
