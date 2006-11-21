@@ -88,6 +88,7 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator7;
 	private: System::Windows::Forms::ToolStripButton^  tsbHideVideo;
 	private: System::Windows::Forms::ToolStripDropDownButton^  tsddbModel;
+	private: System::Windows::Forms::ToolStripStatusLabel^  tsslFPS;
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
 
 	public:
@@ -131,6 +132,7 @@ protected:
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWindow::typeid));
 			this->toolStripContainer = (gcnew System::Windows::Forms::ToolStripContainer());
+			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -155,11 +157,6 @@ protected:
 			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
-			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
-			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->objectsToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbCube = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbCylinder = (gcnew System::Windows::Forms::ToolStripButton());
@@ -172,14 +169,20 @@ protected:
 			this->tsbFillArc = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbLine = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsddbModel = (gcnew System::Windows::Forms::ToolStripDropDownButton());
-			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
+			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
+			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsslFPS = (gcnew System::Windows::Forms::ToolStripStatusLabel());
 			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
+			this->statusStrip->SuspendLayout();
 			this->menuStrip->SuspendLayout();
 			this->standardToolStrip->SuspendLayout();
-			this->propertiesToolStrip->SuspendLayout();
 			this->objectsToolStrip->SuspendLayout();
+			this->propertiesToolStrip->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// toolStripContainer
@@ -205,6 +208,16 @@ protected:
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->standardToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->objectsToolStrip);
 			this->toolStripContainer->TopToolStripPanel->Controls->Add(this->propertiesToolStrip);
+			// 
+			// statusStrip
+			// 
+			this->statusStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->statusStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->tsslFPS});
+			this->statusStrip->Location = System::Drawing::Point(0, 0);
+			this->statusStrip->Name = L"statusStrip";
+			this->statusStrip->Size = System::Drawing::Size(723, 22);
+			this->statusStrip->TabIndex = 1;
+			this->statusStrip->Text = L"statusStrip";
 			// 
 			// menuStrip
 			// 
@@ -397,54 +410,6 @@ protected:
 			this->tsbHideVideo->Text = L"Hide Video";
 			this->tsbHideVideo->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::tsbHideVideo_CheckedChanged);
 			// 
-			// propertiesToolStrip
-			// 
-			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
-				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
-			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
-			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
-			this->propertiesToolStrip->TabIndex = 2;
-			// 
-			// tsbColor
-			// 
-			this->tsbColor->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbColor->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbColor.Image")));
-			this->tsbColor->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbColor->Name = L"tsbColor";
-			this->tsbColor->Size = System::Drawing::Size(36, 22);
-			this->tsbColor->Text = L"Color";
-			this->tsbColor->Click += gcnew System::EventHandler(this, &MainWindow::tsbColor_Click);
-			// 
-			// tsbTransparency
-			// 
-			this->tsbTransparency->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbTransparency->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTransparency.Image")));
-			this->tsbTransparency->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbTransparency->Name = L"tsbTransparency";
-			this->tsbTransparency->Size = System::Drawing::Size(77, 22);
-			this->tsbTransparency->Text = L"Transparency";
-			this->tsbTransparency->Click += gcnew System::EventHandler(this, &MainWindow::tsbTransparency_Click);
-			// 
-			// tsbGroup
-			// 
-			this->tsbGroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbGroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbGroup.Image")));
-			this->tsbGroup->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbGroup->Name = L"tsbGroup";
-			this->tsbGroup->Size = System::Drawing::Size(40, 22);
-			this->tsbGroup->Text = L"Group";
-			// 
-			// tsbUngroup
-			// 
-			this->tsbUngroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbUngroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbUngroup.Image")));
-			this->tsbUngroup->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbUngroup->Name = L"tsbUngroup";
-			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
-			this->tsbUngroup->Text = L"Ungroup";
-			// 
 			// objectsToolStrip
 			// 
 			this->objectsToolStrip->Dock = System::Windows::Forms::DockStyle::None;
@@ -566,14 +531,60 @@ protected:
 			this->tsddbModel->Size = System::Drawing::Size(80, 22);
 			this->tsddbModel->Text = L"Insert Model";
 			// 
-			// statusStrip
+			// propertiesToolStrip
 			// 
-			this->statusStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->statusStrip->Location = System::Drawing::Point(0, 0);
-			this->statusStrip->Name = L"statusStrip";
-			this->statusStrip->Size = System::Drawing::Size(723, 22);
-			this->statusStrip->TabIndex = 1;
-			this->statusStrip->Text = L"statusStrip";
+			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
+			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
+				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
+			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
+			this->propertiesToolStrip->Name = L"propertiesToolStrip";
+			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
+			this->propertiesToolStrip->TabIndex = 2;
+			// 
+			// tsbColor
+			// 
+			this->tsbColor->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbColor->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbColor.Image")));
+			this->tsbColor->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbColor->Name = L"tsbColor";
+			this->tsbColor->Size = System::Drawing::Size(36, 22);
+			this->tsbColor->Text = L"Color";
+			this->tsbColor->Click += gcnew System::EventHandler(this, &MainWindow::tsbColor_Click);
+			// 
+			// tsbTransparency
+			// 
+			this->tsbTransparency->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbTransparency->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbTransparency.Image")));
+			this->tsbTransparency->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbTransparency->Name = L"tsbTransparency";
+			this->tsbTransparency->Size = System::Drawing::Size(77, 22);
+			this->tsbTransparency->Text = L"Transparency";
+			this->tsbTransparency->Click += gcnew System::EventHandler(this, &MainWindow::tsbTransparency_Click);
+			// 
+			// tsbGroup
+			// 
+			this->tsbGroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbGroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbGroup.Image")));
+			this->tsbGroup->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbGroup->Name = L"tsbGroup";
+			this->tsbGroup->Size = System::Drawing::Size(40, 22);
+			this->tsbGroup->Text = L"Group";
+			// 
+			// tsbUngroup
+			// 
+			this->tsbUngroup->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbUngroup->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbUngroup.Image")));
+			this->tsbUngroup->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbUngroup->Name = L"tsbUngroup";
+			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
+			this->tsbUngroup->Text = L"Ungroup";
+			// 
+			// tsslFPS
+			// 
+			this->tsslFPS->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsslFPS->Name = L"tsslFPS";
+			this->tsslFPS->Size = System::Drawing::Size(29, 17);
+			this->tsslFPS->Text = L"FPS:";
 			// 
 			// MainWindow
 			// 
@@ -589,14 +600,16 @@ protected:
 			this->toolStripContainer->TopToolStripPanel->PerformLayout();
 			this->toolStripContainer->ResumeLayout(false);
 			this->toolStripContainer->PerformLayout();
+			this->statusStrip->ResumeLayout(false);
+			this->statusStrip->PerformLayout();
 			this->menuStrip->ResumeLayout(false);
 			this->menuStrip->PerformLayout();
 			this->standardToolStrip->ResumeLayout(false);
 			this->standardToolStrip->PerformLayout();
-			this->propertiesToolStrip->ResumeLayout(false);
-			this->propertiesToolStrip->PerformLayout();
 			this->objectsToolStrip->ResumeLayout(false);
 			this->objectsToolStrip->PerformLayout();
+			this->propertiesToolStrip->ResumeLayout(false);
+			this->propertiesToolStrip->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -624,7 +637,7 @@ private:
 			ToolStripMenuItem ^menuItem = gcnew ToolStripMenuItem();
 			menuItem->Name = myEnum->Current->ToString();
 			menuItem->Size = System::Drawing::Size(152, 22);
-			menuItem->Text = myEnum->Current->ToString();
+			menuItem->Text = System::IO::Path::GetFileNameWithoutExtension(myEnum->Current->ToString());
 			menuItem->Click += gcnew System::EventHandler(this, &MainWindow::InsertModel_Click);
 			tsddbModel->DropDownItems->Add(menuItem);
 		}
@@ -639,9 +652,11 @@ private:
 		titleTimer->Start();
 	}
 
+
 	void OnTitleTimerTick(Object ^sender, EventArgs ^e)
 	{
 		updateWindowTitle();
+		tsslFPS->Text = "FPS: " + controller->getFPS();
 	}
 
 	System::Void ObjectsToolStrip_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -813,7 +828,7 @@ private:
 	 * Event handler for Insert Model items
 	 */
 	System::Void InsertModel_Click(System::Object^  sender, System::EventArgs^  e) {
-		System::String ^name = ((ToolStripMenuItem^)sender)->Text->ToString();
+		System::String ^name = ((ToolStripMenuItem^)sender)->Name->ToString();
 		string stlName;
 		MarshalString(name, stlName);
 		controller->addObject(stlName);
