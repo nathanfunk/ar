@@ -74,7 +74,7 @@ public:
 	void mouseCBwithModifier(int button, int state, int x, int y, int modifier);
 	void keyboardCB( unsigned char key, int x, int y);
 	void InitGL ( GLvoid );
-	void ar_init( void );
+	int  ar_init( void );
 	void ar_cleanup(void);
 	World *getWorld() {return world;}
 
