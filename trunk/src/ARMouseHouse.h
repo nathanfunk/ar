@@ -59,6 +59,8 @@ private:
 	World	*world;
 	bool	useGLUTGUI;
 	bool	drawVideo;
+	int		gotImage;
+
 public:
 	ARMouseHouse(bool useGLUTGUI);
 	~ARMouseHouse();
@@ -80,11 +82,8 @@ public:
 	int  ar_init( void );
 	void ar_cleanup(void);
 	World *getWorld() {return world;}
-
-void ARMouseHouse::LoadWorld();
-void ARMouseHouse::setTexture(std::string modelName);
-
-
+	void LoadWorld();
+	void setTexture(std::string modelName);
 	void addObject(int objectType);
 	void addObject(std::string modelName);
 	void setColors(float r, float g, float b);
@@ -92,17 +91,16 @@ void ARMouseHouse::setTexture(std::string modelName);
 	void setDrawVideo(bool value);
 	void newWorld();
 	bool newWorld(string fileName);
+
 private:
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
-	int ARMouseHouse::selectionRect(int key);
+	int selectionRect(int key);
 	int GetOGLPos(int x, int y, float pos[]);
 	int initDrag(int button, int x, int y);
 	void drawSelectionRect();
 	int endDrag(int button, int x, int y);
 	int keyMapping(unsigned char key);
-
-	int gotImage; ///get rid of iter!= mb.end bug
 
 };
 

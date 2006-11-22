@@ -151,6 +151,8 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	world = new World();
 	video_w = 1;
 	video_h = 1;
+	vpOffsetX = 0;
+	vpOffsetY = 0;
 	//world->loadWorld("myworld.txt");
 	
 	drawVideo = true;
@@ -359,25 +361,35 @@ void ARMouseHouse::reshapeCB(int width , int height)   // Create The Reshape Fun
 {
 	GLdouble aspectRatio;
 	GLint finalW, finalH;
+	const bool constrainAspectRatio = false;
+
 	// Prevent potential Divide By Zeros
 	if (video_h == 0) video_h = 1;
 	if (height == 0) height = 1;
 
-	// Calculate The Aspect Ratio of the video
-	aspectRatio = (GLdouble)video_w/(GLdouble)video_h;
+	if (constrainAspectRatio) {
+		// Calculate The Aspect Ratio of the video
+		aspectRatio = (GLdouble)video_w/(GLdouble)video_h;
 
-	if (width*1.0/height > video_w*1.0/video_h) {
-		// window is too wide
-		finalH = height;
-		finalW = aspectRatio*height;
-		vpOffsetX = (width-finalW)/2;
-		vpOffsetY = 0;
+		if (width*1.0/height > video_w*1.0/video_h) {
+			// window is too wide
+			finalH = height;
+			finalW = aspectRatio*height;
+			vpOffsetX = (width-finalW)/2;
+			vpOffsetY = 0;
+		} else {
+			// window is good or too high
+			finalW = width;
+			finalH = width/aspectRatio;
+			vpOffsetX = 0;
+			vpOffsetY = (height-finalH)/2;
+		}
 	} else {
-		// window is good or too high
 		finalW = width;
-		finalH = width/aspectRatio;
+		finalH = height;
 		vpOffsetX = 0;
-		vpOffsetY = (height-finalH)/2;
+		vpOffsetY = 0;
+		aspectRatio = (GLdouble)width/(GLdouble)height;
 	}
 
 	glViewport(vpOffsetX,vpOffsetY,finalW,finalH);
@@ -1183,13 +1195,22 @@ glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
 				 
 }
 
-
+/**
+ * Mouse click callback function.
+ *
+ * Calls mouseCBwithModifier.
+ */
 void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 	if (useGLUTGUI) {
 		mouseCBwithModifier(button, state, x, y, glutGetModifiers());
+	} else {
+		mouseCBwithModifier(button, state, x, y, 0);
 	}
 }
 
+/**
+ *	Mouse click callback with modifier key parameter.
+ */
 void ARMouseHouse::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
 	specialKey = modifier;
 	if (state == GLUT_DOWN){
