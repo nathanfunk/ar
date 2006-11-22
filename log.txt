@@ -1,3 +1,7 @@
+Nov 22 nf
+	- gave up on constraining aspect ratio. selection code wasn't work even
+	  after shifting mouse click coordinates. May be better to just constrain window size
+
 Nov 16 nf
 	- applied service pack 1 beta
 	- got linker errors
