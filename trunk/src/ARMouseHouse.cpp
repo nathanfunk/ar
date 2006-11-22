@@ -370,13 +370,17 @@ void ARMouseHouse::reshapeCB(int width , int height)   // Create The Reshape Fun
 		// window is too wide
 		finalH = height;
 		finalW = aspectRatio*height;
-		glViewport((width-finalW)/2,0,finalW,finalH);
+		vpOffsetX = (width-finalW)/2;
+		vpOffsetY = 0;
 	} else {
 		// window is good or too high
 		finalW = width;
 		finalH = width/aspectRatio;
-		glViewport(0,(height-finalH)/2,finalW,finalH);
+		vpOffsetX = 0;
+		vpOffsetY = (height-finalH)/2;
 	}
+
+	glViewport(vpOffsetX,vpOffsetY,finalW,finalH);
 
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glLoadIdentity();									// Reset The Projection Matrix
@@ -1023,7 +1027,10 @@ void ARMouseHouse::setColors(float r, float g, float b) {
 		}
 	}
 }
-
+/**
+ * Sets the pos[] point to the 3D point corresponding to
+ * the projected point (x, y). (Unproject)
+ */
 int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 {
 	GLint viewport[4];
@@ -1042,7 +1049,9 @@ int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 
 	gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 
-	pos[0] = posX; pos[1] = posY; posZ = pos[2];
+	pos[0] = posX;
+	pos[1] = posY;
+	pos[2] = posZ;
 
 	return 1;
 }

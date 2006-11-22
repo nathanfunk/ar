@@ -34,14 +34,15 @@ namespace ms3dglut {
 
 class ARMouseHouse {
 private:
-	int		video_w, video_h;
+	int		video_w, video_h;		// size of the video stream
+	int		vpOffsetX, vpOffsetY;	// the offset of the viewport
 	int		thresh;
-	int		ar_count;
-	int		fps;
+	int		ar_count;				// counter for determining FPS
+	int		fps;					// last calculated FPS value
 
-	ARUint8					*ARTImage; // current image
+	ARUint8					*ARTImage;		// current image
 	char					*cparam_name;
-	ARParam					 cparam;				// camera parameters
+	ARParam					 cparam;		// camera parameters
 	ARGL_CONTEXT_SETTINGS_REF arglSettings;
 
 	char	*patt_name;
