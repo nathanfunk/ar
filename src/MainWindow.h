@@ -133,6 +133,7 @@ protected:
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWindow::typeid));
 			this->toolStripContainer = (gcnew System::Windows::Forms::ToolStripContainer());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
+			this->tsslFPS = (gcnew System::Windows::Forms::ToolStripStatusLabel());
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -174,7 +175,6 @@ protected:
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsslFPS = (gcnew System::Windows::Forms::ToolStripStatusLabel());
 			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
@@ -194,11 +194,11 @@ protected:
 			// 
 			// toolStripContainer.ContentPanel
 			// 
-			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 421);
+			this->toolStripContainer->ContentPanel->Size = System::Drawing::Size(723, 543);
 			this->toolStripContainer->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->toolStripContainer->Location = System::Drawing::Point(0, 0);
 			this->toolStripContainer->Name = L"toolStripContainer";
-			this->toolStripContainer->Size = System::Drawing::Size(723, 542);
+			this->toolStripContainer->Size = System::Drawing::Size(723, 664);
 			this->toolStripContainer->TabIndex = 0;
 			this->toolStripContainer->Text = L"toolStripContainer1";
 			// 
@@ -218,6 +218,13 @@ protected:
 			this->statusStrip->Size = System::Drawing::Size(723, 22);
 			this->statusStrip->TabIndex = 1;
 			this->statusStrip->Text = L"statusStrip";
+			// 
+			// tsslFPS
+			// 
+			this->tsslFPS->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsslFPS->Name = L"tsslFPS";
+			this->tsslFPS->Size = System::Drawing::Size(29, 17);
+			this->tsslFPS->Text = L"FPS:";
 			// 
 			// menuStrip
 			// 
@@ -579,18 +586,11 @@ protected:
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
 			// 
-			// tsslFPS
-			// 
-			this->tsslFPS->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsslFPS->Name = L"tsslFPS";
-			this->tsslFPS->Size = System::Drawing::Size(29, 17);
-			this->tsslFPS->Text = L"FPS:";
-			// 
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(723, 542);
+			this->ClientSize = System::Drawing::Size(723, 664);
 			this->Controls->Add(this->toolStripContainer);
 			this->Name = L"MainWindow";
 			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
@@ -839,7 +839,8 @@ private:
 	 * has unsaved changes.
 	 */
 	void updateWindowTitle() {
-		String ^name = gcnew String((controller->getWorld()->getFileName()).c_str());
+		String ^filePath = gcnew String((controller->getWorld()->getFileName()).c_str());
+		String ^name = System::IO::Path::GetFileNameWithoutExtension(filePath);
 		String ^title = "";
 
 		// contruct string
