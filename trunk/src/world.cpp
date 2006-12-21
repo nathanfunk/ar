@@ -493,7 +493,8 @@ void World::addObject(std::string modelName) {
 
 void World::setTexture(std::string modelName) {
 	// set dirty flag
-	isDirtyFlag = false;
+	isDirtyFlag = true;
+	// look for selected objects and set the texture
 	for (int i = 0; i < (int) getNumberOfObjects(); i ++){
 		if (objectPtrs[i]->isSelected == 1)
 			objectPtrs[i]->setTexture(LoadGLTextureRepeat(modelName.c_str()));
@@ -559,18 +560,6 @@ object *World::createObject(int objectType) {
 			break;
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 
 	return o;
@@ -593,6 +582,25 @@ o = new myModel(nObjects, (char *) modelName.c_str(), 0,0,0,0,1.5);
 	return o;
 }
 
+/**
+ * This method is called when an observed subject has changed and
+ * the world needs to be updated.
+ */
 void World::update(const ISubject &subject) {
 	isDirtyFlag = true;
+}
+
+/**
+ * Removes the selected objects from the world.
+ */
+void World::removeSelected() {
+	isDirtyFlag = true;
+	for (std::vector<object *>::iterator it = objectPtrs.begin(); it!=objectPtrs.end();) {
+
+		if ((*it)->isSelected == 1) {
+			it = objectPtrs.erase(it++);
+		} else {
+			++it;
+		}
+	}
 }
