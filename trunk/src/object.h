@@ -447,25 +447,32 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 
 		//virtual void initSelection(int but, int key, int x, int y){};
 
+		/**
+		 * Initializes selection of an object. This method is called when
+		 * a mouse down event is recieved in the controller.
+		 */
 		virtual void initSelection(int but, int key, int x, int y){
 
 			GLint vPort[4];
-			glGetIntegerv( GL_VIEWPORT, vPort );
+			glGetIntegerv( GL_VIEWPORT, vPort ); // sets vPort to (x, y, w, h)
+
+			// convert to openGL coordinates (origin at lower left)
 			GLfloat mouseX = (float) lastX;
 			GLfloat mouseY = (float)vPort[3] - (float) lastY;
 
-
-			min = 999999;
-
+			// check if window coordinates of handles are set
 			if (winCoords.empty()) {
 				std::cout<<"winCoords empty "<<std::endl;	
 				return;
 			}
 
+			// get distance to first handle and assume it is closest 
+			// to the click point
 			min = distance((float) mouseX, (float) mouseY, 
 				(float) winCoords[0].x, (float) winCoords[0].y);
 			minI = 0;
 
+			// check other handles to find the one closest to the mouse click point
 			for (int i = 1; i < (int) winCoords.size(); i++){
 				float dist = distance((float) mouseX, (float) mouseY, 
 					(float) winCoords[i].x, (float) winCoords[i].y);
@@ -474,6 +481,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 					min = dist;
 				}
 			}
+			
 			std::cout<<"min is "<<min<<" best point is "<<minI<<std::endl;
 			std::cout<<"Current pos: "<<getDataString();
 		}
