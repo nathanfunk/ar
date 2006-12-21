@@ -55,12 +55,13 @@ Texture texture[2];
 	void addObject(std::string modelName);
 	object *createObject(int objectType);
 	object *createObject(std::string modelName);
-	size_t getNumberOfObjects() {return objectPtrs.size();}
+	int getNumberOfObjects() {return (int)objectPtrs.size();}
 	object *getObject(int i) {return objectPtrs[i];}
 	string getFileName() {return fileName;}
 	bool isDirty() {return isDirtyFlag;}
 	bool hasFileName() {return !fileName.empty();}
 	void update(const ISubject &subject);
+	void removeSelected();
 };
 }
 #endif

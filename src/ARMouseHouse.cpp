@@ -1403,21 +1403,8 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 
 	// backspace (8) or delete (46) (seems like GLUT doesn't send 46 through this callback)
 	if( key == 8 || key == 46) {
-		std::cout<<"deleting"<<std::endl;
-		//for (int i = 0; i< world->getNumberOfObjects(); i++){
-
-		int i = 0;
-		for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
-			if ( (*it)->isSelected  == 1)
-			{
-				std::cout<<"deleting "<<i<<std::endl;
-				it = world->objectPtrs.erase(it++);
-
-			}
-			else ++it;
-
-		}
-
+		std::cout << "deleting" << std::endl;
+		world->removeSelected();
 	}
 
 	if( key == 'i' ) { cycleTransparency();}
