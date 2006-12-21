@@ -89,6 +89,8 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripButton^  tsbHideVideo;
 	private: System::Windows::Forms::ToolStripDropDownButton^  tsddbModel;
 	private: System::Windows::Forms::ToolStripStatusLabel^  tsslFPS;
+	private: System::Windows::Forms::ToolStripButton^  tsbRotate;
+
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
 
 	public:
@@ -175,6 +177,7 @@ protected:
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbRotate = (gcnew System::Windows::Forms::ToolStripButton());
 			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
@@ -541,11 +544,11 @@ protected:
 			// propertiesToolStrip
 			// 
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->tsbColor, 
-				this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
+			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {this->tsbColor, 
+				this->tsbRotate, this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
 			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(217, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(292, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbColor
@@ -585,6 +588,17 @@ protected:
 			this->tsbUngroup->Name = L"tsbUngroup";
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
+			// 
+			// tsbRotate
+			// 
+			this->tsbRotate->CheckOnClick = true;
+			this->tsbRotate->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbRotate->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRotate.Image")));
+			this->tsbRotate->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbRotate->Name = L"tsbRotate";
+			this->tsbRotate->Size = System::Drawing::Size(44, 22);
+			this->tsbRotate->Text = L"Rotate";
+			this->tsbRotate->Click += gcnew System::EventHandler(this, &MainWindow::tsbRotate_Click);
 			// 
 			// MainWindow
 			// 
@@ -696,6 +710,13 @@ private:
 		controller->setColors(cd.Color.R/255.0, cd.Color.G/255.0, cd.Color.B/255.0);
 
 		updateWindowTitle();
+	}
+
+	/**
+	 * Handles a click from the rotate button.
+	 */
+	System::Void tsbRotate_Click(System::Object^  sender, System::EventArgs^  e) {
+		controller->setRotateMode(tsbRotate->Checked);
 	}
 
 	/**
@@ -858,6 +879,7 @@ private:
 		// set window title to constructed string
 		Text = title;
 	}
+
 };
 }
 
