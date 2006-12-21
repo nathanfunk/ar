@@ -270,7 +270,7 @@ bool World::loadWorld(string scriptFile){
 			addObject( new sphere((int) getNumberOfObjects(), 
 				xOff,yOff,zOff, rX, rY, rZ, sX, sY, sZ, radius));
 		}
-		else if (type == "CUBE"){
+		else if ((type == "CUBE") || (type == "CUBE2")){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, size;
 			iss>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ>>size;
 			addObject( new cube2((int) getNumberOfObjects(), 
