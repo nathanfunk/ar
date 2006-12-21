@@ -52,7 +52,6 @@ int y1Rect;
 int x2Rect;
 int y2Rect;
 int selectRectDefined;
-int nothingSelected;
 
 
 //--------------------------------------------------------------------------------------
@@ -1078,49 +1077,50 @@ int ARMouseHouse::endDrag(int button, int x, int y){
 	return 0;
 }
 
+/**
+ * Initializes settings for when the user drags the mouse.
+ */
 int ARMouseHouse::initDrag(int button, int x, int y){
 	lastX = x;
 	lastY = y;
 	lastButton = button;
-
 	float pos[3];
+
 	GetOGLPos(x, y, pos);
-	std::cout<<"Drag Started at : ["<<x<<" "<<y<<" ]"<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<std::endl;
+	std::cout << "Drag Started at : [" << x << " " << y << "] "
+		      << pos[0] << " " << pos[1] << " " << pos[2] <<std::endl;
 
-
-	nothingSelected = 1;
-
-
-
-
-	for (int i =0; i < (int) world->getNumberOfObjects(); i++){
-		if (world->getObject(i)->isSelected == 1){
+	// check if anything is selected
+	nothingSelected = true;
+	for (int i=0; i < (int) world->getNumberOfObjects(); i++) {
+		if (world->getObject(i)->isSelected == 1) {
 			//std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
+
+			// initialize selection for this item
 			world->getObject(i)->initSelection(lastButton, specialKey, x,y);
-			 nothingSelected = 0;
+			// nothingSelected is false
+			nothingSelected = false;
 		}
-
 	}
 
-	if (nothingSelected){
-			x1Rect = x;
-			y1Rect = y;
-			x2Rect = x;
-			y2Rect = y;
-
+	// if nothing is selected, initialize selection box
+	if (nothingSelected) {
+			x1Rect = x;	y1Rect = y;
+			x2Rect = x;	y2Rect = y;
 	}
-
 
 	return 1;
 }
 
 
 
-/*mouse motion callback - for dragging */
+/**
+ * The motion callback function is called when the mouse is moved to a new
+ * position while a mouse button is pressed (dragging).
+ */
 void ARMouseHouse::motionCB(int x, int y)
 {
 	//if an object is being dragged, move the object
-
 	if ((x == lastX) && (y == lastY)) return;
 
 	int xMove = x - lastX; int yMove = y - lastY;
@@ -1134,18 +1134,18 @@ void ARMouseHouse::motionCB(int x, int y)
 	std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc<<std::endl;
 	//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
 
-	int nothingSelected = 1;
+	int nothingSelected = true;
 
 	if (world->isSelected == 1){
 		world->move(patt_trans, lastButton, specialKey, xMove, yMove);
-		nothingSelected = 0;
+		nothingSelected = false;
 	}
 
 	for (int i =0; i < (int) world->getNumberOfObjects(); i++){
 		if (world->getObject(i)->isSelected == 1){
 			std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
 			world->getObject(i)->move(patt_trans, lastButton, specialKey, xMove, yMove);
-			nothingSelected = 0;
+			nothingSelected = false;
 		}
 
 	}
@@ -1213,12 +1213,15 @@ void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
  */
 void ARMouseHouse::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
 	specialKey = modifier;
-	if (state == GLUT_DOWN){
+
+	if (state == GLUT_DOWN) {
+		// a mouse button has been pressed
+
 		//if (selectRectDefined == 0){
 		for (int i =0; i < (int) world->getNumberOfObjects(); i++){
 			world->getObject(i)->isSelected = 0;
 		}
-		world->isSelected = 0;	
+		world->isSelected = 0;
 		//}
 
 		std::cout << "Clicked " << x << " " << y << endl;
@@ -1227,6 +1230,7 @@ void ARMouseHouse::mouseCBwithModifier(int button, int state, int x, int y, int 
 	}
 
 	if (state == GLUT_UP){
+		// a mouse button has been let go
 		if (nothingSelected)
 			endDrag(button, x,y);
 	}
@@ -1287,6 +1291,11 @@ void ARMouseHouse::cycleTransparency() {
 void ARMouseHouse::setDrawVideo(bool value)
 {
 	drawVideo = value;
+}
+
+void ARMouseHouse::setRotateMode(bool value)
+{
+	rotateMode = value;
 }
 
 int ARMouseHouse::getFPS()

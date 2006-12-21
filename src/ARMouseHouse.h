@@ -39,6 +39,7 @@ private:
 	int		thresh;
 	int		ar_count;				// counter for determining FPS
 	int		fps;					// last calculated FPS value
+	bool	nothingSelected;
 
 	ARUint8					*ARTImage;		// current image
 	char					*cparam_name;
@@ -59,6 +60,7 @@ private:
 	World	*world;
 	bool	useGLUTGUI;
 	bool	drawVideo;
+	bool	rotateMode;
 	int		gotImage;
 
 public:
@@ -89,6 +91,7 @@ public:
 	void setColors(float r, float g, float b);
 	void cycleTransparency();
 	void setDrawVideo(bool value);
+	void setRotateMode(bool value);
 	void newWorld();
 	bool newWorld(string fileName);
 
