@@ -90,6 +90,11 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripDropDownButton^  tsddbModel;
 	private: System::Windows::Forms::ToolStripStatusLabel^  tsslFPS;
 	private: System::Windows::Forms::ToolStripButton^  tsbRotate;
+	private: System::Windows::Forms::ToolStripButton^  tsbMove;
+
+
+	private: System::Windows::Forms::ToolStripButton^  tsbScale;
+	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
 
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
 
@@ -173,11 +178,14 @@ protected:
 			this->tsbLine = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsddbModel = (gcnew System::Windows::Forms::ToolStripDropDownButton());
 			this->propertiesToolStrip = (gcnew System::Windows::Forms::ToolStrip());
+			this->tsbMove = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbRotate = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbScale = (gcnew System::Windows::Forms::ToolStripButton());
+			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->tsbColor = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbRotate = (gcnew System::Windows::Forms::ToolStripButton());
 			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
@@ -544,12 +552,52 @@ protected:
 			// propertiesToolStrip
 			// 
 			this->propertiesToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {this->tsbColor, 
-				this->tsbRotate, this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
+			this->propertiesToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(8) {this->tsbMove, 
+				this->tsbRotate, this->tsbScale, this->toolStripSeparator1, this->tsbColor, this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
 			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(292, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(440, 25);
 			this->propertiesToolStrip->TabIndex = 2;
+			// 
+			// tsbMove
+			// 
+			this->tsbMove->Checked = true;
+			this->tsbMove->CheckOnClick = true;
+			this->tsbMove->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->tsbMove->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbMove->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbMove.Image")));
+			this->tsbMove->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbMove->Name = L"tsbMove";
+			this->tsbMove->Size = System::Drawing::Size(60, 22);
+			this->tsbMove->Text = L"Move Tool";
+			this->tsbMove->Click += gcnew System::EventHandler(this, &MainWindow::tsbTools_Click);
+			// 
+			// tsbRotate
+			// 
+			this->tsbRotate->CheckOnClick = true;
+			this->tsbRotate->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbRotate->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRotate.Image")));
+			this->tsbRotate->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbRotate->Name = L"tsbRotate";
+			this->tsbRotate->Size = System::Drawing::Size(67, 22);
+			this->tsbRotate->Text = L"Rotate Tool";
+			this->tsbRotate->Click += gcnew System::EventHandler(this, &MainWindow::tsbTools_Click);
+			// 
+			// tsbScale
+			// 
+			this->tsbScale->CheckOnClick = true;
+			this->tsbScale->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbScale->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbScale.Image")));
+			this->tsbScale->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbScale->Name = L"tsbScale";
+			this->tsbScale->Size = System::Drawing::Size(59, 22);
+			this->tsbScale->Text = L"Scale Tool";
+			this->tsbScale->Click += gcnew System::EventHandler(this, &MainWindow::tsbTools_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this->toolStripSeparator1->Name = L"toolStripSeparator1";
+			this->toolStripSeparator1->Size = System::Drawing::Size(6, 25);
 			// 
 			// tsbColor
 			// 
@@ -588,17 +636,6 @@ protected:
 			this->tsbUngroup->Name = L"tsbUngroup";
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
-			// 
-			// tsbRotate
-			// 
-			this->tsbRotate->CheckOnClick = true;
-			this->tsbRotate->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbRotate->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbRotate.Image")));
-			this->tsbRotate->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbRotate->Name = L"tsbRotate";
-			this->tsbRotate->Size = System::Drawing::Size(44, 22);
-			this->tsbRotate->Text = L"Rotate";
-			this->tsbRotate->Click += gcnew System::EventHandler(this, &MainWindow::tsbRotate_Click);
 			// 
 			// MainWindow
 			// 
@@ -713,10 +750,20 @@ private:
 	}
 
 	/**
-	 * Handles a click from the rotate button.
+	 * Handles a click from the tools buttons.
 	 */
-	System::Void tsbRotate_Click(System::Object^  sender, System::EventArgs^  e) {
-		controller->setRotateMode(tsbRotate->Checked);
+	System::Void tsbTools_Click(System::Object^  sender, System::EventArgs^  e) {
+		System::String ^name = ((ToolStripItem^)sender)->Name;
+
+		if (name == tsbMove->Name) {
+			controller->setCurrentTool(Tools::MOVE);
+		} else if (name == tsbRotate->Name) {
+			controller->setCurrentTool(Tools::ROTATE);
+		} else if (name == tsbScale->Name) {
+			controller->setCurrentTool(Tools::SCALE);
+		}
+
+		updateToolButtons();
 	}
 
 	/**
@@ -733,6 +780,16 @@ private:
 	 */
 	System::Void tsbHideVideo_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		controller->setDrawVideo(!tsbHideVideo->Checked);
+	}
+
+	/**
+	 * Updates the buttons indicating the current tool selected
+	 */
+	System::Void updateToolButtons() {
+		int tool = controller->getCurrentTool();
+		tsbMove->CheckState = (tool == Tools::MOVE) ? CheckState::Checked : CheckState::Unchecked;
+		tsbRotate->CheckState = (tool == Tools::ROTATE) ? CheckState::Checked : CheckState::Unchecked;
+		tsbScale->CheckState = (tool == Tools::SCALE) ? CheckState::Checked : CheckState::Unchecked;
 	}
 
 //----------------------------------------------------------------------------
