@@ -1,10 +1,9 @@
 /*
-ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
 */
 
-#ifndef ARMOUSEHOUSE_H
-#define ARMOUSEHOUSE_H
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
 #include <gl/glut.h>   // The GL Utility Toolkit (Glut) Header
 
@@ -32,7 +31,7 @@ char		*vconf = "";
 
 namespace ms3dglut {
 
-class ARMouseHouse {
+class Controller {
 private:
 	int		video_w, video_h;		// size of the video stream
 	int		vpOffsetX, vpOffsetY;	// the offset of the viewport
@@ -64,8 +63,8 @@ private:
 	int		gotImage;
 
 public:
-	ARMouseHouse(bool useGLUTGUI);
-	~ARMouseHouse();
+	Controller(bool useGLUTGUI);
+	~Controller();
 	bool idleCB();
 	void reshapeCB( int width , int height );
 	void arrowKeysCB( int a_keys, int x, int y );

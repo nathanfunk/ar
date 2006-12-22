@@ -8,7 +8,7 @@
 //#include <iostream>
 #include <sstream>
 
-#include "ARMouseHouse.h"
+#include "Controller.h"
 #include "OGLControl.h"
 
 using namespace System;
@@ -38,7 +38,7 @@ namespace ms3dglut {
 	private:
 		OGLControl						^oglControl;
 		System::Windows::Forms::Timer	^titleTimer;
-		ARMouseHouse					*controller;
+		Controller						*controller;
 
 	private: System::Windows::Forms::ToolStripContainer^  toolStripContainer;
 	private: System::Windows::Forms::MenuStrip^  menuStrip;
@@ -97,7 +97,7 @@ namespace ms3dglut {
 		MainWindow(void)
 		{
 			InitializeComponent();
-			controller = new ARMouseHouse(false);
+			controller = new Controller(false);
 		}
 
 	protected:
