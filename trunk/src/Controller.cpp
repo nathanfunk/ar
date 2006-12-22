@@ -1067,7 +1067,10 @@ int Controller::GetOGLPos(int x, int y, float pos[])
 }
 
 
-
+/**
+ * Finishes dragging (used for setting the selection rectangle).
+ * Called when a mouse button is released.
+ */
 int Controller::endDrag(int button, int x, int y){
 	std::cout<<"end drag"<<std::endl;
 
@@ -1078,6 +1081,7 @@ int Controller::endDrag(int button, int x, int y){
 
 /**
  * Initializes settings for when the user drags the mouse.
+ * Called when a mouse button is pressed.
  */
 int Controller::initDrag(int button, int x, int y){
 	lastX = x;
@@ -1133,20 +1137,23 @@ void Controller::motionCB(int x, int y)
 	std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc<<std::endl;
 	//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
 
+	// assume nothing is selected
 	int nothingSelected = true;
 
+	// check if world is selected
 	if (world->isSelected == 1){
 		world->move(patt_trans, lastButton, specialKey, xMove, yMove);
 		nothingSelected = false;
 	}
 
-	for (int i =0; i < (int) world->getNumberOfObjects(); i++){
-		if (world->getObject(i)->isSelected == 1){
-			std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
+	// check if any objects are selected
+	for (int i =0; i < (int) world->getNumberOfObjects(); i++) {
+		if (world->getObject(i)->isSelected == 1) {
+			// object is selected, so move it
+			std::cout << "Object " << i << " selected: moving " << xMove << " " << yMove << std::endl;
 			world->getObject(i)->move(patt_trans, lastButton, specialKey, xMove, yMove);
 			nothingSelected = false;
 		}
-
 	}
 
 	x2Rect = x;
