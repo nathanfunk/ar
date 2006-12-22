@@ -5,7 +5,7 @@
 #include <gl/glu.h>
 
 #include "world.h"
-#include "ARMouseHouse.h"
+#include "Controller.h"
 
 using namespace System;
 using namespace System::ComponentModel;
@@ -28,7 +28,7 @@ private:
 	HGLRC   hrc;
 	int     m_nPixelFormat;
 	Graphics ^g;
-	ARMouseHouse	*controller;
+	Controller	*controller;
 public:
 	OGLControl(void);
 	virtual void OnPaint(PaintEventArgs ^e) override;
@@ -39,7 +39,7 @@ public:
 	virtual void OnMouseMove(MouseEventArgs ^e) override;
 	virtual void OnKeyDown(KeyEventArgs ^e) override;
 	void OnTick(Object ^sender, EventArgs ^e);
-	void setController(ARMouseHouse *controller) {this->controller = controller;}
+	void setController(Controller *controller) {this->controller = controller;}
 	void resizeViewport() {if (controller) controller->reshapeCB(Width, Height);}
 	virtual ~OGLControl(void);
 private:

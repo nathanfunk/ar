@@ -1,5 +1,4 @@
 /*
-ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
 */
 
@@ -35,7 +34,7 @@ struct _ARGL_CONTEXT_SETTINGS {}; // avoids "warning LNK4248: unresolved typeref
 #include "myModel.h"
 #include "world.h"
 #include "MainWindow.h" // uses System::... causes ambiguities for myModel calling MessageBox
-#include "ARMouseHouse.h"
+#include "Controller.h"
 #include "textureloader.h"
 //--------------------------------------------------------------------------------------
 
@@ -57,7 +56,7 @@ int selectRectDefined;
 //--------------------------------------------------------------------------------------
 #ifdef GLUT_GUI_MODE
 
-ARMouseHouse *controller;
+Controller *controller;
 
 void idleCB() {controller->idleCB();}
 void reshapeCB( int width , int height ) {controller->reshapeCB(width, height);}
@@ -79,7 +78,7 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 	// enable automatic memory leak detection report on exit
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 
-	controller = new ARMouseHouse(true);
+	controller = new Controller(true);
 	glutInit(&argc, argv);
 	controller->InitGL();
 
@@ -134,7 +133,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 #pragma unmanaged
 
 
-ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
+Controller::Controller(bool useGLUTGUI) {
 	this->useGLUTGUI = useGLUTGUI;
 	thresh = 100;
 	ar_count = 0;
@@ -158,19 +157,19 @@ ARMouseHouse::ARMouseHouse(bool useGLUTGUI) {
 	gotImage = 0;
 }
 
-void ARMouseHouse::LoadWorld(){
+void Controller::LoadWorld(){
 world->loadWorld("myworld.txt");
 world->loadTextures("blah.txt");
 }
 
 
 
-ARMouseHouse::~ARMouseHouse() {
+Controller::~Controller() {
 	ar_cleanup();
 	if (world) delete world;
 }
 
-void ARMouseHouse::ar_cleanup(void)
+void Controller::ar_cleanup(void)
 {
 	if (arglSettings) {
 		arglCleanup(arglSettings);
@@ -183,7 +182,7 @@ void ARMouseHouse::ar_cleanup(void)
 }
 
 
-void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
+void Controller::InitGL ( GLvoid )     // Create Some Everyday Functions
 {	
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
 	glClearColor(1.0f, 1.0f, 1.0f, 0.5f);				// Black Background
@@ -220,7 +219,7 @@ void ARMouseHouse::InitGL ( GLvoid )     // Create Some Everyday Functions
 }
 
 
-void ARMouseHouse::ar_draw( void )
+void Controller::ar_draw( void )
 {
 	double    p[16];
 	double    m[16];
@@ -248,7 +247,7 @@ void ARMouseHouse::ar_draw( void )
 		drawSelectionRect();
 }
 
-void ARMouseHouse::displayCB(void)
+void Controller::displayCB(void)
 {
 	if (useGLUTGUI) {
 		// Select correct buffer for this context.
@@ -286,7 +285,7 @@ Idle callback. Is called before the GUI goes into idle state.
 
 Returns true if window needs to be redrawn, false otherwise
 */
-bool ARMouseHouse::idleCB()
+bool Controller::idleCB()
 {
 	static int ms_prev;
 	int ms;
@@ -356,7 +355,7 @@ bool ARMouseHouse::idleCB()
 }
 
 
-void ARMouseHouse::reshapeCB(int width , int height)   // Create The Reshape Function (the viewport)
+void Controller::reshapeCB(int width , int height)   // Create The Reshape Function (the viewport)
 {
 	GLdouble aspectRatio;
 	GLint finalW, finalH;
@@ -404,7 +403,7 @@ void ARMouseHouse::reshapeCB(int width , int height)   // Create The Reshape Fun
 
 
 
-void ARMouseHouse::arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
+void Controller::arrowKeysCB( int a_keys, int x, int y )  // Create Special Function (required for arrow keys)
 {
 
 	std::cout<< "Arrow key : "<<a_keys<<std::endl;
@@ -439,7 +438,7 @@ void ARMouseHouse::arrowKeysCB( int a_keys, int x, int y )  // Create Special Fu
  *
  * Returns a negative number if an error occurs.
  */
-int ARMouseHouse::ar_init( void )
+int Controller::ar_init( void )
 {
     ARParam  wparam;
 	int error;
@@ -501,7 +500,7 @@ int ARMouseHouse::ar_init( void )
 /* Allow picking with the mouse
  picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
  */
-int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) { 
+int Controller::selection(int key, int mouse_x, int mouse_y) { 
 	GLuint   buffer[512];	// Set Up A Selection Buffer 
 	GLint   hits;	  // The Number Of Objects That We Selected 
 	double   gl_para[16];
@@ -625,7 +624,7 @@ int ARMouseHouse::selection(int key, int mouse_x, int mouse_y) {
 
 
 
-int ARMouseHouse::selectionRect(int key) { 
+int Controller::selectionRect(int key) { 
 	GLuint   buffer[512];	// Set Up A Selection Buffer 
 	GLint   hits;	  // The Number Of Objects That We Selected 
 	double   gl_para[16];
@@ -778,7 +777,7 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 
 #ifdef GLUT_GUI_MODE
 
-void ARMouseHouse::initMenu(){
+void Controller::initMenu(){
 
 	int submenu1, submenu2, submenu3, submenu4, mainMenu;
 
@@ -832,7 +831,7 @@ void ARMouseHouse::initMenu(){
 
 
 
-void ARMouseHouse::menuCB(int item)
+void Controller::menuCB(int item)
 {
      switch (item) {
 
@@ -887,7 +886,7 @@ case 13:
 
 
 
-void ARMouseHouse::colorMenuCB(int item)
+void Controller::colorMenuCB(int item)
 {
 
      switch (item) {
@@ -921,7 +920,7 @@ void ARMouseHouse::colorMenuCB(int item)
 
 
 
-void ARMouseHouse::textureMenuCB(int item)
+void Controller::textureMenuCB(int item)
 {
 /*
 	std::cout<<"item "<<item<<"texindex size "<<world->textureIndex.size()<<std::endl;
@@ -1010,7 +1009,7 @@ if ((item > 0) && (item <= world->textureIndex.size())){
 
 
 
-void ARMouseHouse::fileMenuCB(int item)
+void Controller::fileMenuCB(int item)
 {
 
      switch (item) {
@@ -1031,7 +1030,7 @@ void ARMouseHouse::fileMenuCB(int item)
 
 #endif
 
-void ARMouseHouse::setColors(float r, float g, float b) {
+void Controller::setColors(float r, float g, float b) {
 	for (int i = 0; i < (int) world->getNumberOfObjects(); i++){
 		if (world->getObject(i)->isSelected) {
 			world->getObject(i)->setColors(r, g, b);
@@ -1042,7 +1041,7 @@ void ARMouseHouse::setColors(float r, float g, float b) {
  * Sets the pos[] point to the 3D point corresponding to
  * the projected point (x, y). (Unproject)
  */
-int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
+int Controller::GetOGLPos(int x, int y, float pos[])
 {
 	GLint viewport[4];
 	GLdouble modelview[16];
@@ -1069,7 +1068,7 @@ int ARMouseHouse::GetOGLPos(int x, int y, float pos[])
 
 
 
-int ARMouseHouse::endDrag(int button, int x, int y){
+int Controller::endDrag(int button, int x, int y){
 	std::cout<<"end drag"<<std::endl;
 
 	selectionRect(specialKey);
@@ -1080,7 +1079,7 @@ int ARMouseHouse::endDrag(int button, int x, int y){
 /**
  * Initializes settings for when the user drags the mouse.
  */
-int ARMouseHouse::initDrag(int button, int x, int y){
+int Controller::initDrag(int button, int x, int y){
 	lastX = x;
 	lastY = y;
 	lastButton = button;
@@ -1118,7 +1117,7 @@ int ARMouseHouse::initDrag(int button, int x, int y){
  * The motion callback function is called when the mouse is moved to a new
  * position while a mouse button is pressed (dragging).
  */
-void ARMouseHouse::motionCB(int x, int y)
+void Controller::motionCB(int x, int y)
 {
 	//if an object is being dragged, move the object
 	if ((x == lastX) && (y == lastY)) return;
@@ -1154,7 +1153,7 @@ void ARMouseHouse::motionCB(int x, int y)
 	y2Rect = y;
 }
 
-void ARMouseHouse::drawSelectionRect(){
+void Controller::drawSelectionRect(){
 
 	GLint viewport[4];
 			glGetIntegerv( GL_VIEWPORT, viewport );
@@ -1200,7 +1199,7 @@ glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
  *
  * Calls mouseCBwithModifier.
  */
-void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
+void Controller::mouseCB(int button, int state, int x, int y) {
 	if (useGLUTGUI) {
 		mouseCBwithModifier(button, state, x, y, glutGetModifiers());
 	} else {
@@ -1211,7 +1210,7 @@ void ARMouseHouse::mouseCB(int button, int state, int x, int y) {
 /**
  *	Mouse click callback with modifier key parameter.
  */
-void ARMouseHouse::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
+void Controller::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
 	specialKey = modifier;
 
 	if (state == GLUT_DOWN) {
@@ -1236,7 +1235,7 @@ void ARMouseHouse::mouseCBwithModifier(int button, int state, int x, int y, int 
 	}
 }
 
-int ARMouseHouse::keyMapping(unsigned char key) {
+int Controller::keyMapping(unsigned char key) {
 	switch (key) {
 		case 'r': return ObjectTypes::RECTANGLE;
 		case 'e': return ObjectTypes::TRIANGLE;
@@ -1253,20 +1252,20 @@ int ARMouseHouse::keyMapping(unsigned char key) {
 		default: return -1;
 	}
 }
-void ARMouseHouse::addObject(int objectType) {
+void Controller::addObject(int objectType) {
 	world->addObject(objectType);
 }
 
-void ARMouseHouse::addObject(std::string modelName) {
+void Controller::addObject(std::string modelName) {
 	world->addObject(modelName);
 }
 
-void ARMouseHouse::setTexture(std::string modelName) {
+void Controller::setTexture(std::string modelName) {
 	world->setTexture(modelName);
 }
 
 
-void ARMouseHouse::cycleTransparency() {
+void Controller::cycleTransparency() {
 	std::cout<<"transparent"<<std::endl;
 	object *o;
 
@@ -1288,22 +1287,22 @@ void ARMouseHouse::cycleTransparency() {
 		}
 	}
 }
-void ARMouseHouse::setDrawVideo(bool value)
+void Controller::setDrawVideo(bool value)
 {
 	drawVideo = value;
 }
 
-void ARMouseHouse::setRotateMode(bool value)
+void Controller::setRotateMode(bool value)
 {
 	rotateMode = value;
 }
 
-int ARMouseHouse::getFPS()
+int Controller::getFPS()
 {
 	return fps;
 }
 
-void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
+void Controller::keyboardCB(unsigned char key_in, int x, int y)
 {
 	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
 	int nObjects = (int) world->getNumberOfObjects();
@@ -1445,7 +1444,7 @@ void ARMouseHouse::keyboardCB(unsigned char key_in, int x, int y)
 /**
  * Creates a new world. Just like that.
  */
-void ARMouseHouse::newWorld() {
+void Controller::newWorld() {
 	if (world) delete world;
 	world = new World();
 }
@@ -1455,7 +1454,7 @@ void ARMouseHouse::newWorld() {
  *
  * Returns true if successful, false otherwise.
  */
-bool ARMouseHouse::newWorld(string fileName) {
+bool Controller::newWorld(string fileName) {
 	if (world) delete world;
 	world = new World();
 	// TODO: add code for checking if unsuccessful
