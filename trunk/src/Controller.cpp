@@ -154,6 +154,7 @@ Controller::Controller(bool useGLUTGUI) {
 	//world->loadWorld("myworld.txt");
 	
 	drawVideo = true;
+	currentTool = 0;
 	gotImage = 0;
 }
 
@@ -1218,7 +1219,12 @@ void Controller::mouseCB(int button, int state, int x, int y) {
  *	Mouse click callback with modifier key parameter.
  */
 void Controller::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
+	
 	specialKey = modifier;
+	// allow rotation by acting as if CRTL key is pressed (if in rotation mode)
+	if (currentTool == Tools::ROTATE) {
+		specialKey |= GLUT_ACTIVE_CTRL;
+	}
 
 	if (state == GLUT_DOWN) {
 		// a mouse button has been pressed
@@ -1297,11 +1303,6 @@ void Controller::cycleTransparency() {
 void Controller::setDrawVideo(bool value)
 {
 	drawVideo = value;
-}
-
-void Controller::setRotateMode(bool value)
-{
-	rotateMode = value;
 }
 
 int Controller::getFPS()

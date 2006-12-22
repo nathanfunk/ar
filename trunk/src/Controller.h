@@ -31,6 +31,13 @@ char		*vconf = "";
 
 namespace ms3dglut {
 
+class Tools {
+public:
+	static const int MOVE = 0;
+	static const int ROTATE = 1;
+	static const int SCALE = 2;
+};
+
 class Controller {
 private:
 	int		video_w, video_h;		// size of the video stream
@@ -59,7 +66,7 @@ private:
 	World	*world;
 	bool	useGLUTGUI;
 	bool	drawVideo;
-	bool	rotateMode;
+	int		currentTool;
 	int		gotImage;
 
 public:
@@ -93,6 +100,8 @@ public:
 	void setRotateMode(bool value);
 	void newWorld();
 	bool newWorld(string fileName);
+	void setCurrentTool(int tool) {currentTool = tool;}
+	int getCurrentTool() {return currentTool;}
 
 private:
 	void ar_draw( void );
