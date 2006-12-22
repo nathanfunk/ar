@@ -63,7 +63,7 @@ public:
 	static const int FILLARC	= 9;
 	static const int LINE		= 10;
 	static const int WALL		= 11;
-static const int TORUS		= 12;
+	static const int TORUS		= 12;
 };
 
 
