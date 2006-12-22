@@ -52,108 +52,114 @@ std::string getDataString(){
 
 
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
-		
-		double xNew, yNew;
-			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
 
-			double xGrow, yGrow;
-getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
+	double xNew, yNew;
+	getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
 
-		if (key == GLUT_ACTIVE_ALT){
+	double xGrow, yGrow;
+	getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
+
+	if (key == GLUT_ACTIVE_ALT){
+		// ALT key pressed -----------------------
+		// (Scaling)
+
 		if (but == GLUT_LEFT_BUTTON){
 
-		sX += (float)x / 25; 
-		 sY -= (float)y / 25;
-		////sZ -= (float)y / 25; 
+			sX += (float)x / 25; 
+			sY -= (float)y / 25;
+			////sZ -= (float)y / 25; 
 		}
-	
+
 		else if (but == GLUT_MIDDLE_BUTTON){
-		 sZ -= (float)y / 25; 
-		 ///sY -= (float)y / 25;
+			sZ -= (float)y / 25; 
+			///sY -= (float)y / 25;
 		}
-		}
-	else if (key == GLUT_ACTIVE_CTRL){
+
+	} else if (key == GLUT_ACTIVE_CTRL){
+		// CTRL key pressed -----------------------
+		// (Rotation)
+
 		if (but == GLUT_LEFT_BUTTON){
-		rX += x;   rY -= y;
-		////rY-=y; //yOff += y;
+			rX += x;   rY -= y;
+			////rY-=y; //yOff += y;
 		}
 		else if (but == GLUT_RIGHT_BUTTON){
-		rX += x;
+			rX += x;
 		}
 		else if (but == GLUT_MIDDLE_BUTTON){
-		rX+=x;
+			rX+=x;
 		}
-		}
 
+	} else {
+		// Neither ALT, nor CTRL pressed ----------
+		// (Move)
 
-		else{
+		if (but == GLUT_LEFT_BUTTON) {
+			if (min > 10) {
 
+				xOff += xNew; zOff += yNew;
 
-		if (but == GLUT_LEFT_BUTTON){
-		if (min > 10){
-			xOff += xNew; zOff += yNew;
+			} else {
+
+				//after scaling, center of cube must be moved so that only one corner is dragged
+				//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+				//of the new larger/smaller shape, and convert back to world coordinates
+				//(rotation matrix with r = -rotation of object
+				float rzRad = RADIANS(rX);
+				std::cout<<"rX : "<<rX<<std::endl;
+				float xScaleInc = xGrow / 20;
+				float yScaleInc = yGrow / 20;
+				float xOffInc = xScaleInc*size/2*cos(-rzRad) - yScaleInc*size/2*sin(-rzRad);
+				float yOffInc = xScaleInc*size/2*sin(-rzRad) + yScaleInc*size/2*cos(-rzRad);
+
+				if (min == d1||min == d5){	
+					sX -= xScaleInc; xOff += xOffInc; 
+					sZ-= yScaleInc; zOff+= yOffInc;
+				}
+				else if (min == d2|| min == d6){
+					sX += xScaleInc; xOff += xOffInc; 
+					sZ -= yScaleInc; zOff+= yOffInc;
+				}
+				else if (min == d3||min == d7){ 
+					sX += xScaleInc; xOff += xOffInc; 
+					sZ+= yScaleInc; zOff+= yOffInc;
+				}
+				else if (min == d4||min == d8){
+					sX -= xScaleInc; xOff += xOffInc; 
+					sZ+= yScaleInc; zOff+= yOffInc; 
+				}
 			}
 
-			else{
+		} else if (but == GLUT_MIDDLE_BUTTON) {
+			// Middle button pressed
 
-			//after scaling, center of cube must be moved so that only one corner is dragged
-			//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
-			//of the new larger/smaller shape, and convert back to world coordinates
-			//(rotation matrix with r = -rotation of object
-			float rzRad = RADIANS(rX);
-			std::cout<<"rX : "<<rX<<std::endl;
-			float xScaleInc = xGrow / 20;
-			float yScaleInc = yGrow / 20;
-			float xOffInc = xScaleInc*size/2*cos(-rzRad) - yScaleInc*size/2*sin(-rzRad);
-			float yOffInc = xScaleInc*size/2*sin(-rzRad) + yScaleInc*size/2*cos(-rzRad);
-		
-		if (min == d1||min == d5){	
-			sX -= xScaleInc; xOff += xOffInc; 
-			sZ-= yScaleInc; zOff+= yOffInc;
-		}
-		else if (min == d2|| min == d6){
-			sX += xScaleInc; xOff += xOffInc; 
-			sZ -= yScaleInc; zOff+= yOffInc;
-		}
-		else if (min == d3||min == d7){ 
-			sX += xScaleInc; xOff += xOffInc; 
-			sZ+= yScaleInc; zOff+= yOffInc;
-		}
-		else if (min == d4||min == d8){
-			sX -= xScaleInc; xOff += xOffInc; 
-			sZ+= yScaleInc; zOff+= yOffInc; 
-		}
-		}
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 
-			
-			if (min > 10){
+			if (min > 10) {
+
 				yOff -= y;
-			}
-			else{
 
-					float yScaleInc = - (float)y / 25;
-					float yOffInc = yScaleInc*size/2;
-	//sY += yScaleInc;
+			} else {
 
-				if (min == d1||min == d2||min == d3||min == d4){	
+				float yScaleInc = - (float)y / 25;
+				float yOffInc = yScaleInc*size/2;
+				//sY += yScaleInc;
+
+				if (min == d1||min == d2||min == d3||min == d4) {
+
 					sY -= yScaleInc;
 					yOff += yOffInc;
-				}
-				else if (min == d5||min == d6||min == d7||min == d8){
+
+				} else if (min == d5||min == d6||min == d7||min == d8) {
+
 					sY += yScaleInc;
 					yOff += yOffInc;
+
 				}
 			}
-
-
-
 		}
-		}
-		
-		notifyObservers();
 	}
+
+	notifyObservers();
+}
 
 
 void initSelection(int but, int key, int x, int y){
