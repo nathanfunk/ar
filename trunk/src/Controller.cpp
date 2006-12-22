@@ -1221,9 +1221,15 @@ void Controller::mouseCB(int button, int state, int x, int y) {
 void Controller::mouseCBwithModifier(int button, int state, int x, int y, int modifier) {
 	
 	specialKey = modifier;
-	// allow rotation by acting as if CRTL key is pressed (if in rotation mode)
-	if (currentTool == Tools::ROTATE) {
+
+	// allow rotation or scaling by acting as if associated key is pressed
+	switch (currentTool) {
+	case Tools::ROTATE:
 		specialKey |= GLUT_ACTIVE_CTRL;
+		break;
+	case Tools::SCALE:
+		specialKey |= GLUT_ACTIVE_ALT;
+		break;
 	}
 
 	if (state == GLUT_DOWN) {
