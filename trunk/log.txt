@@ -1,3 +1,9 @@
+Dec 22 nf
+	- finished implementing Rotate and Scale buttons
+
+Dec 21 nf
+	- finished save feature (not completely happy with it, but good enough)
+
 Nov 22 nf
 	- gave up on constraining aspect ratio. selection code wasn't work even
 	  after shifting mouse click coordinates. May be better to just constrain window size
