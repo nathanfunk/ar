@@ -3,9 +3,9 @@
 
 #define MyAppName "Arrr Modeler"
 #define MyAppVerName "Arrr Modeler 0.9"
-#define MyAppPublisher "ArrrSoft"
-#define MyAppURL "http://www.arrrsoft.com"
-#define MyAppExeName "arrr.exe"
+#define MyAppPublisher "Singular Systems"
+#define MyAppURL "http://www.singularsystems.com/index.html"
+#define MyAppExeName "Arrr Modeler.exe"
 #define MyAppUrlName "arrr.url"
 
 [Setup]
@@ -18,7 +18,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputDir=g:\singularsys\projects\ar\deployment\
+OutputDir=e:\setuptest
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
@@ -32,7 +32,14 @@ Name: german; MessagesFile: compiler:Languages\German.isl
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: g:\singularsys\projects\ar\deployment\files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\Release\ms3dglut.exe; DestDir: {app}; DestName: {#MyAppExeName}; Flags: ignoreversion
+Source: ..\libARvideo.dll; DestDir: {app}; Flags: 
+Source: ..\MilkShapeDLL.dll; DestDir: {app}; Flags: 
+Source: ..\DSVL.dll; DestDir: {app}; Flags: 
+Source: ..\Models\*; DestDir: {app}\Models; Flags: recursesubdirs
+Source: ..\Data\*; DestDir: {app}\Data; Flags: recursesubdirs
+Source: ..\patterns\pattern.pdf; DestDir: {app}\Patterns; Flags: 
+Source: .\Readme.txt; DestDir: {app}; Flags: 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [INI]
@@ -40,12 +47,17 @@ Filename: {app}\{#MyAppUrlName}; Section: InternetShortcut; Key: URL; String: {#
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
-Name: {group}\{cm:ProgramOnTheWeb,{#MyAppName}}; Filename: {app}\{#MyAppUrlName}
+Name: {group}\{cm:Homepage, {#MyAppName}}; Filename: {app}\{#MyAppUrlName}
 Name: {group}\{cm:UninstallProgram,{#MyAppName}}; Filename: {uninstallexe}
 Name: {userdesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desktopicon
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
+Filename: {app}\Readme.txt; Description: View the Readme.txt file; Flags: postinstall shellexec skipifsilent
+Filename: {app}\patterns\pattern.pdf; Description: Open the AR Pattern PDF for printing; Flags: postinstall shellexec skipifsilent
 
 [UninstallDelete]
 Type: files; Name: {app}\{#MyAppUrlName}
+
+[CustomMessages]
+Homepage=%1 Home Page
