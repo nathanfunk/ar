@@ -95,6 +95,8 @@ namespace ms3dglut {
 
 	private: System::Windows::Forms::ToolStripButton^  tsbScale;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
+	private: System::Windows::Forms::ToolStripStatusLabel^  tsslMarkerStatus;
+
 
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
 
@@ -141,6 +143,7 @@ protected:
 			this->toolStripContainer = (gcnew System::Windows::Forms::ToolStripContainer());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
 			this->tsslFPS = (gcnew System::Windows::Forms::ToolStripStatusLabel());
+			this->tsslMarkerStatus = (gcnew System::Windows::Forms::ToolStripStatusLabel());
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -223,7 +226,7 @@ protected:
 			// statusStrip
 			// 
 			this->statusStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->statusStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->tsslFPS});
+			this->statusStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->tsslFPS, this->tsslMarkerStatus});
 			this->statusStrip->Location = System::Drawing::Point(0, 0);
 			this->statusStrip->Name = L"statusStrip";
 			this->statusStrip->Size = System::Drawing::Size(723, 22);
@@ -232,10 +235,20 @@ protected:
 			// 
 			// tsslFPS
 			// 
+			this->tsslFPS->AutoSize = false;
 			this->tsslFPS->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
 			this->tsslFPS->Name = L"tsslFPS";
-			this->tsslFPS->Size = System::Drawing::Size(29, 17);
+			this->tsslFPS->Size = System::Drawing::Size(100, 17);
 			this->tsslFPS->Text = L"FPS:";
+			this->tsslFPS->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+			// 
+			// tsslMarkerStatus
+			// 
+			this->tsslMarkerStatus->AutoSize = false;
+			this->tsslMarkerStatus->Name = L"tsslMarkerStatus";
+			this->tsslMarkerStatus->Size = System::Drawing::Size(300, 17);
+			this->tsslMarkerStatus->Text = L"Status: Initializing...";
+			this->tsslMarkerStatus->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			// 
 			// menuStrip
 			// 
@@ -369,7 +382,7 @@ protected:
 				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
 			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
 			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(171, 25);
+			this->standardToolStrip->Size = System::Drawing::Size(169, 25);
 			this->standardToolStrip->TabIndex = 0;
 			this->standardToolStrip->Text = L"toolStrip1";
 			// 
@@ -436,7 +449,7 @@ protected:
 				this->tsbLine, this->tsddbModel});
 			this->objectsToolStrip->Location = System::Drawing::Point(3, 49);
 			this->objectsToolStrip->Name = L"objectsToolStrip";
-			this->objectsToolStrip->Size = System::Drawing::Size(322, 25);
+			this->objectsToolStrip->Size = System::Drawing::Size(320, 25);
 			this->objectsToolStrip->TabIndex = 1;
 			this->objectsToolStrip->Text = L"Objects";
 			// 
@@ -556,7 +569,7 @@ protected:
 				this->tsbRotate, this->tsbScale, this->toolStripSeparator1, this->tsbColor, this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
 			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(440, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(407, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbMove
@@ -708,6 +721,7 @@ private:
 	{
 		updateWindowTitle();
 		tsslFPS->Text = "FPS: " + controller->getFPS();
+		tsslMarkerStatus->Text = "Status: " + (controller->getMarkerStatus()) ? "Marker not found" : "Marker found";
 	}
 
 	System::Void ObjectsToolStrip_Click(System::Object^ sender, System::EventArgs^ e) {
