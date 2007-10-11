@@ -721,7 +721,9 @@ private:
 	{
 		updateWindowTitle();
 		tsslFPS->Text = "FPS: " + controller->getFPS();
-		tsslMarkerStatus->Text = "Status: " + (controller->getMarkerStatus()) ? "Marker not found" : "Marker found";
+	
+		tsslMarkerStatus->Text = "Status: ";
+		tsslMarkerStatus->Text += (controller->getMarkerStatus()!=0) ? "Marker found" : "Marker not found";
 	}
 
 	System::Void ObjectsToolStrip_Click(System::Object^ sender, System::EventArgs^ e) {
