@@ -19,9 +19,9 @@ public:
 		tMatrix.loadIdentity();
 		tMatrix.translate(_x, _y, _z);
 
-
-setTexture(LoadGLTextureRepeat("steel01.bmp"));
+//		setTexture(LoadGLTextureRepeat("steel01.bmp"));
 	}
+
 	cube2(int _name, float _x, float _y,  float _z, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _size)//:
@@ -37,7 +37,7 @@ setTexture(LoadGLTextureRepeat("steel01.bmp"));
 		XYSize = size;
 		ZSize = size;
 
-	tMatrix.loadIdentity();
+		tMatrix.loadIdentity();
 		tMatrix.translate(_x, _y, _z);
 
 				rotate(_rX,1,0,0);
@@ -45,7 +45,7 @@ setTexture(LoadGLTextureRepeat("steel01.bmp"));
 		rotate(_rZ,0,0,1);
 
 
-		setTexture(LoadGLTextureRepeat("steel01.bmp"));
+//		setTexture(LoadGLTextureRepeat("steel01.bmp"));
 
 	}
 
@@ -143,22 +143,19 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 	}
 */
 
-void drawRect(){
-
-	
+void drawRect() {
 	glBegin( GL_POLYGON );
-//first face   
-//drawSquare(size);
-glVertex3f( -size/2, -size/2, 0.0f );
-   glTexCoord2f( 0.0f, 0.0f );
-   glVertex3f(  size/2, -size/2, 0.0f );
-   glTexCoord2f( 1.0f, 0.0f );
-   glVertex3f(  size/2,  size/2, 0.0f );
-   glTexCoord2f( 1.0f, 1.0f );
-   glVertex3f( -size/2,  size/2, 0.0f );
-   glTexCoord2f( 0.0f, 1.0f );
-  glEnd();
-
+	//first face   
+	//drawSquare(size);
+	glVertex3f( -size/2, -size/2, 0.0f );
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex3f(  size/2, -size/2, 0.0f );
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex3f(  size/2,  size/2, 0.0f );
+	glTexCoord2f( 1.0f, 1.0f );
+	glVertex3f( -size/2,  size/2, 0.0f );
+	glTexCoord2f( 0.0f, 1.0f );
+	glEnd();
 }
 
 
@@ -180,44 +177,44 @@ void initHandles(){
 
 	void	draw(){
 
-
-
-//first face
-glPushMatrix();
-glTranslatef(0.0f, 0.0, size/2);
-drawRect();
-glPopMatrix();
-//second face
-glPushMatrix();
-glRotatef(90,1,0,0);
-glTranslatef(0, 0, -size/2);
-drawRect();
-glPopMatrix();
- //thirdface
-glPushMatrix();
-glTranslatef(0.0f, 0.0, -size/2);
-drawRect();
-glPopMatrix();
-   //fourth face
-glPushMatrix();
-glRotatef(90,1,0,0);
-glTranslatef(0, 0, size/2);
-drawRect();
-glPopMatrix();
-//fifth face
-   glPushMatrix();
-glRotatef(90,0,1,0);
-glTranslatef(0, 0, size/2);
-drawRect();
-glPopMatrix();
- //sixth face
-   glPushMatrix();
-glRotatef(90,0,1,0);
-glTranslatef(0, 0, -size/2);
-drawRect();
-glPopMatrix();
+		//first face
+		glPushMatrix();
+		glTranslatef(0.0f, 0.0, size/2);
+		drawRect();
+		glPopMatrix();
+		//second face
+		glPushMatrix();
+		glRotatef(90,1,0,0);
+		glTranslatef(0, 0, -size/2);
+		drawRect();
+		glPopMatrix();
+		//thirdface
+		glPushMatrix();
+		glTranslatef(0.0f, 0.0, -size/2);
+		drawRect();
+		glPopMatrix();
+		//fourth face
+		glPushMatrix();
+		glRotatef(90,1,0,0);
+		glTranslatef(0, 0, size/2);
+		drawRect();
+		glPopMatrix();
+		//fifth face
+		glPushMatrix();
+		glRotatef(90,0,1,0);
+		glTranslatef(0, 0, size/2);
+		drawRect();
+		glPopMatrix();
+		//sixth face
+		glPushMatrix();
+		glRotatef(90,0,1,0);
+		glTranslatef(0, 0, -size/2);
+		drawRect();
+		glPopMatrix();
 
 	}
+
+
 	float size;
 //	int minI;
 //	float  min;
