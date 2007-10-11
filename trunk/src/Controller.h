@@ -85,6 +85,7 @@ public:
 	void mouseCB(int button, int state, int x, int y);
 	void mouseCBwithModifier(int button, int state, int x, int y, int modifier);
 	int getFPS();
+	int getMarkerStatus();
 	void keyboardCB( unsigned char key, int x, int y);
 	void InitGL ( GLvoid );
 	int  ar_init( void );

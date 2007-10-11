@@ -1316,6 +1316,11 @@ int Controller::getFPS()
 	return fps;
 }
 
+int Controller::getMarkerStatus()
+{
+	return patt_found;
+}
+
 void Controller::keyboardCB(unsigned char key_in, int x, int y)
 {
 	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
