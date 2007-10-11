@@ -3,35 +3,25 @@
 #include <gl/glaux.h>
 //#include "bmp.h"
 
-/**
- * Added by Nathan. Probably actually in bmp.h. Remove this when
- * bmp.h is added to the directory.
- */
-AUX_RGBImageRec *myAuxDIBImageLoad(const char *Filename)
-{
-	return NULL;
-}
+using namespace std;
+
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 {
+	string path = "models\\";
 	FILE *File=NULL;												// File Handle
 
-std::cout<<"file: "<<Filename<<std::endl;
+	path += Filename;
+//	cout<<"file: "<<path<<endl;
 
 	if (!Filename)													// Make Sure A Filename Was Given
-	{
 		return NULL;												// If Not Return NULL
-	}
 
-	fopen_s(&File, Filename,"r");									// Check To See If The File Exists
-
-
-	
-
+	fopen_s(&File, path.c_str(), "r");									// Check To See If The File Exists
 	if (File)														// Does The File Exist?
 	{
 		fclose(File);												// Close The Handle
-		return myAuxDIBImageLoad(Filename);							// Load The Bitmap And Return A Pointer
+		return auxDIBImageLoad(path.c_str());							// Load The Bitmap And Return A Pointer
 	}
 
 	return NULL;													// If Load Failed Return NULL
@@ -113,8 +103,8 @@ GLuint LoadGLTextureRepeat( const char *filename )						// Load Bitmaps And Conv
 		free(pImage->data);											// Free The Texture Image Memory
 		free(pImage);												// Free The Image Structure
 	}
-	else std::cout<<"Could not load texture"<<std::endl;
+	else cout<<"Could not load texture"<<endl;
 
-	std::cout<<"texture is "<<texture<<std::endl;
+	cout<<"texture is "<<texture<<endl;
 	return texture;													// Return The Status
 }
