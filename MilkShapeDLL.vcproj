@@ -179,10 +179,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\Lesson31.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Matrix.cpp"
 				>
 			</File>
@@ -196,6 +192,10 @@
 			</File>
 			<File
 				RelativePath=".\src\Quaternion.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\textureloader.cpp"
 				>
 			</File>
 			<File
@@ -217,10 +217,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\Lesson31.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Matrix.h"
 				>
 			</File>
@@ -234,6 +230,10 @@
 			</File>
 			<File
 				RelativePath=".\src\Quaternion.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\textureloader.h"
 				>
 			</File>
 			<File

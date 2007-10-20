@@ -8,20 +8,18 @@ using namespace std;
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)						// Loads A Bitmap Image
 {
-	string path = "models\\";
 	FILE *File=NULL;												// File Handle
 
-	path += Filename;
 //	cout<<"file: "<<path<<endl;
 
 	if (!Filename)													// Make Sure A Filename Was Given
 		return NULL;												// If Not Return NULL
 
-	fopen_s(&File, path.c_str(), "r");									// Check To See If The File Exists
+	fopen_s(&File, Filename, "r");									// Check To See If The File Exists
 	if (File)														// Does The File Exist?
 	{
 		fclose(File);												// Close The Handle
-		return auxDIBImageLoad(path.c_str());							// Load The Bitmap And Return A Pointer
+		return auxDIBImageLoad(Filename);							// Load The Bitmap And Return A Pointer
 	}
 
 	return NULL;													// If Load Failed Return NULL

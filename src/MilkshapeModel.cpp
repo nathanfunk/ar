@@ -16,15 +16,15 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-
+#include <algorithm>
+#include <string>
+#include <fstream>
 
 #include "Timer.h"
 #include "MilkshapeModel.h"
 
 using namespace std;
 
-#include <string>
-#include <fstream>
 
 MilkshapeModel::MilkshapeModel()
 {
@@ -123,9 +123,13 @@ struct MS3DKeyframe
 
 
 
-bool MilkshapeModel::loadModelData( const char *filename )
+bool MilkshapeModel::loadModelData( const char *filepath )
 {
-	ifstream inputFile( filename, ios::in | ios::binary  );
+	string filename; // not used
+	// set the path (needed for loading the texture files)
+	splitPath(filepath, m_path, filename);
+
+	ifstream inputFile( filepath, ios::in | ios::binary  );
 	if ( inputFile.fail())
 		return false;	// "Couldn't open the model file."
 
@@ -221,6 +225,7 @@ bool MilkshapeModel::loadModelData( const char *filename )
 		pPtr += sizeof( MS3DMaterial );
 	}
 
+	// load the texture files
 	reloadTextures();
 // { NEW }
 	// Load Skeletal Animation Stuff
@@ -327,3 +332,18 @@ bool MilkshapeModel::loadModelData( const char *filename )
 	return true;
 }
 
+void MilkshapeModel::splitPath(const string& pathAndFilename, string& path, string& filename) {
+	string fullPath(pathAndFilename);
+	replace(fullPath.begin(), fullPath.end(), '/', '\\');	// replace slashes to \ format
+	string::size_type lastSlashPos = fullPath.find_last_of('\\'); // find last backslash
+	if (lastSlashPos == string::npos)
+	{
+		path = "";
+		filename = fullPath;
+	}
+	else
+	{
+		path = fullPath.substr(0, lastSlashPos+1);
+		filename = fullPath.substr(lastSlashPos+1, fullPath.size()-lastSlashPos-1);
+	}
+}

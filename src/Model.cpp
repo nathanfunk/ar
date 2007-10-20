@@ -241,10 +241,13 @@ void Model::draw(int advance)
 
 void Model::reloadTextures()
 {
+	string fullpath;
 	for ( int i = 0; i < m_numMaterials; i++ )
-		if ( strlen( m_pMaterials[i].m_pTextureFilename ) > 0 )
-			m_pMaterials[i].m_texture = LoadGLTexture( m_pMaterials[i].m_pTextureFilename );
-			//m_pMaterials[i].m_texture = LoadTGA( m_pMaterials[i].m_pTextureFilename );
+		if ( strlen( m_pMaterials[i].m_pTextureFilename ) > 0 ) {
+			fullpath = m_path + m_pMaterials[i].m_pTextureFilename;
+			m_pMaterials[i].m_texture = LoadGLTexture( fullpath.c_str() );
+			//m_pMaterials[i].m_texture = LoadTGA( fullpath.c_str() );
+		}
 		else
 			m_pMaterials[i].m_texture = 0;
 }
