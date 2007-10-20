@@ -15,7 +15,7 @@
 #include <gl\glut.h>			// Header File For The OpenGL32 Library
 #include <gl\glaux.h>
 #include "Model.h"
-#include "Lesson31.h"
+#include "textureloader.h"
 //#include "debug.h"
 #include "Win32Timer.h"
 #include <iostream>
