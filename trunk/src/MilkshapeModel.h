@@ -31,7 +31,8 @@ class __declspec(dllexport) MilkshapeModel : public Model
 		*/
 		virtual bool loadModelData( const char *filename );
 
-
+private:
+	void splitPath(const string& pathAndFilename, string& path, string& filename);
 
 };
 

@@ -694,16 +694,19 @@ private:
 		oglControl->resizeViewport();
 
 		// Populate models combo box with files
-		array<String^>^dirs = Directory::GetFiles(Directory::GetCurrentDirectory() + "/models", "*.ms3d");
-		Collections::IEnumerator^ myEnum = dirs->GetEnumerator();
-		while ( myEnum->MoveNext() )
-		{
-			ToolStripMenuItem ^menuItem = gcnew ToolStripMenuItem();
-			menuItem->Name = myEnum->Current->ToString();
-			menuItem->Size = System::Drawing::Size(152, 22);
-			menuItem->Text = System::IO::Path::GetFileNameWithoutExtension(myEnum->Current->ToString());
-			menuItem->Click += gcnew System::EventHandler(this, &MainWindow::InsertModel_Click);
-			tsddbModel->DropDownItems->Add(menuItem);
+		String^ modelsDir = Directory::GetCurrentDirectory() + "/models";
+		if (Directory::Exists(modelsDir)) {
+			array<String^>^dirs = Directory::GetFiles(modelsDir, "*.ms3d");
+			Collections::IEnumerator^ myEnum = dirs->GetEnumerator();
+			while ( myEnum->MoveNext() )
+			{
+				ToolStripMenuItem ^menuItem = gcnew ToolStripMenuItem();
+				menuItem->Name = myEnum->Current->ToString();
+				menuItem->Size = System::Drawing::Size(152, 22);
+				menuItem->Text = System::IO::Path::GetFileNameWithoutExtension(myEnum->Current->ToString());
+				menuItem->Click += gcnew System::EventHandler(this, &MainWindow::InsertModel_Click);
+				tsddbModel->DropDownItems->Add(menuItem);
+			}
 		}
 
 		// Start video capture now that everything's set up
@@ -714,6 +717,12 @@ private:
 		titleTimer->Tick += gcnew EventHandler(this, &MainWindow::OnTitleTimerTick);
 		titleTimer->Interval = 1000; //every second
 		titleTimer->Start();
+
+		// print working directory
+
+		Diagnostics::Debug::WriteLine("Current directory");
+		// print exe directory
+		Diagnostics::Debug::WriteLine(Application::StartupPath);
 	}
 
 

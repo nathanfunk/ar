@@ -14,10 +14,12 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-
+#include <string>
 #include "Matrix.h"
 #include "Vector.h"
 #include "Timer.h"
+
+using namespace std;
 
 class __declspec(dllexport) Model
 {
@@ -163,6 +165,8 @@ class __declspec(dllexport) Model
 
 		//	Is the animation looping?
 		bool m_looping;
+
+		string m_path; //nathan - path to file (in order to load texture images)
 // { end NEW }
 };
 
