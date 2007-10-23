@@ -439,12 +439,18 @@ void Controller::arrowKeysCB( int a_keys, int x, int y )  // Create Special Func
  *
  * Returns a negative number if an error occurs.
  */
-int Controller::ar_init( void )
+int Controller::ar_init(string exeDir)
 {
     ARParam  wparam;
 	int error;
     /* open the video path */
 	//if( arVideoOpen( vconf ) < 0 ){
+//	string temp = exeDir + "\\..\\Data\\WDM_camera_flipV.xml";
+//	temp = "Data\\WDM_camera_flipV.xml";
+//	char *configFile = new char[temp.size()+1];
+//	strcpy_s(configFile, temp.size()+1, temp.c_str());
+//	if( (error = arVideoOpen(configFile)) < 0 ) {
+//	if( (error = arVideoOpen(NULL)) < 0 ){
 	if( (error = arVideoOpen("Data\\WDM_camera_flipV.xml")) < 0 ){
         printf("arVideoOpen failed!\n");
 		return error;
