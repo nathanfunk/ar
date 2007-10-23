@@ -681,6 +681,12 @@ protected:
 
 private:
 	System::Void MainWindow_Load(System::Object^  sender, System::EventArgs^  e) {
+		// print exe directory
+		String^ exeDir = Application::StartupPath;
+		string exeDirString;
+		MarshalString(exeDir, exeDirString);
+		Diagnostics::Debug::WriteLine("Exe directory");
+		Diagnostics::Debug::WriteLine(exeDir);
 		// Add the openGL control to the content panel of the toolstrip container
 		oglControl = gcnew OGLControl();
 		this->toolStripContainer->ContentPanel->Controls->Add(oglControl);
@@ -689,12 +695,16 @@ private:
 
 		// Initialize controller and hook together OpenGL control to the controller
 		controller->InitGL();
-		controller->ar_init();
+		int initResult = controller->ar_init(exeDirString);
+		if (initResult != 0) {
+			// video stream didn't initialize
+			MessageBox::Show("Failed to initialize video. Error: " + initResult);
+		}
 		oglControl->setController(controller);
 		oglControl->resizeViewport();
 
 		// Populate models combo box with files
-		String^ modelsDir = Directory::GetCurrentDirectory() + "/models";
+		String^ modelsDir = exeDir + "/../models";
 		if (Directory::Exists(modelsDir)) {
 			array<String^>^dirs = Directory::GetFiles(modelsDir, "*.ms3d");
 			Collections::IEnumerator^ myEnum = dirs->GetEnumerator();
@@ -718,11 +728,6 @@ private:
 		titleTimer->Interval = 1000; //every second
 		titleTimer->Start();
 
-		// print working directory
-
-		Diagnostics::Debug::WriteLine("Current directory");
-		// print exe directory
-		Diagnostics::Debug::WriteLine(Application::StartupPath);
 	}
 
 

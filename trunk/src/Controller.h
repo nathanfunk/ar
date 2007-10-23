@@ -88,13 +88,13 @@ public:
 	int getMarkerStatus();
 	void keyboardCB( unsigned char key, int x, int y);
 	void InitGL ( GLvoid );
-	int  ar_init( void );
+	int  ar_init(string exeDir);
 	void ar_cleanup(void);
 	World *getWorld() {return world;}
 	void LoadWorld();
-	void setTexture(std::string modelName);
+	void setTexture(string modelName);
 	void addObject(int objectType);
-	void addObject(std::string modelName);
+	void addObject(string modelName);
 	void setColors(float r, float g, float b);
 	void cycleTransparency();
 	void setDrawVideo(bool value);
