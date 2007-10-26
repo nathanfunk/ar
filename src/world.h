@@ -36,7 +36,7 @@ Texture texture[2];
 	int isSelected;
 
 	World();
-	World(string scriptFile);
+	World(const string &scriptFile);
 	~World();
 	int drawGroundGrid( int divisions, float x, float y, float height);
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew);
@@ -44,17 +44,17 @@ Texture texture[2];
 	void loadTextures(char *textureFile);
 	void initMenu();
 	//void loadWorld();
-	void World::setTexture(std::string modelName);
-	bool loadWorld(string scriptFile);
+	void World::setTexture(const string &modelName);
+	bool loadWorld(const string &scriptFile);
 	void saveWorld();
-	void saveWorld(string scriptFile);
-	void exportSL(string scriptFile);
+	void saveWorld(const string &scriptFile);
+	void exportSL(const string &scriptFile);
 	void draw();
 	void addObject(object *o);
 	void addObject(int objectType);
-	void addObject(std::string modelName);
+	void addObject(const string& modelName);
 	object *createObject(int objectType);
-	object *createObject(std::string modelName);
+	object *createObject(const string &modelName);
 	int getNumberOfObjects() {return (int)objectPtrs.size();}
 	object *getObject(int i) {return objectPtrs[i];}
 	string getFileName() {return fileName;}

@@ -241,7 +241,7 @@ void World::initMenu(){
  * Reads the file line by line and then sets the fileName member to the name of the file.
  * Returns true if load was sucessful, false otherwise.
  */
-bool World::loadWorld(string scriptFile){
+bool World::loadWorld(const string &scriptFile){
 	ifstream fin(scriptFile.c_str());
 	string line;
 
@@ -348,7 +348,7 @@ void World::saveWorld() {
 /**
  * Saves the world under a specific file name.
  */
-void World::saveWorld(string scriptFile){
+void World::saveWorld(const string &scriptFile){
 	ofstream outfile(scriptFile.c_str());
 
 	if (outfile.is_open())
@@ -367,7 +367,7 @@ void World::saveWorld(string scriptFile){
 }
 
 
-void World::exportSL(string scriptFile){
+void World::exportSL(const string &scriptFile){
 
 	ofstream outfile(scriptFile.c_str());
 	if (outfile.is_open())
@@ -482,7 +482,7 @@ void World::addObject(int objectType) {
 /**
  * Adds an object from a model
  */
-void World::addObject(std::string modelName) {
+void World::addObject(const std::string& modelName) {
 	// set dirty flag
 	isDirtyFlag = true;
 
@@ -491,7 +491,7 @@ void World::addObject(std::string modelName) {
 }
 
 
-void World::setTexture(std::string modelName) {
+void World::setTexture(const std::string& modelName) {
 	// set dirty flag
 	isDirtyFlag = true;
 	// look for selected objects and set the texture
@@ -567,7 +567,7 @@ object *World::createObject(int objectType) {
 
 
 
-object *World::createObject(std::string modelName) {
+object *World::createObject(const string &modelName) {
 	int nObjects = (int)getNumberOfObjects();
 	object *o;
 
