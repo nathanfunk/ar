@@ -248,6 +248,25 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\AboutDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\AboutDialog.h"
+				FileType="3"
+				>
+				<File
+					RelativePath=".\src\AboutDialog.resx"
+					SubType="Designer"
+					>
+				</File>
+				<File
+					RelativePath=".\AboutDialog.resx"
+					SubType="Designer"
+					>
+				</File>
+			</File>
+			<File
 				RelativePath=".\src\animal.h"
 				>
 			</File>
