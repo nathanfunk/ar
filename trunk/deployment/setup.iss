@@ -18,8 +18,8 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputDir=e:\setuptest
-OutputBaseFilename=setup
+OutputDir=.
+OutputBaseFilename=ooqua
 Compression=lzma
 SolidCompression=yes
 
@@ -49,10 +49,10 @@ Filename: {app}\{#MyAppUrlName}; Section: InternetShortcut; Key: URL; String: {#
 Name: {group}\{#MyAppName}; Filename: {app}\bin\{#MyAppExeName}
 Name: {group}\{cm:Homepage, {#MyAppName}}; Filename: {app}\{#MyAppUrlName}
 Name: {group}\{cm:UninstallProgram,{#MyAppName}}; Filename: {uninstallexe}
-Name: {userdesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desktopicon
+Name: {userdesktop}\{#MyAppName}; Filename: {app}\bin\{#MyAppExeName}; Tasks: desktopicon
 
 [Run]
-Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
+Filename: {app}\bin\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
 ;Filename: {app}\Readme.txt; Description: View the Readme.txt file; Flags: postinstall shellexec skipifsilent
 Filename: {app}\patterns\pattern.pdf; Description: Open the Pattern PDF for printing; Flags: postinstall shellexec skipifsilent
 
