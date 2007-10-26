@@ -10,6 +10,7 @@
 
 #include "Controller.h"
 #include "OGLControl.h"
+#include "AboutDialog.h"
 
 using namespace System;
 using namespace System::ComponentModel;
@@ -50,12 +51,12 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripMenuItem^  saveAsToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator2;
 	private: System::Windows::Forms::ToolStripMenuItem^  exitToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  editToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator3;
-	private: System::Windows::Forms::ToolStripMenuItem^  selectAllToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  toolsToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  customizeToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  optionsToolStripMenuItem;
+
+
+
+
+
+
 	private: System::Windows::Forms::ToolStripMenuItem^  helpToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  aboutToolStripMenuItem;
 	private: System::Windows::Forms::ToolStrip^  standardToolStrip;
@@ -96,6 +97,9 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripButton^  tsbScale;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
 	private: System::Windows::Forms::ToolStripStatusLabel^  tsslMarkerStatus;
+	private: System::Windows::Forms::ToolStripMenuItem^  editToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator3;
+	private: System::Windows::Forms::ToolStripMenuItem^  selectAllToolStripMenuItem;
 
 
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
@@ -156,9 +160,6 @@ protected:
 			this->editToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->toolStripSeparator3 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->selectAllToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->customizeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->optionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->standardToolStrip = (gcnew System::Windows::Forms::ToolStrip());
@@ -253,8 +254,8 @@ protected:
 			// menuStrip
 			// 
 			this->menuStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->menuStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->fileToolStripMenuItem, 
-				this->editToolStripMenuItem, this->toolsToolStripMenuItem, this->helpToolStripMenuItem});
+			this->menuStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {this->fileToolStripMenuItem, 
+				this->editToolStripMenuItem, this->helpToolStripMenuItem});
 			this->menuStrip->Location = System::Drawing::Point(0, 0);
 			this->menuStrip->Name = L"menuStrip";
 			this->menuStrip->Size = System::Drawing::Size(723, 24);
@@ -342,26 +343,6 @@ protected:
 			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(117, 22);
 			this->selectAllToolStripMenuItem->Text = L"Select &All";
 			// 
-			// toolsToolStripMenuItem
-			// 
-			this->toolsToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->customizeToolStripMenuItem, 
-				this->optionsToolStripMenuItem});
-			this->toolsToolStripMenuItem->Name = L"toolsToolStripMenuItem";
-			this->toolsToolStripMenuItem->Size = System::Drawing::Size(44, 20);
-			this->toolsToolStripMenuItem->Text = L"&Tools";
-			// 
-			// customizeToolStripMenuItem
-			// 
-			this->customizeToolStripMenuItem->Name = L"customizeToolStripMenuItem";
-			this->customizeToolStripMenuItem->Size = System::Drawing::Size(123, 22);
-			this->customizeToolStripMenuItem->Text = L"&Customize";
-			// 
-			// optionsToolStripMenuItem
-			// 
-			this->optionsToolStripMenuItem->Name = L"optionsToolStripMenuItem";
-			this->optionsToolStripMenuItem->Size = System::Drawing::Size(123, 22);
-			this->optionsToolStripMenuItem->Text = L"&Options";
-			// 
 			// helpToolStripMenuItem
 			// 
 			this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->aboutToolStripMenuItem});
@@ -372,8 +353,9 @@ protected:
 			// aboutToolStripMenuItem
 			// 
 			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(115, 22);
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->aboutToolStripMenuItem->Text = L"&About...";
+			this->aboutToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::aboutToolStripMenuItem_Click);
 			// 
 			// standardToolStrip
 			// 
@@ -962,11 +944,15 @@ private:
 		if (controller->getWorld()->isDirty())
 			title = title + L"*";
 
-		title += L" - ARRR Modeler";
+		title += L" - ooqua";
 		// set window title to constructed string
 		Text = title;
 	}
 
+private: System::Void aboutToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 AboutDialog^ a = gcnew AboutDialog;
+			 a->ShowDialog();
+		 }
 };
 }
 
