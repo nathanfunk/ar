@@ -138,10 +138,8 @@ Controller::Controller(bool useGLUTGUI) {
 	thresh = 100;
 	ar_count = 0;
 	fps = 0;
-	cparam_name	= "Data/camera_para.dat";
 	ARTImage		= NULL; // current image
 	arglSettings	= NULL;
-	patt_name		= "Data/patt.sample1";
 	patt_width		= 80.0;
 	patt_center[0]	= 0.0;
 	patt_center[1] = 0.0;
@@ -439,15 +437,27 @@ void Controller::arrowKeysCB( int a_keys, int x, int y )  // Create Special Func
  *
  * Returns a negative number if an error occurs.
  */
-int Controller::ar_init(string exeDir)
+int Controller::ar_init(const string &exeDir)
 {
     ARParam  wparam;
 	int error;
-    /* open the video path */
-	//if( arVideoOpen( vconf ) < 0 ){
-	string temp = exeDir + "\\..\\Data\\WDM_camera_flipV.xml";
+	string temp;
+	// initialize file name strings
+	// need to be in char * format (using .c_str() doesn't work because it produces a const char *)
+	temp = exeDir + "\\..\\Data\\WDM_camera_flipV.xml";
 	char *configFile = new char[temp.size()+1];
 	strcpy_s(configFile, temp.size()+1, temp.c_str());
+
+	temp = exeDir + "\\..\\Data\\camera_para.dat";
+	char *cparam_name = new char[temp.size()+1];
+	strcpy_s(cparam_name, temp.size()+1, temp.c_str());
+
+	temp = exeDir + "\\..\\Data\\patt.sample1";
+	char *patt_name = new char[temp.size()+1];
+	strcpy_s(patt_name, temp.size()+1, temp.c_str());
+
+    /* open the video path */
+	//if( arVideoOpen( vconf ) < 0 ){
 	if( (error = arVideoOpen(configFile)) < 0 ) {
         printf("arVideoOpen failed!\n");
 		return error;
@@ -461,10 +471,12 @@ int Controller::ar_init(string exeDir)
     printf("Image size (x,y) = (%d,%d)\n", video_w, video_h);
 
     /* set the initial camera parameters */
+	
     if( (error = arParamLoad(cparam_name, 1, &wparam)) < 0 ) {
         printf("Camera parameter load error!\n");
 		return error;
 	}
+	delete cparam_name;
 
     arParamChangeSize( &wparam, video_w, video_h, &cparam );
     arInitCparam( &cparam );
@@ -475,6 +487,7 @@ int Controller::ar_init(string exeDir)
         printf("Pattern load error!\n");
 		return patt_id;
     }
+	delete patt_name;
 
     /* open the graphics window */
 //    argInit( &cparam, 1.0, 0, 0, 0, 0 ); //gsub.h dependent
@@ -1279,11 +1292,11 @@ void Controller::addObject(int objectType) {
 	world->addObject(objectType);
 }
 
-void Controller::addObject(std::string modelName) {
+void Controller::addObject(const std::string& modelName) {
 	world->addObject(modelName);
 }
 
-void Controller::setTexture(std::string modelName) {
+void Controller::setTexture(const std::string& modelName) {
 	world->setTexture(modelName);
 }
 
@@ -1477,7 +1490,7 @@ void Controller::newWorld() {
  *
  * Returns true if successful, false otherwise.
  */
-bool Controller::newWorld(string fileName) {
+bool Controller::newWorld(const string& fileName) {
 	if (world) delete world;
 	world = new World();
 	// TODO: add code for checking if unsuccessful

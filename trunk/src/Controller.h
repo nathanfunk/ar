@@ -48,11 +48,9 @@ private:
 	bool	nothingSelected;
 
 	ARUint8					*ARTImage;		// current image
-	char					*cparam_name;
 	ARParam					 cparam;		// camera parameters
 	ARGL_CONTEXT_SETTINGS_REF arglSettings;
 
-	char	*patt_name;
 	double	patt_width;
 	double	patt_center[2];
 	double	patt_trans[3][4];
@@ -87,20 +85,20 @@ public:
 	int getFPS();
 	int getMarkerStatus();
 	void keyboardCB( unsigned char key, int x, int y);
-	void InitGL ( GLvoid );
-	int  ar_init(string exeDir);
+	void InitGL(GLvoid);
+	int  ar_init(const string &exeDir);
 	void ar_cleanup(void);
 	World *getWorld() {return world;}
 	void LoadWorld();
-	void setTexture(string modelName);
+	void setTexture(const string &modelName);
 	void addObject(int objectType);
-	void addObject(string modelName);
+	void addObject(const string &modelName);
 	void setColors(float r, float g, float b);
 	void cycleTransparency();
 	void setDrawVideo(bool value);
 	void setRotateMode(bool value);
 	void newWorld();
-	bool newWorld(string fileName);
+	bool newWorld(const string &fileName);
 	void setCurrentTool(int tool) {currentTool = tool;}
 	int getCurrentTool() {return currentTool;}
 
