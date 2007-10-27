@@ -444,10 +444,10 @@ int Controller::ar_init(const string &exeDir)
 	string temp;
 	// initialize file name strings
 	// need to be in char * format (using .c_str() doesn't work because it produces a const char *)
-	temp = exeDir + "\\..\\Data\\WDM_camera_flipV.xml";
+/*	temp = exeDir + "\\..\\Data\\WDM_camera_flipV.xml";
 	char *configFile = new char[temp.size()+1];
 	strcpy_s(configFile, temp.size()+1, temp.c_str());
-
+*/
 	temp = exeDir + "\\..\\Data\\camera_para.dat";
 	char *cparam_name = new char[temp.size()+1];
 	strcpy_s(cparam_name, temp.size()+1, temp.c_str());
@@ -457,12 +457,12 @@ int Controller::ar_init(const string &exeDir)
 	strcpy_s(patt_name, temp.size()+1, temp.c_str());
 
     /* open the video path */
-	//if( arVideoOpen( vconf ) < 0 ){
-	if( (error = arVideoOpen(configFile)) < 0 ) {
+	if ((error = arVideoOpen(NULL)) < 0) {
+//	if( (error = arVideoOpen(configFile)) < 0 ) {
         printf("arVideoOpen failed!\n");
 		return error;
 	}
-	delete configFile;
+//	delete configFile;
 
     /* find the size of the window */
 	if( (error = arVideoInqSize(&video_w, &video_h)) < 0 ) {
