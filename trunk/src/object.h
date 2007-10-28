@@ -82,7 +82,7 @@ public:
 
 
 		isVisible = 1; isSelected = 0;
-		setColors(0.2, 0.3, 0.5, 1);
+		setColors(1.0, 1.0, 1.0, 1.0); //default colour is white
 		quadratic =  gluNewQuadric();
 		texture = 0;
 
