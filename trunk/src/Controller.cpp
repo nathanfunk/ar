@@ -514,9 +514,9 @@ int Controller::ar_init(const string &exeDir)
 }
 
 
-/* cleanup function called when program exits */
+
 /* Allow picking with the mouse
- picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
+   Picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
  */
 int Controller::selection(int key, int mouse_x, int mouse_y) { 
 	GLuint   buffer[512];	// Set Up A Selection Buffer 
@@ -582,11 +582,12 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 	glPopMatrix();	   // Pop The Projection Matrix 
 	glMatrixMode(GL_MODELVIEW);   // Select The Modelview Matrix 
 	glFlush();
-	hits=glRenderMode(GL_RENDER);   // Switch To Render Mode, Find Out How Many 
+	// Switch To Render Mode, Find Out How Many 
 	// Objects Were Drawn Where The Mouse Was 
+	hits = glRenderMode(GL_RENDER);   
 
 	if (hits > 0) {	       // If There Were More Than 0 Hits 
-		int   choose = buffer[3];   // Make Our Selection The First Object 
+		int choose = buffer[3];   // Make Our Selection The First Object 
 		int depth = buffer[1];	   // Store How Far Away It Is 
 
 		printf("hits: %d %d\n", hits, choose); 
@@ -617,9 +618,8 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 			}
 			// world->getObject(selected)->select();
 			world->getObject(selected)->isSelected = 1;
-
 		}
-		else if (selected == -100){
+		else if (selected == -100) {
 			for (int i = 0; i < world->getNumberOfObjects(); i++){
 				//world->getObject(i)->deselect();
 				///world->getObject(i)->isSelected = 0;
@@ -629,19 +629,21 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 		}
 
 
-	} else { 
+	} else {
+		// click was outside every object
 		selected = -1; 
 		printf("no hits!\n"); 
 	}	 
 
 	return selected;
-
 } 
 
 
 
 
-
+/**
+ Determines which objects were inside the selection rectangle.
+ */
 int Controller::selectionRect(int key) { 
 	GLuint   buffer[512];	// Set Up A Selection Buffer 
 	GLint   hits;	  // The Number Of Objects That We Selected 
@@ -649,6 +651,7 @@ int Controller::selectionRect(int key) {
 	// The Size Of The Viewport. [0] Is , [1] Is , [2] Is , [3] Is  
 	GLint   viewport[4]; 
 	GLdouble projMatrix[16];
+	ostringstream o;
 
 
 	selectRectDefined = 1;
@@ -658,7 +661,7 @@ int Controller::selectionRect(int key) {
 	glSelectBuffer(512, buffer);   // Tell OpenGL To Use Our Array For Selection 
 	// Puts OpenGL In Selection Mode. Nothing Will Be Drawn.  Object ID's and Extents Are Stored In The Buffer. 
 
-	glRenderMode(GL_SELECT);  
+	glRenderMode(GL_SELECT);  // switch into select mode to later get the number of hits
 
 	glInitNames();   // Initializes The Name Stack 
 	///glPushName(-1);   // Push 0 (At Least One Entry) Onto The Stack 
@@ -684,20 +687,19 @@ int Controller::selectionRect(int key) {
 	GLdouble centerX = (winX1 + winX2 )/2;
 	GLdouble centerY = (winY1 + winY2 )/2;
 
- // glOrtho(0.0,   // left
-    //       1.0,   // right
-     //      0.0,   // bottom
-      //     1.0,   // top
-      //     1.0,  // near
-       //    -1.0);  // far
+	//glOrtho(0.0,	// left
+	//         1.0,	// right
+	//         0.0,	// bottom
+	//         1.0,	// top
+	//         1.0,	// near
+	//         -1.0);	// far
 
-	std::cout<<"Rect Pick Matrix: "<<winX1<<" "<<winY1<<" "<<winX2 - winX1<<" "<<winY2 - winY1<<std::endl;
+	o << "Rect Pick Matrix: "<<winX1<<" "<<winY1<<" "<<winX2 - winX1<<" "<<winY2 - winY1<<std::endl;
+	OutputDebugStr(o.str().c_str());
 
 	// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
 	//gluPickMatrix((GLdouble) winX1, (GLdouble) winY1, (GLdouble) winX2 - winX1, (GLdouble) winY2 - winY1, viewport); 
-gluPickMatrix(centerX, centerY, width, height, viewport); 
-
-
+	gluPickMatrix(centerX, centerY, width, height, viewport); 
 
 	//multiply the pick matrix by the projection matrix
 	glMultMatrixd(projMatrix);
@@ -729,8 +731,9 @@ gluPickMatrix(centerX, centerY, width, height, viewport);
 	glPopMatrix();	   // Pop The Projection Matrix 
 	glMatrixMode(GL_MODELVIEW);   // Select The Modelview Matrix 
 	glFlush();
-	hits=glRenderMode(GL_RENDER);   // Switch To Render Mode, Find Out How Many 
-	// Objects Were Drawn Where The Mouse Was 
+	// Switch to Render Mode, find out how many 
+	// objects were drawn where the mouse was
+	hits=glRenderMode(GL_RENDER);   
 
 	if (hits > 0) {	       // If There Were More Than 0 Hits 
 		int   choose = buffer[3];   // Make Our Selection The First Object 
@@ -1086,18 +1089,6 @@ int Controller::GetOGLPos(int x, int y, float pos[])
 
 
 /**
- * Finishes dragging (used for setting the selection rectangle).
- * Called when a mouse button is released.
- */
-int Controller::endDrag(int button, int x, int y){
-	std::cout<<"end drag"<<std::endl;
-
-	selectionRect(specialKey);
-
-	return 0;
-}
-
-/**
  * Initializes settings for when the user drags the mouse.
  * Called when a mouse button is pressed.
  */
@@ -1110,6 +1101,7 @@ int Controller::initDrag(int button, int x, int y){
 	GetOGLPos(x, y, pos);
 	std::cout << "Drag Started at : [" << x << " " << y << "] "
 		      << pos[0] << " " << pos[1] << " " << pos[2] <<std::endl;
+
 
 	// check if anything is selected
 	nothingSelected = true;
@@ -1133,6 +1125,18 @@ int Controller::initDrag(int button, int x, int y){
 	return 1;
 }
 
+
+/**
+ * Finishes dragging (used for setting the selection rectangle).
+ * Called when a mouse button is released.
+ */
+int Controller::endDrag(int button, int x, int y){
+	OutputDebugStr( "end drag");
+
+	selectionRect(specialKey);
+
+	return 0;
+}
 
 
 /**
@@ -1178,10 +1182,11 @@ void Controller::motionCB(int x, int y)
 	y2Rect = y;
 }
 
+
 void Controller::drawSelectionRect(){
 
 	GLint viewport[4];
-			glGetIntegerv( GL_VIEWPORT, viewport );
+	glGetIntegerv( GL_VIEWPORT, viewport );
 
 	float winX1 = (float)x1Rect;
 	float winY1 = (float)viewport[3] - (float)y1Rect;
@@ -1189,32 +1194,32 @@ void Controller::drawSelectionRect(){
 	float winY2 = (float)viewport[3] - (float)y2Rect;
 
 			
-			glMatrixMode (GL_PROJECTION); glPushMatrix (); glLoadIdentity ();
+	glMatrixMode (GL_PROJECTION); glPushMatrix (); glLoadIdentity ();
 	// Viewing transformation.
-   glOrtho(0.0,   // left
-           1.0,   // right
-           0.0,   // bottom
-           1.0,   // top
-           1.0,  // near
-           -1.0);  // far
-glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
-			//std::cout<<"Selection RECt: "<<winX1/viewport[2]<<" "<<winY1/viewport[3]
-			//<<" "<<winX2/viewport[2]<<" "<<winY2/viewport[3]<<std::endl;
+	glOrtho(0.0,   // left
+			1.0,   // right
+			0.0,   // bottom
+			1.0,   // top
+			1.0,  // near
+			-1.0);  // far
+	glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
+	//std::cout<<"Selection RECt: "<<winX1/viewport[2]<<" "<<winY1/viewport[3]
+	//<<" "<<winX2/viewport[2]<<" "<<winY2/viewport[3]<<std::endl;
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glRectf(winX1/viewport[2], winY1/viewport[3],winX2/viewport[2], winY2/viewport[3]);
-	  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			//  glBegin(GL_POLYGON);
-    //  glVertex2d(0.25, 0.25);
-     // glVertex2d(0.75, 0.25);
-     // glVertex2d(0.75, 0.75);
-     // glVertex2d(0.25, 0.75);
-   //glEnd();
-			glMatrixMode (GL_MODELVIEW);
-			glPopMatrix();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glRectf(winX1/viewport[2], winY1/viewport[3],winX2/viewport[2], winY2/viewport[3]);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//  glBegin(GL_POLYGON);
+	//  glVertex2d(0.25, 0.25);
+	// glVertex2d(0.75, 0.25);
+	// glVertex2d(0.75, 0.75);
+	// glVertex2d(0.25, 0.75);
+	//glEnd();
+	glMatrixMode (GL_MODELVIEW);
+	glPopMatrix();
 
-			glMatrixMode (GL_PROJECTION);
-				glPopMatrix();
+	glMatrixMode (GL_PROJECTION);
+	glPopMatrix();
 
 				 
 }
@@ -1251,6 +1256,7 @@ void Controller::mouseCBwithModifier(int button, int state, int x, int y, int mo
 
 	if (state == GLUT_DOWN) {
 		// a mouse button has been pressed
+		OutputDebugStr("Mouse down\n");
 
 		//if (selectRectDefined == 0){
 		for (int i =0; i < (int) world->getNumberOfObjects(); i++){
@@ -1264,10 +1270,11 @@ void Controller::mouseCBwithModifier(int button, int state, int x, int y, int mo
 		initDrag(button, x, y);
 	}
 
-	if (state == GLUT_UP){
+	if (state == GLUT_UP) {
+		OutputDebugStr("Mouse up\n");
 		// a mouse button has been let go
 		if (nothingSelected)
-			endDrag(button, x,y);
+			endDrag(button, x, y);
 	}
 }
 
@@ -1345,7 +1352,10 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 
 	/* quit if the ESC key is pressed */
 	if( key == 0x1b ) {
-		printf("*** %f (frame/sec)\n", (double)ar_count/arUtilTimer());
+		//printf("*** %f (frame/sec)\n", (double)ar_count/arUtilTimer());
+		ostringstream o;
+		o << "*** " << (double)ar_count/arUtilTimer() << " (frame/sec)\n";
+		OutputDebugStr(o.str().c_str()); 
 		if (useGLUTGUI) {
 			ar_cleanup();
 			exit(0);
