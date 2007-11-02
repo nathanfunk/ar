@@ -525,6 +525,7 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 	// The Size Of The Viewport. [0] Is , [1] Is , [2] Is , [3] Is  
 	GLint   viewport[4]; 
 	GLdouble projMatrix[16];
+	ostringstream o;
 
 	int selected = -1;
 
@@ -546,9 +547,9 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 	glPushMatrix();	    // Push The Projection Matrix 
 	glLoadIdentity();	   // Resets The Matrix 
 
-
-	std::cout<<"Pick Matrix: "<<mouse_x<<" "<<viewport[3]-mouse_y<<std::endl;
-
+	OutputDebugStr("Inside selection() --------------------\n");
+	o << "  Pick Matrix: " << mouse_x << " " << viewport[3]-mouse_y << std::endl;
+	OutputDebugStr(o.str().c_str());
 	// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
 	gluPickMatrix((GLdouble) mouse_x, (GLdouble) (viewport[3]-mouse_y), 5, 5, viewport); 
 
@@ -566,7 +567,9 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 
 
 	//print out gl_para
-	std::cout<<gl_para[8]<<" "<<gl_para[9]<<" "<<gl_para[10]<<std::endl;
+	o.flush();
+	o << "gl_para: " << gl_para[8] << " " << gl_para[9] << " " << gl_para[10] << std::endl;
+	OutputDebugStr(o.str().c_str());
 
 	glMatrixMode(GL_MODELVIEW);
 	//glTranslatef( 0.0, 0.0, 25.0 );
@@ -590,7 +593,10 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 		int choose = buffer[3];   // Make Our Selection The First Object 
 		int depth = buffer[1];	   // Store How Far Away It Is 
 
-		printf("hits: %d %d\n", hits, choose); 
+		o.flush();
+		o << "  hits: " << hits << " choose: " << choose << endl;
+		OutputDebugStr(o.str().c_str());
+
 
 		for (int loop = 1; loop < hits; loop++)	    // Loop Through All The Detected Hits 
 		{ 
@@ -599,11 +605,16 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 			{ 
 				choose = buffer[loop*4+3];   // Select The Closer Object 
 				depth = buffer[loop*4+1];	 // Store How Far Away It Is 
-				printf("object, depth: %d %d\n", choose, depth); 
+				o.flush();
+				o << "  object, depth: " << choose << " " << depth << endl;
+				OutputDebugStr(o.str().c_str());
+
 			}	   
 		} 
 		selected = choose; 
-		printf("closest: %d\n", selected); 
+		o.flush();
+		o << "  closest: " << selected << endl;
+		OutputDebugStr(o.str().c_str());
 
 
 		if ((selected >= 0) && (selected < world->getNumberOfObjects())) {
@@ -631,9 +642,10 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 
 	} else {
 		// click was outside every object
-		selected = -1; 
-		printf("no hits!\n"); 
+		selected = -1;
+		OutputDebugStr("  No hits!\n");
 	}	 
+	OutputDebugStr("Exiting selection() --------------------\n\n");
 
 	return selected;
 } 
@@ -652,11 +664,21 @@ int Controller::selectionRect(int key) {
 	GLint   viewport[4]; 
 	GLdouble projMatrix[16];
 	ostringstream o;
+	int selected = -1;
 
+
+	OutputDebugStr("Inside selectionRect() --------------------\n");
+	// check if width and height are 0
+	if (x1Rect == x2Rect && y1Rect == y2Rect) {
+		// this function is only called if user is not dragging an object, so the down click
+		// started nowhere
+		// THis means that nothing is being selected, and all objects need to be deselected
+		selected = -1;
+		selectRectDefined = 0;
+		return selected;
+	}
 
 	selectRectDefined = 1;
-
-	int selected = -1;
 
 	glSelectBuffer(512, buffer);   // Tell OpenGL To Use Our Array For Selection 
 	// Puts OpenGL In Selection Mode. Nothing Will Be Drawn.  Object ID's and Extents Are Stored In The Buffer. 
@@ -676,7 +698,6 @@ int Controller::selectionRect(int key) {
 	glPushMatrix();	    // Push The Projection Matrix 
 	glLoadIdentity();	   // Resets The Matrix 
 
-
 	float winX1 = (float)x1Rect;
 	float winY1 = (float)viewport[3] - (float)y1Rect;
 	float winX2 = (float)x2Rect;
@@ -694,8 +715,9 @@ int Controller::selectionRect(int key) {
 	//         1.0,	// near
 	//         -1.0);	// far
 
-	o << "Rect Pick Matrix: "<<winX1<<" "<<winY1<<" "<<winX2 - winX1<<" "<<winY2 - winY1<<std::endl;
+	o << "  Rect Pick Matrix: "<<winX1<<" "<<winY1<<" "<<winX2 - winX1<<" "<<winY2 - winY1<<std::endl;
 	OutputDebugStr(o.str().c_str());
+
 
 	// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is. 
 	//gluPickMatrix((GLdouble) winX1, (GLdouble) winY1, (GLdouble) winX2 - winX1, (GLdouble) winY2 - winY1, viewport); 
@@ -715,7 +737,9 @@ int Controller::selectionRect(int key) {
 
 
 	//print out gl_para
-	std::cout<<gl_para[8]<<" "<<gl_para[9]<<" "<<gl_para[10]<<std::endl;
+	o.flush();
+	o << "  gl_para: " <<gl_para[8] << " " << gl_para[9] << " " << gl_para[10] << std::endl;
+	OutputDebugStr(o.str().c_str());
 
 	glMatrixMode(GL_MODELVIEW);
 	//glTranslatef( 0.0, 0.0, 25.0 );
@@ -739,7 +763,10 @@ int Controller::selectionRect(int key) {
 		int   choose = buffer[3];   // Make Our Selection The First Object 
 		int depth = buffer[1];	   // Store How Far Away It Is 
 
-		printf("hits: %d %d\n", hits, choose); 
+		o.clear();
+		o << "  hits: " << hits << " choose: " << choose << endl;
+		OutputDebugStr(o.str().c_str());
+
 		if (choose >= 0 && choose < (int) world->getNumberOfObjects())
 			world->getObject(choose)->isSelected = 1;
 		for (int loop = 1; loop < hits; loop++)	    // Loop Through All The Detected Hits 
@@ -749,14 +776,19 @@ int Controller::selectionRect(int key) {
 			//{ 
 				choose = buffer[loop*4+3];   // Select The Closer Object 
 				depth = buffer[loop*4+1];	 // Store How Far Away It Is 
-				printf("object, depth: %d %d\n", choose, depth); 
+				o.flush();
+				o << "  object, depth: " << choose << " " << depth << endl;
+				OutputDebugStr(o.str().c_str());
+
 			if (choose >= 0 && choose < (int) world->getNumberOfObjects())
 				world->getObject(choose)->isSelected = 1;
 
 			//}	   
 		} 
 		selected = choose; 
-		printf("closest: %d\n", selected); 
+		o.flush();
+		o << "  closest: " << selected << endl;
+		OutputDebugStr(o.str().c_str());
 
 
 		if ((selected >= 0) && (selected < (int) world->getNumberOfObjects())) {
@@ -786,8 +818,9 @@ int Controller::selectionRect(int key) {
 	} else { 
 		selected = -1; 
 		selectRectDefined = 0;
-		printf("no hits!\n"); 
-	}	 
+		OutputDebugStr("  no hits!\n"); 
+	}
+	OutputDebugStr("Exiting selectionRect() --------------------\n\n");
 
 	return selected;
 
@@ -1131,9 +1164,10 @@ int Controller::initDrag(int button, int x, int y){
  * Called when a mouse button is released.
  */
 int Controller::endDrag(int button, int x, int y){
-	OutputDebugStr( "end drag");
+	OutputDebugStr("Inside endDrag -----------\n");
 
 	selectionRect(specialKey);
+	OutputDebugStr("Exiting endDrag -----------\n");
 
 	return 0;
 }
@@ -1193,7 +1227,6 @@ void Controller::drawSelectionRect(){
 	float winX2 = (float)x2Rect;
 	float winY2 = (float)viewport[3] - (float)y2Rect;
 
-			
 	glMatrixMode (GL_PROJECTION); glPushMatrix (); glLoadIdentity ();
 	// Viewing transformation.
 	glOrtho(0.0,   // left
