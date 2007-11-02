@@ -46,13 +46,12 @@ public:
 
 
 
-	void	draw(){
-	if (isVisible == 1){
-	
-		glutSolidSphere(radius, 10, 10);
+	void draw() {
+		if (isVisible == 1){
+			glutSolidSphere(radius, 10, 10);
+		}
+	}
 
-	}
-	}
 	float radius;
 };
 
