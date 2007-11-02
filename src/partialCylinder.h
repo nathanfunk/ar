@@ -15,7 +15,7 @@ public:
 		zOff = 0; rZ = 0;
 
 
-				XYSize = _rad;
+		XYSize = _rad;
 		ZSize = _height;
 
 		tMatrix.loadIdentity();
@@ -50,12 +50,13 @@ public:
 
 	partialCylinder* clone()   { std::cout<<"partialCylinder clone"<<std::endl; return new partialCylinder(*this); }
 
-std::string getDataString(){
+	std::string getDataString(){
 		std::ostringstream data;
 		data<<"PARTIALCYLINDER "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius<<" "<<height<<" "<<startAngle<<" "<<arcAngle;	
 		//data<<"PARTIALCYLINDER "<<getGlobalDataString<<"LOCAL "<<radius<<" "<<height<<" "<<startAngle<<" "<<arcAngle;	
 		return data.str(); 
 	}
+
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"6\"> "<<std::endl;
@@ -114,96 +115,83 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 */
 
 
-	void	draw(){
-	
-	int n = 20;
-int stack;
-int stacks = 20;
-int slices = 20;
+	void draw(){	
+		int n = 20;
+		int stack;
+		int stacks = 20;
+		int slices = 20;
 
-  GLdouble dangle,dradius,dheight;
-  GLdouble normCo, normZ;
+		GLdouble dangle,dradius,dheight;
+		GLdouble normCo, normZ;
 
-	float baseR = radius;
-	float topR = radius;
+		float baseR = radius;
+		float topR = radius;
 
-  dangle  = 360.0/slices;
-  dradius = (baseR-topR)/stacks;
-  dheight = height/stacks;
+		dangle  = 360.0/slices;
+		dradius = (baseR-topR)/stacks;
+		dheight = height/stacks;
 
-  normZ = cos(atan(height/abs(topR-baseR)));
-  normCo = sqrt(1-normZ*normZ);
-	
-  
-  float pheta;
-	float angle_increment =  PI_2 / slices;
-
-if (texture != 0) {
-	//std::cout<<"enabling texture "<<std::endl;	
-	glEnable( GL_TEXTURE_2D );	
-	glBindTexture( GL_TEXTURE_2D, texture);
-
-}
-
-float xTexInc = 1.0 / stacks;
-float yTexInc = 1.0 / slices;
+		normZ = cos(atan(height/abs(topR-baseR)));
+		normCo = sqrt(1-normZ*normZ);
 
 
-//std::cout<<"DRAW "<<std::endl;
+		float pheta;
+		float angle_increment =  PI_2 / slices;
 
-  for(stack=0; stack<stacks ; ++stack) {
-    glBegin(GL_QUAD_STRIP); {
-      /*for(slice=0; slice<=slices; ++slice) {
-        glNormal3d(normCo*sin(RADIANS(dangle*slice)),normCo*cos(RADIANS(dangle*slice)),normZ);
-        glVertex3f( (topR + stack   *dradius)*sin(RADIANS(dangle*slice)),
-                    (topR + stack   *dradius)*cos(RADIANS(dangle*slice)),
-                    height- stack   *dheight);
-        glVertex3f( (topR +(stack+1)*dradius)*sin(RADIANS(dangle*slice)),
-                    (topR +(stack+1)*dradius)*cos(RADIANS(dangle*slice)),
-                    height-(stack+1)*dheight);
-	  }
-	*/
+		if (texture != 0) {
+			//std::cout<<"enabling texture "<<std::endl;	
+			glEnable( GL_TEXTURE_2D );	
+			glBindTexture( GL_TEXTURE_2D, texture);
+		}
 
-int sliceNum = 0;
+		float xTexInc = 1.0 / stacks;
+		float yTexInc = 1.0 / slices;
 
 
+		//std::cout<<"DRAW "<<std::endl;
 
-for (pheta = startAngle; pheta - (startAngle + arcAngle)
-                          < 0.001; pheta += angle_increment)
-    {
-        //x = width/2 * cos (pheta);
-        //y = height/2 * sin (pheta);
-        //glVertex2f (x, y);
-		float x = topR * cos(pheta);
-		float y = topR * sin(pheta);
-		
+		for(stack=0; stack<stacks ; ++stack) {
+			glBegin(GL_QUAD_STRIP);
+			/*for(slice=0; slice<=slices; ++slice) {
+			glNormal3d(normCo*sin(RADIANS(dangle*slice)),normCo*cos(RADIANS(dangle*slice)),normZ);
+			glVertex3f( (topR + stack   *dradius)*sin(RADIANS(dangle*slice)),
+			(topR + stack   *dradius)*cos(RADIANS(dangle*slice)),
+			height- stack   *dheight);
+			glVertex3f( (topR +(stack+1)*dradius)*sin(RADIANS(dangle*slice)),
+			(topR +(stack+1)*dradius)*cos(RADIANS(dangle*slice)),
+			height-(stack+1)*dheight);
+			}
+			*/
 
-		
+			int sliceNum = 0;
 
-		glVertex3f(x,y,  stack   *dheight);
-		 glTexCoord2f(  (stack-1)*xTexInc, sliceNum*yTexInc);
-		glVertex3f(x,y, (stack+1)*dheight);
-		 glTexCoord2f(   stack*xTexInc , sliceNum*yTexInc);
-	
-		// std::cout<<"["<<x<<" "<<y<<" "<<stack   *dheight<<"] ";
-		//std::cout<<"["<<stack*xTexInc<<" "<<sliceNum*yTexInc<<"] "<<"["<<(stack+1)*xTexInc<<" "<<sliceNum*yTexInc<<"] "<<std::endl;
-	sliceNum++;
-		//std::cout<<" slice "<<sliceNum<<"Ytex "<<sliceNum*yTexInc;
+			for (pheta = startAngle; pheta - (startAngle + arcAngle)
+				< 0.001; pheta += angle_increment)
+			{
+				//x = width/2 * cos (pheta);
+				//y = height/2 * sin (pheta);
+				//glVertex2f (x, y);
+				float x = topR * cos(pheta);
+				float y = topR * sin(pheta);
 
+				glVertex3f(x,y,  stack   *dheight);
+				glTexCoord2f(  (stack-1)*xTexInc, sliceNum*yTexInc);
+				glVertex3f(x,y, (stack+1)*dheight);
+				glTexCoord2f(   stack*xTexInc , sliceNum*yTexInc);
+
+				// std::cout<<"["<<x<<" "<<y<<" "<<stack   *dheight<<"] ";
+				//std::cout<<"["<<stack*xTexInc<<" "<<sliceNum*yTexInc<<"] "<<"["<<(stack+1)*xTexInc<<" "<<sliceNum*yTexInc<<"] "<<std::endl;
+				sliceNum++;
+				//std::cout<<" slice "<<sliceNum<<"Ytex "<<sliceNum*yTexInc;
+			}
+
+
+			//std::cout<<" stack "<<stack<<"xTEx "<<stack*xTexInc<<std::endl;
+			glEnd();
+
+		}
 	}
 
-
-//std::cout<<" stack "<<stack<<"xTEx "<<stack*xTexInc<<std::endl;
-
-	}
-	
-	glEnd();
-
-  
-  }
-
-
-	}
 	float radius, height, startAngle, arcAngle;
 };
 
