@@ -51,26 +51,34 @@ World::~World(){
 
 }
 
+/*
+Draws a grid as a reference plane at a specific height
+*/
 int World::drawGroundGrid( int divisions, float x, float y, float height)
 {
-	//	double        gl_para[16];
-	int           i;
+	int i;
 	float x0,x1,y0,y1;
 	float deltaX, deltaY;
 
-	glTranslatef(x/2.,-y/2.,0.);
-	//draw the grid
-	glColor3f(1,0,0);
-	glLineWidth(1.0);
+	glColor3f(1, 0, 0);
+	//draw thick line around grid
+	glLineWidth(2.0);
 	glBegin(GL_LINE_LOOP);
 	glVertex3f( -x, y, height );
 	glVertex3f(  x, y, height );  
 	glVertex3f(  x, -y, height );
 	glVertex3f( -x, -y, height );
 	glEnd();
-	glLineWidth(1.0);
+	glBegin(GL_LINES);
+	glVertex3f(x,0,height);
+	glVertex3f(-x,0,height);
+	glVertex3f(0,y,height);
+	glVertex3f(0,-y,height);
+	glEnd();
+
 
 	//draw a grid of lines
+	glLineWidth(1.0);
 	//X direction
 	x0 = -x; x1 = -x;
 	y0 = -y; y1 = y;
@@ -84,6 +92,7 @@ int World::drawGroundGrid( int divisions, float x, float y, float height)
 		glEnd();
 	}
 
+	// Y direction
 	x0 = -x; x1 = x;
 	deltaY = (2*y)/divisions;
 
@@ -95,10 +104,6 @@ int World::drawGroundGrid( int divisions, float x, float y, float height)
 		glEnd();
 	}
 
-	glLineWidth(0.5);
-
-
-	//argDrawMode2D();
 	return 0;
 }
 
@@ -528,7 +533,7 @@ object *World::createObject(int objectType) {
 			o = new sphere(nObjects, 0,0,30,30);
 			break;
 		case ObjectTypes::CUBE:
-			o = new cube2(nObjects, 0,30,30,30);
+			o = new cube2(nObjects, 0,0,15,30);
 			 //PlaySound("squish.wav", NULL, SND_FILENAME | SND_SYNC);
 			break;
 		case ObjectTypes::TORUS:
