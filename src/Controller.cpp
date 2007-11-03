@@ -184,37 +184,33 @@ void Controller::ar_cleanup(void)
 void Controller::InitGL ( GLvoid )     // Create Some Everyday Functions
 {	
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(1.0f, 1.0f, 1.0f, 0.5f);				// Black Background
+	glClearColor(1.0f, 1.0f, 1.0f, 0.5f);
 	glClearDepth(1.0f);									// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
-	glEnable ( GL_COLOR_MATERIAL );
+	glEnable(GL_COLOR_MATERIAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glInitNames(); //init the name stack for selection
 
 	// initialize lighting
-    GLfloat   light_position[]  = {0.0, 0.0, -1.0, 0.0};
-    GLfloat   ambi[]            = {0.2, 0.2, 0.2, 1.0};
+    GLfloat   pos_above[]  = {0.0, -10.0, 0.0, 0.0};
+    GLfloat   pos_cam[]  = {0.0, 0.0, -10.0, 0.0};
+    GLfloat   ambi[]            = {0.0, 0.0, 0.0, 1.0};
     GLfloat   diffuse[]			= {1.0, 1.0, 1.0, 1.0};
-    GLfloat   spec[]			= {1.0, 1.0, 1.0, 1.0};
+    GLfloat   spec[]			= {0.0, 0.0, 0.0, 1.0};
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_POSITION, pos_above);
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
 
-//	GLfloat   mat_ambient[]     = {1.0, 1.0, 1.0, 1.0};
-//    GLfloat   mat_flash[]       = {1.0, 1.0, 1.0, 1.0};
-//    GLfloat   mat_flash_shiny[] = {50.0};
-//    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-//    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-//	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-
-
-
-
+	glEnable(GL_LIGHT1);
+    glLightfv(GL_LIGHT1, GL_POSITION, pos_cam); // from camera
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, spec);
 }
 
 
@@ -669,7 +665,7 @@ int Controller::selectionRect(int key) {
 
 	OutputDebugStr("Inside selectionRect() --------------------\n");
 	// check if width and height are 0
-	if (x1Rect == x2Rect && y1Rect == y2Rect) {
+	if (x1Rect == x2Rect || y1Rect == y2Rect) {
 		// this function is only called if user is not dragging an object, so the down click
 		// started nowhere
 		// THis means that nothing is being selected, and all objects need to be deselected
