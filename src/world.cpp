@@ -528,7 +528,7 @@ object *World::createObject(int objectType) {
 			o = new sphere(nObjects, 0,0,30,30);
 			break;
 		case ObjectTypes::CUBE:
-			o = new cube2(nObjects, 0,30,60,30);
+			o = new cube2(nObjects, 0,30,30,30);
 			 //PlaySound("squish.wav", NULL, SND_FILENAME | SND_SYNC);
 			break;
 		case ObjectTypes::TORUS:
@@ -538,10 +538,10 @@ object *World::createObject(int objectType) {
 			o = new wall(nObjects, 0,30,60,30);
 			break;
 		case ObjectTypes::CYLINDER:
-			o = new cylinder(nObjects, 10, 10);
+			o = new cylinder(nObjects, 30, 60);
 			break;
 		case ObjectTypes::CONE:
-			o = new cone(nObjects, 0,0,0, 10, 30);
+			o = new cone(nObjects, 0, 0, 0, 30, 60);
 			break;
 		case ObjectTypes::PYRAMID:
 			o = new pyramid(nObjects, 0,30,60, 30);

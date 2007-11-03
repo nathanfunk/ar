@@ -4,6 +4,7 @@ public:
 	cylinder(){ 
 	//quadratic =  gluNewQuadric();
 	};
+
 	cylinder(int _name, float _rad, float _height)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
@@ -28,16 +29,13 @@ public:
 		rad = _rad; height = _height; isVisible = 1;
 		//quadratic =  gluNewQuadric();
 
-				XYSize = rad;
+		XYSize = rad;
 		ZSize = height;
 
 		tMatrix.loadIdentity();
 		tMatrix.translate(_xOff, _yOff, _zOff);
 		rotMat.loadIdentity();
 	}
-
-
-
 
 	object* clone()   { return new cylinder(*this); }
 
@@ -46,6 +44,7 @@ public:
 		data<<"CYLINDER "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
 		return data.str(); 
 	}
+
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"1\"> "<<std::endl;
@@ -113,30 +112,30 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 */
 
 
-void initHandles(){
+	void initHandles(){
 
-	handles.clear();
-	handles.push_back(vertex(-rad, -rad, 0));
-	handles.push_back(vertex(-rad, rad, 0));
-	handles.push_back(vertex(rad, rad, 0));
-	handles.push_back(vertex(rad, -rad, 0));
+		handles.clear();
+		handles.push_back(vertex(-rad, -rad, 0));
+		handles.push_back(vertex(-rad, rad, 0));
+		handles.push_back(vertex(rad, rad, 0));
+		handles.push_back(vertex(rad, -rad, 0));
 
-	handles.push_back(vertex(0, 0, height));
-}
+		handles.push_back(vertex(0, 0, height));
+	}
 
 
 
-	void	draw(){
-
+	void draw() {
 		glPushMatrix();
-		glRotatef(90, 1, 0, 0);
+		glRotatef(-90, 1, 0, 0);
+
 		gluDisk(quadratic, 0, rad, 15, 15);
 		gluCylinder(quadratic, rad, rad,  height, 15, 15);
-
 		glPushMatrix();
-		glTranslatef(0,0,height);
-		gluDisk(quadratic, 0, rad, 15, 15);
+			glTranslatef(0,0,height);
+			gluDisk(quadratic, 0, rad, 15, 15);
 		glPopMatrix();
+
 		glPopMatrix();
 	}
 	float rad, height;
