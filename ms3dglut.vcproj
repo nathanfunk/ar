@@ -256,12 +256,12 @@
 				FileType="3"
 				>
 				<File
-					RelativePath=".\src\AboutDialog.resx"
+					RelativePath=".\AboutDialog.resx"
 					SubType="Designer"
 					>
 				</File>
 				<File
-					RelativePath=".\AboutDialog.resx"
+					RelativePath=".\src\AboutDialog.resx"
 					SubType="Designer"
 					>
 				</File>
@@ -283,7 +283,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\cube2.h"
+				RelativePath=".\src\cube2.h"
 				>
 			</File>
 			<File
@@ -370,6 +370,10 @@
 			</File>
 			<File
 				RelativePath=".\src\triangle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\wall.h"
 				>
 			</File>
 			<File
