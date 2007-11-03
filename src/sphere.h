@@ -48,7 +48,7 @@ public:
 
 	void draw() {
 		if (isVisible == 1){
-			glutSolidSphere(radius, 10, 10);
+			glutSolidSphere(radius, 20, 20);
 		}
 	}
 
