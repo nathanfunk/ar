@@ -11,8 +11,13 @@ public:
 	cube2(int _name, float _x, float _y,  float _z, float _size)//:
 		//object( _x, _y, _z, 0,0,0, 1,1,1)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; size = _size; isVisible = 1; rX = 0; rY = 0;
-			minI = 0;
+		name = _name;
+		xOff = _x; yOff = _y;  zOff = _z;
+		sX = 1; sY = 1; sZ= 1;
+		size = _size;
+		isVisible = 1;
+		rX = 0; rY = 0;
+		minI = 0;
 		XYSize = size;
 		ZSize = size;
 
@@ -144,6 +149,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 */
 
 void drawRect() {
+	glNormal3f(0,0,1.0);
 	glBegin( GL_POLYGON );
 	//first face   
 	//drawSquare(size);
@@ -177,23 +183,42 @@ void initHandles(){
 
 	void	draw(){
 
-		//first face
+		//+x face
+		glPushMatrix();
+		glTranslatef(size/2, 0.0f, 0.0f);
+		glRotatef(90,0,1,0);
+		drawRect();
+		glPopMatrix();
+		//-x face
+		glPushMatrix();
+		glTranslatef(-size/2, 0.0f, 0.0f);
+		glRotatef(-90,0,1,0);
+		drawRect();
+		glPopMatrix();
+		//+y face
+		glPushMatrix();
+		glTranslatef(0.0f, size/2, 0.0f);
+		glRotatef(-90,1,0,0);
+		drawRect();
+		glPopMatrix();
+		//-y face
+		glPushMatrix();
+		glTranslatef(0.0f, -size/2, 0.0f);
+		glRotatef(90,1,0,0);
+		drawRect();
+		glPopMatrix();
+		//+z face
 		glPushMatrix();
 		glTranslatef(0.0f, 0.0, size/2);
 		drawRect();
 		glPopMatrix();
-		//second face
+		//-z face
 		glPushMatrix();
-		glRotatef(90,1,0,0);
 		glTranslatef(0, 0, -size/2);
+		glRotatef(180,1,0,0);
 		drawRect();
 		glPopMatrix();
-		//thirdface
-		glPushMatrix();
-		glTranslatef(0.0f, 0.0, -size/2);
-		drawRect();
-		glPopMatrix();
-		//fourth face
+/*		//fourth face
 		glPushMatrix();
 		glRotatef(90,1,0,0);
 		glTranslatef(0, 0, size/2);
@@ -211,7 +236,7 @@ void initHandles(){
 		glTranslatef(0, 0, -size/2);
 		drawRect();
 		glPopMatrix();
-
+*/
 	}
 
 
