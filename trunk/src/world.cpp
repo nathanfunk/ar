@@ -524,10 +524,10 @@ object *World::createObject(int objectType) {
 			o = new triangle(nObjects, -50,50,-50, -50,-50,50, -50, 0,50, 45);
 			break;
 		case ObjectTypes::FILLARC:
-			o = new fillArc(nObjects, -50,-50,100, 100, 50, 90);
+			o = new fillArc(nObjects, -50,-50, 100, 100, 50, 90);
 			break;
 		case ObjectTypes::PARTIALCYLINDER:
-			o = new partialCylinder(nObjects, -50,-50,100, 100, 0,180, 0);
+			o = new partialCylinder(nObjects, -50, -50, 100, 100, 0, 180, 0);
 			break;
 		case ObjectTypes::SPHERE:
 			o = new sphere(nObjects, 0,30,0,30);
@@ -537,10 +537,10 @@ object *World::createObject(int objectType) {
 			 //PlaySound("squish.wav", NULL, SND_FILENAME | SND_SYNC);
 			break;
 		case ObjectTypes::TORUS:
-			o = new torus(nObjects, 0,30,60,10, 5);
+			o = new torus(nObjects, 0,30, 60, 10, 5);
 			break;
 		case ObjectTypes::WALL:
-			o = new wall(nObjects, 0,30,60,30);
+			o = new wall(nObjects, 0,30, 60, 30);
 			break;
 		case ObjectTypes::CYLINDER:
 			o = new cylinder(nObjects, 30, 60);
@@ -549,7 +549,7 @@ object *World::createObject(int objectType) {
 			o = new cone(nObjects, 0, 0, 0, 30, 60);
 			break;
 		case ObjectTypes::PYRAMID:
-			o = new pyramid(nObjects, 0,30,60, 30);
+			o = new pyramid(nObjects, 0, 0, 0, 60);
 			break;
 		case ObjectTypes::LINE:
 			o = new line(nObjects, 0, 0, 30, 30);

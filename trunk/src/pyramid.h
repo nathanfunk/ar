@@ -10,9 +10,12 @@ public:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name;
-		sX = 5;sY = 5; sZ= 5; size = _size; isVisible = 1; rX = 0; rY = 0;
+		sX = 1;sY = 1; sZ= 1;
+		size = _size;
+		isVisible = 1;
+		rX = 0; rY = 0;
 	
-			XYSize = size;
+		XYSize = size;
 		ZSize = size;
 
 		tMatrix.loadIdentity();
@@ -29,7 +32,7 @@ public:
 		sX = _sX; sY = _sY; sZ = _sZ; 
 		size = _size; isVisible = 1; 
 
-				XYSize = size;
+		XYSize = size;
 		ZSize = size;
 
 		tMatrix.loadIdentity();
@@ -123,63 +126,59 @@ if (min > 10||handles.empty()){
 	}
 	*/
 
-void drawTri(){
-
-	glBegin(GL_TRIANGLES);		// Drawing Using Triangles
-		   glTexCoord2f( 0.0f, 0.0f );
-		glVertex3f( -size/2, -size/2, 0.0f);		// bottom left
-			glTexCoord2f( 1.0f, 0.0f );
-		glVertex3f(size/2,-size/2, 0.0f);		// Bottom right
-		 glTexCoord2f( 0.0f, 1.0f );
-		glVertex3f( 0,size/2, -size/2);		//top
-		 glEnd();			
-
-}
+	void drawTri(){
+		glBegin(GL_TRIANGLES);		// Drawing Using Triangles
+		glNormal3f(0.0f, 0.5f, 1.0f);
+		glTexCoord2f( 0.0f, 0.0f );
+		glVertex3f( -size/2, 0.0f, 0.0f);		// bottom left
+		glTexCoord2f( 1.0f, 0.0f );
+		glVertex3f(size/2, 0.0f, 0.0f);		// Bottom right
+		glTexCoord2f( 0.0f, 1.0f );
+		glVertex3f( 0, size, -size/2);		//top
+		glEnd();
+	}
 
 
 	void initHandles(){
+		handles.clear();
+		handles.push_back(vertex(-size/2, 0, -size/2));
+		handles.push_back(vertex(-size/2, 0, size/2));
+		handles.push_back(vertex(size/2, 0, size/2));
+		handles.push_back(vertex(size/2, 0, -size/2));
 
-	handles.clear();
-	handles.push_back(vertex(-size/2, -size/2, -size/2));
-	handles.push_back(vertex(-size/2, -size/2, size/2));
-	handles.push_back(vertex(size/2, -size/2, size/2));
-	handles.push_back(vertex(size/2, -size/2, -size/2));
-
-	handles.push_back(vertex(0, size/2, 0));
-}
-
-
-
-
-	void	draw(){
-//first face
-glPushMatrix();
-glTranslatef(0.0f, 0.0, size/2);
-drawTri();
-glPopMatrix();
-//second face
-
-glPushMatrix();
-glRotatef(90,0,1,0);
-glTranslatef(0, 0, size/2);
-drawTri();
-glPopMatrix();
-
-//thirdface
-glPushMatrix();
-glRotatef(180,0,1,0);
-glTranslatef(0, 0.0, size/2);
-drawTri();
-glPopMatrix();
-
-   //fourth face
-glPushMatrix();
-glRotatef(-90,0,1,0);
-glTranslatef(0, 0, size/2);
-drawTri();
-glPopMatrix();
-
+		handles.push_back(vertex(0, size, 0));
 	}
+
+
+	void draw(){
+		//first face
+		glPushMatrix();
+		glTranslatef(0.0f, 0.0, size/2);
+		drawTri();
+		glPopMatrix();
+		//second face
+
+		glPushMatrix();
+		glRotatef(90,0,1,0);
+		glTranslatef(0, 0, size/2);
+		drawTri();
+		glPopMatrix();
+
+		//thirdface
+		glPushMatrix();
+		glRotatef(180,0,1,0);
+		glTranslatef(0, 0.0, size/2);
+		drawTri();
+		glPopMatrix();
+
+		//fourth face
+		glPushMatrix();
+		glRotatef(-90,0,1,0);
+		glTranslatef(0, 0, size/2);
+		drawTri();
+		glPopMatrix();
+	}
+
 	float size;
 };
 
