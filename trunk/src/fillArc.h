@@ -11,10 +11,10 @@ public:
 	fillArc(int _name, float _x, float _y,  float _rad, float _startAngle, float _arcAngle, float _r)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  radius = _rad;
+		name = _name;
+		radius = _rad;
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
-		zOff = 0;
 
 		XYSize = radius;
 		ZSize = 0;
@@ -29,7 +29,7 @@ fillArc(int _name, float _xOff, float _yOff,  float _zOff,
 		float _rad, float _startAngle, float _arcAngle)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _xOff; yOff = _yOff;  zOff  = _zOff; 
+		name = _name;
 		
 		radius = _rad;
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
@@ -49,10 +49,10 @@ fillArc(int _name, float _xOff, float _yOff,  float _zOff,
 	fillArc* clone()   { std::cout<<"fillarc clone"<<std::endl; return new fillArc(*this); }
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"FILLARC "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius<<" "<<startAngle<<" "<<arcAngle;	
+		data<<"FILLARC "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius<<" "<<startAngle<<" "<<arcAngle;	
 		return data.str(); 
 	}
-
+/*
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -100,7 +100,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 		notifyObservers();
 	}
-
+*/
 
 
 	void	draw(){

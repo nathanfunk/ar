@@ -9,7 +9,8 @@ public:
 	pyramid(int _name, float _x, float _y,  float _z, float _size)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 5; sZ= 5; size = _size; isVisible = 1; rX = 0; rY = 0;
+		name = _name;
+		sX = 5;sY = 5; sZ= 5; size = _size; isVisible = 1; rX = 0; rY = 0;
 	
 			XYSize = size;
 		ZSize = size;
@@ -22,7 +23,8 @@ public:
 		float _size)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; 
+		name = _name;
+		//xOff = _x; yOff = _y;  zOff = _z; 
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ; 
 		size = _size; isVisible = 1; 
@@ -40,14 +42,14 @@ object* clone()   { return new pyramid(*this); }
 
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"PYRAMID "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<size;	
+		data<<"PYRAMID "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<size;	
 		return data.str(); 
 	}
 
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"2\"> "<<std::endl;
-		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<position x=\""<<xOff()/100<<"\" y=\""<<yOff()/100<<"\" z=\""<<zOff()/100<<"\">"<<std::endl;
 		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
 		data<<"<size x=\""<<size*sX/100<<"\" y=\""<<size*sY/100<<"\" z=\""<<size*sZ/100<<"\">"<<std::endl;
 		return data.str(); 

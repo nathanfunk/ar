@@ -71,7 +71,7 @@ public:
 class object : public ISubject {
 public:
 	object(){
-		xOff = 0; yOff = 0; zOff = 0;
+//		xOff = 0; yOff = 0; zOff = 0;
 		rX = 0; rY = 0; rZ = 0;
 		sX = 1; sY = 1; sZ = 1;
 
@@ -91,39 +91,32 @@ public:
 		tMatrix.loadIdentity();
 		rotMat.loadIdentity();
 		scaleMat.loadIdentity();
-	
 
 	};
 
 	object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
 		float _sX, float _sY, float _sZ){
-			xOff = _xOff; yOff = _yOff;  zOff = _zOff; 
-			rX = _rX; rY = _rY; rZ = _rZ;
-			sX = _sX; sY = _sY; sZ= _sZ;
+		//xOff = _xOff; yOff = _yOff;  zOff = _zOff; 
+		rX = _rX; rY = _rY; rZ = _rZ;
+		sX = _sX; sY = _sY; sZ= _sZ;
 
 
-			std::cout<<"Object constructor 2"<<std::endl;
-			quadratic =  gluNewQuadric();
+		std::cout<<"Object constructor 2"<<std::endl;
+		quadratic =  gluNewQuadric();
 
-			texture = 0;
-			minI = 0;
+		texture = 0;
+		minI = 0;
 
-			drawMode = NORMAL;
-			tMatrix.loadIdentity();
-			tMatrix.translate(_xOff, _yOff, _zOff);
-
-
-
+		drawMode = NORMAL;
+		tMatrix.loadIdentity();
+		tMatrix.translate(_xOff, _yOff, _zOff);
 
 		rotate(_rX,1,0,0);
 		rotate(_rY,0,1,0);
 		rotate(_rZ,0,0,1);
 
-
 		scaleMat.loadIdentity();
 		//scale(_sX,_sY, _sZ);
-
-
 	}
 
 	object(GLfloat _objTrans[16]){
@@ -147,6 +140,18 @@ public:
 		return new object(*this);
 	};
 
+	float xOff() {
+		const float *matrix = tMatrix.getMatrix();
+		return matrix[12];
+	}
+	float yOff() {
+		const float *matrix = tMatrix.getMatrix();
+		return matrix[13];
+	}
+	float zOff() {
+		const float *matrix = tMatrix.getMatrix();
+		return matrix[14];
+	}
 
 	static void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
 		for (int i = 0; i < 3; i++){
@@ -156,80 +161,77 @@ public:
 		}
 	}
 
-		int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
-			//		double wa, wb, wc;
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
+		//		double wa, wb, wc;
+		double rotMat[3][3];
+
+		double mouseMat[3];
+
+		getRotFromTrans(patt_trans, rotMat);
+		//arGetAngle(rotMat, &wa, &wb, &wc);
+		arGetAngle(rotMat, &mouseMat[0], &mouseMat[1], &mouseMat[2]);
+
+
+		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
+		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
+
+		//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
+		xNew = (x*cos(mouseMat[2]) - y * sin(mouseMat[2]));
+		yNew = (x*sin(mouseMat[2]) + y * cos(mouseMat[2]));
+
+		//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
+		return 1;
+	}
+
+
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, float _rX, float _rY, 
+		float _rZ, double &xNew, double &yNew){
+
+			double wa, wb, wc;
 			double rotMat[3][3];
-
-			double mouseMat[3];
-
 			getRotFromTrans(patt_trans, rotMat);
-			//arGetAngle(rotMat, &wa, &wb, &wc);
-			arGetAngle(rotMat, &mouseMat[0], &mouseMat[1], &mouseMat[2]);
+			arGetAngle(rotMat, &wa, &wb, &wc);
+
+			float rxRad = RADIANS(_rX);
+			float ryRad = RADIANS(_rY);
+			float rzRad = RADIANS(_rZ);
 
 
 			//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
 			//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
 
 			//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
-			xNew = (x*cos(mouseMat[2]) - y * sin(mouseMat[2]));
-			yNew = (x*sin(mouseMat[2]) + y * cos(mouseMat[2]));
-
+			xNew = (x*cos(wc) - y * sin(wc))*cos(wb);
+			yNew = (x*sin(wc) + y * cos(wc));
 			//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
 			return 1;
-		}
-
-
-		int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, float _rX, float _rY, 
-			float _rZ, double &xNew, double &yNew){
-
-				double wa, wb, wc;
-				double rotMat[3][3];
-				getRotFromTrans(patt_trans, rotMat);
-				arGetAngle(rotMat, &wa, &wb, &wc);
-
-				float rxRad = RADIANS(_rX);
-				float ryRad = RADIANS(_rY);
-				float rzRad = RADIANS(_rZ);
-
-
-				//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
-				//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
-
-				//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
-				xNew = (x*cos(wc) - y * sin(wc))*cos(wb);
-				yNew = (x*sin(wc) + y * cos(wc));
-				//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
-				return 1;
-		}
+	}
 
 
 
-		virtual std::vector<object *> ungroup() {
-			std::vector<object *> emptyVec;
-			notifyObservers();
-			return emptyVec;
-		};
+	virtual std::vector<object *> ungroup() {
+		std::vector<object *> emptyVec;
+		notifyObservers();
+		return emptyVec;
+	};
 
 
+/*
+	virtual std::vector<vertex> boundingBox(){
+		std::vector<vertex> bbox;
+		float xOff = tMatrix.
 
-		virtual std::vector<vertex> boundingBox(){
-			std::vector<vertex> bbox;
+		bbox.push_back(vertex(xOff - abs(sX*XYSize), yOff - abs(sY*XYSize), zOff - abs(sZ*ZSize)));
+		bbox.push_back(vertex(xOff + abs(sX*XYSize), yOff + abs(sY*XYSize), zOff - abs(sZ*ZSize)));
 
-			
-			bbox.push_back(vertex(xOff - abs(sX*XYSize), yOff - abs(sY*XYSize), zOff - abs(sZ*ZSize)));
-			bbox.push_back(vertex(xOff + abs(sX*XYSize), yOff + abs(sY*XYSize), zOff - abs(sZ*ZSize)));
-
-			//bbox.push_back(vertex(sX*XYSize, sY*XYSize, sZ*ZSize));
-			//bbox.push_back(vertex(-sX*XYSize, -sY*XYSize, -sZ*ZSize));
+		//bbox.push_back(vertex(sX*XYSize, sY*XYSize, sZ*ZSize));
+		//bbox.push_back(vertex(-sX*XYSize, -sY*XYSize, -sZ*ZSize));
 		return bbox;
-		};
-
-	
+	};*/
 
 
-
-		int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, 
-			float _rZ, double &xNew, double &yNew){
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, 
+		float _rZ, double &xNew, double &yNew){
 			double wa, wb, wc;
 			double rotMat[3][3];
 			getRotFromTrans(patt_trans, rotMat);
@@ -247,119 +249,111 @@ public:
 			yNew = 1*(x*sin(wc+rzRad) + y * cos(wc+rzRad));
 			std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
 			return 1;
-		}
-
-
-		/**
-		Sets the color of the object, while preserving the alpha value.
-		*/
-		void setColors(GLfloat c1, GLfloat c2, GLfloat c3){
-
-			std::cout<<"Setting colors "<<std::endl;
-			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3;
-			notifyObservers();
-		}
-
-		void setColors(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4){
-			mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3; mat_ambient[3] = c4;
-			notifyObservers();
-		}
-
-		void setTexture(GLuint _texture){
-			if (_texture == 0){
-				texture = 0;
-				return;
-			}
-
-			texture = _texture;
-			//glBindTexture( GL_TEXTURE_2D, texture );
-
-			notifyObservers();
-		}
-
-		void drawTopLevel(float snapPos, float snapRot, float snapScale){
-
-			glPushMatrix();		
-
-			glEnable(GL_DEPTH_TEST);
-			if (drawMode == TRANSPARENT){
-				glEnable (GL_BLEND); 
-				glColor4f(0.85, 0.1, 0.1, 0.4f);
-				glBlendFunc (GL_SRC_ALPHA, GL_ONE);
-			}
-
-		 if (drawMode == WIREFRAME){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			}
-
-			if (isSelected == 1){
-				highlight();
-				
-			}
-			//startLighting(mat_ambient);
-
-			if (texture != 0) {	
-				glEnable( GL_TEXTURE_2D );	
-				glBindTexture( GL_TEXTURE_2D, texture);
-			} else {
-				glColor4f(mat_ambient[0], 
-						  mat_ambient[1], 
-						  mat_ambient[2], 
-						  mat_ambient[3]);
-				
-				// set material properties
-				GLfloat   ambient[]     = {0.2, 0.2, 0.2, 1.0};
-				GLfloat   diffuse[]     = {0.8, 0.8, 0.8, 1.0};
-				GLfloat   specular[]    = {0.0, 0.0, 0.0, 1.0};
-
-				glMaterialfv( GL_FRONT, GL_AMBIENT, ambient);
-				glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
-				glMaterialfv( GL_FRONT, GL_SPECULAR, specular);
-				glMaterialf( GL_FRONT, GL_SHININESS, 0.0);
-			}
-
-			glPushMatrix();		
-			//glTranslatef(xOff,yOff,zOff);
-			//glRotatef(rX,0,1,0);
-			//glRotatef(rY,1,0,0);
-	
-			glMultMatrixf(tMatrix.getMatrix());
-			
-			
-			glScalef(sX, sY, sZ);
-
-
-			//drawnormally
-glEnable(GL_POLYGON_OFFSET_FILL);
-			glPolygonOffset(1.0, 1.0);
-
-
-			draw();
-
-
-glDisable(GL_POLYGON_OFFSET_FILL);
-
-	if (isSelected == 1||drawMode == OUTLINE){
-		//draw wireframe
-		glDisable(GL_LIGHTING);
-		glColor3f (1.0, 1.0, 1.0);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		draw();
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glEnable(GL_LIGHTING);
 	}
 
 
-			glPopMatrix();
+	/**
+	Sets the color of the object, while preserving the alpha value.
+	*/
+	void setColors(GLfloat c1, GLfloat c2, GLfloat c3){
 
-			glDisable(GL_BLEND);
-			//glDisable ( GL_LIGHTING ) ;
-			glDisable( GL_TEXTURE_2D );	
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			//if (snap_to_grid == 1)
-			snap(snapPos, snapRot, snapScale);
-			glPopMatrix();
+		std::cout<<"Setting colors "<<std::endl;
+		mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3;
+		notifyObservers();
+	}
+
+	void setColors(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4){
+		mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3; mat_ambient[3] = c4;
+		notifyObservers();
+	}
+
+	void setTexture(GLuint _texture){
+		if (_texture == 0){
+			texture = 0;
+			return;
 		}
+
+		texture = _texture;
+		//glBindTexture( GL_TEXTURE_2D, texture );
+
+		notifyObservers();
+	}
+
+	void drawTopLevel(float snapPos, float snapRot, float snapScale){
+
+		glPushMatrix();		
+
+		glEnable(GL_DEPTH_TEST);
+		if (drawMode == TRANSPARENT){
+			glEnable (GL_BLEND); 
+			glColor4f(0.85, 0.1, 0.1, 0.4f);
+			glBlendFunc (GL_SRC_ALPHA, GL_ONE);
+		}
+
+		if (drawMode == WIREFRAME){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+
+		if (isSelected == 1){
+			highlight();
+
+		}
+		//startLighting(mat_ambient);
+
+		if (texture != 0) {	
+			glEnable( GL_TEXTURE_2D );	
+			glBindTexture( GL_TEXTURE_2D, texture);
+		} else {
+			glColor4f(mat_ambient[0], 
+				mat_ambient[1], 
+				mat_ambient[2], 
+				mat_ambient[3]);
+
+			// set material properties
+			GLfloat   ambient[]     = {0.2, 0.2, 0.2, 1.0};
+			GLfloat   diffuse[]     = {0.8, 0.8, 0.8, 1.0};
+			GLfloat   specular[]    = {0.0, 0.0, 0.0, 1.0};
+
+			glMaterialfv( GL_FRONT, GL_AMBIENT, ambient);
+			glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
+			glMaterialfv( GL_FRONT, GL_SPECULAR, specular);
+			glMaterialf( GL_FRONT, GL_SHININESS, 0.0);
+		}
+
+		glPushMatrix();
+		glMultMatrixf(tMatrix.getMatrix());
+
+		// apply scaling
+		glScalef(sX, sY, sZ);
+
+		// call normal draw
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0, 1.0);
+		draw();
+		glDisable(GL_POLYGON_OFFSET_FILL);
+
+		// draw outline if selected
+		if (isSelected == 1||drawMode == OUTLINE){
+			//draw wireframe
+			glDisable(GL_LIGHTING);
+			glColor3f (1.0, 1.0, 1.0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			draw();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glEnable(GL_LIGHTING);
+		}
+
+
+		glPopMatrix();
+
+		glDisable(GL_BLEND);
+		//glDisable ( GL_LIGHTING ) ;
+		glDisable( GL_TEXTURE_2D );	
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//if (snap_to_grid == 1)
+		snap(snapPos, snapRot, snapScale);
+		glPopMatrix();
+	}
 
 
 		virtual void snap(float snapPos, float snapRot, float snapScale){
@@ -377,16 +371,14 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 		}
 
 
-		virtual void draw() {
-			for (int i = 0; i < (int) vertices.size(); i++){
-
-			}
-		};
+		virtual void draw() { };
 
 		virtual std::string getDataString(){ 
 			//std::string 
 			return std::string("OBJECT ") + "DERIVED CLASS DATA UNDEFINED";
 		}
+
+/*		object no longer uses xOff, yOff, zOff
 		virtual std::string getSLDataString(){
 			std::ostringstream data;
 			data<<"<type val=\"0\"> "<<std::endl;
@@ -395,8 +387,8 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			data<<"<size x=\""<<sX<<"\" y=\""<<sY<<"\" z=\""<<sZ<<">"<<std::endl;
 			return data.str(); 
 		}
-
-
+*/
+/*
 		std::string getGlobalDataString(){
 			std::ostringstream data;
 			data<<"TRANSFORM "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ;	
@@ -407,7 +399,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 			data<<mat_ambient[0]<<" "<<mat_ambient[1]<<" "<<mat_ambient[2]<<" "<<mat_ambient[3];
 			return data.str(); 
 		}
-
+*/
 
 
 
@@ -791,13 +783,11 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 
 		int name;
 		int isSelected; int isVisible;
-		//float xo, yo, x1, y1,  x2, y2, z,r;
-
 		GLfloat  objTrans[16];
 
-		////float pxOff, pyOff, pzOff, prX, prY, prZ, psX, psY, psZ; 
-
-		float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ; //x1, y1, x2, y2;
+		//float xOff, yOff, zOff;	// offset
+		float rX, rY, rZ;
+		float sX, sY, sZ; //x1, y1, x2, y2;
 		GLfloat   mat_ambient[4];   //  = {0.2, 0.3, 0.5, 1.0};
 		GLUquadricObj *quadratic;
 
@@ -809,7 +799,6 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 		std::vector<vertex> handles;  //handles for resizing, stretching etc. (rel to object center)
 		std::vector<vertex> winCoords; //window coordinates of each handles
 		int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
-
 
 		int drawMode;
 		int minI; 

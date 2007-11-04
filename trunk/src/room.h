@@ -8,12 +8,15 @@ public:
 	room(int _name, float _x, float _y,  float _z, float _size)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; size = _size; isVisible = 1; rX = 0; rY = 0;
+		name = _name;
+		//xOff = _x; yOff = _y;  zOff = _z;
+		sX = 5;sY = 2; sZ= 2; size = _size;
+		isVisible = 1; rX = 0; rY = 0;
 			minI = 0;
 		XYSize = size;
 		ZSize = size;
 
-tMatrix.loadIdentity();
+		tMatrix.loadIdentity();
 		tMatrix.translate(_x, _y, _z);
 	}
 	room(int _name, float _x, float _y,  float _z, 
@@ -22,7 +25,7 @@ tMatrix.loadIdentity();
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; 
-		xOff = _x; yOff = _y;  zOff = _z; 
+		//xOff = _x; yOff = _y;  zOff = _z; 
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ;
 		minI = 0;
@@ -39,20 +42,20 @@ tMatrix.loadIdentity();
 object* clone()   { 
 	
 //	std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
-	std::cout<<"CLONE xValues "<<xOff<<" "<<yOff<<" "<<zOff<<std::endl;
+	std::cout<<"CLONE xValues "<<xOff()<<" "<<yOff()<<" "<<zOff()<<std::endl;
 	return new room(*this); }
 
 
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"Room "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<size;	
+		data<<"Room "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<size;	
 		return data.str(); 
 	}
 
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"0\"> "<<std::endl;
-		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<position x=\""<<xOff()/100<<"\" y=\""<<yOff()/100<<"\" z=\""<<zOff()/100<<"\">"<<std::endl;
 		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\" s =\"1.0\""<<">"<<std::endl;
 		data<<"<size x=\""<<size*sX/100<<"\" y=\""<<size*sY/100<<"\" z=\""<<size*sZ/100<<"\">"<<std::endl;
 		return data.str(); 
@@ -62,7 +65,7 @@ std::string getDataString(){
 
 
 
-
+/*
 virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
@@ -127,7 +130,7 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 		notifyObservers();
 	}
-
+*/
 
 void drawRect(){
 
