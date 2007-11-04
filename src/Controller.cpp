@@ -564,7 +564,7 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 
 
 	//print out gl_para
-	o.flush();
+	o.str("");
 	o << "gl_para: " << gl_para[8] << " " << gl_para[9] << " " << gl_para[10] << std::endl;
 	OutputDebugStr(o.str().c_str());
 
@@ -590,7 +590,7 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 		int choose = buffer[3];   // Make Our Selection The First Object 
 		int depth = buffer[1];	   // Store How Far Away It Is 
 
-		o.flush();
+		o.str("");
 		o << "  hits: " << hits << " choose: " << choose << endl;
 		OutputDebugStr(o.str().c_str());
 
@@ -602,14 +602,14 @@ int Controller::selection(int key, int mouse_x, int mouse_y) {
 			{ 
 				choose = buffer[loop*4+3];   // Select The Closer Object 
 				depth = buffer[loop*4+1];	 // Store How Far Away It Is 
-				o.flush();
+				o.str("");
 				o << "  object, depth: " << choose << " " << depth << endl;
 				OutputDebugStr(o.str().c_str());
 
 			}	   
 		} 
 		selected = choose; 
-		o.flush();
+		o.str("");
 		o << "  closest: " << selected << endl;
 		OutputDebugStr(o.str().c_str());
 
@@ -734,7 +734,7 @@ int Controller::selectionRect(int key) {
 
 
 	//print out gl_para
-	o.flush();
+	o.str("");
 	o << "  gl_para: " <<gl_para[8] << " " << gl_para[9] << " " << gl_para[10] << std::endl;
 	OutputDebugStr(o.str().c_str());
 
@@ -760,7 +760,7 @@ int Controller::selectionRect(int key) {
 		int   choose = buffer[3];   // Make Our Selection The First Object 
 		int depth = buffer[1];	   // Store How Far Away It Is 
 
-		o.clear();
+		o.str("");
 		o << "  hits: " << hits << " choose: " << choose << endl;
 		OutputDebugStr(o.str().c_str());
 
@@ -783,7 +783,7 @@ int Controller::selectionRect(int key) {
 			//}	   
 		} 
 		selected = choose; 
-		o.flush();
+		o.str("");
 		o << "  closest: " << selected << endl;
 		OutputDebugStr(o.str().c_str());
 
@@ -1379,11 +1379,15 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 {
 	unsigned char key = tolower(key_in); // convert to lower case (for non-GLUT interface)
 	int nObjects = (int) world->getNumberOfObjects();
+	ostringstream o;
+
+	o << "Key: " << key << std::endl;
+	OutputDebugStr(o.str().c_str());
 
 	/* quit if the ESC key is pressed */
 	if( key == 0x1b ) {
 		//printf("*** %f (frame/sec)\n", (double)ar_count/arUtilTimer());
-		ostringstream o;
+		o.str("");
 		o << "*** " << (double)ar_count/arUtilTimer() << " (frame/sec)\n";
 		OutputDebugStr(o.str().c_str()); 
 		if (useGLUTGUI) {
@@ -1391,10 +1395,6 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 			exit(0);
 		}
 	}
-
-
-	std::cout<<"Key: "<<key<<std::endl;
-
 
 	// handle most object types
 	int objectType = keyMapping(key);
@@ -1421,22 +1421,11 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 		}
 	}
 
-
-	if( key == 'g' ) {
-		group();
-	}
-
-	if( key == 'u' ) {
-		ungroup();
-	}
-
+	if( key == 'g' )	group();
+	if( key == 'u' )	ungroup();
 	// backspace (8) or delete (46) (seems like GLUT doesn't send 46 through this callback)
-	if( key == 8 || key == 46) {
-		std::cout << "deleting" << std::endl;
-		world->removeSelected();
-	}
-
-	if( key == 'i' ) { cycleTransparency();}
+	if( key == 8 || key == 46) world->removeSelected();
+	if( key == 'i' )	cycleTransparency();
 
 
 	/*
