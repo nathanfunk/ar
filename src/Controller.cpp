@@ -194,23 +194,24 @@ void Controller::InitGL ( GLvoid )     // Create Some Everyday Functions
 	glInitNames(); //init the name stack for selection
 
 	// initialize lighting
-    GLfloat   pos_above[]  = {0.0, -10.0, 0.0, 0.0};
-    GLfloat   pos_cam[]  = {0.0, 0.0, -10.0, 0.0};
-    GLfloat   ambi[]            = {0.0, 0.0, 0.0, 1.0};
-    GLfloat   diffuse[]			= {1.0, 1.0, 1.0, 1.0};
-    GLfloat   spec[]			= {0.0, 0.0, 0.0, 1.0};
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, pos_above);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
+	GLfloat   pos_above[]  = {0.0, -10.0, 0.0, 0.0};
+	GLfloat   pos_cam[]  = {0.0, 0.0, -10.0, 0.0};
+	GLfloat   ambi[]            = {0.1, 0.1, 0.1, 1.0};
+	GLfloat   diffuse[]			= {0.5, 0.5, 0.5, 1.0};
+	GLfloat   spec[]			= {0.0, 0.0, 0.0, 1.0};
+	GLfloat   none[]			= {0.0, 0.0, 0.0, 1.0};
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, pos_above);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
 
 	glEnable(GL_LIGHT1);
-    glLightfv(GL_LIGHT1, GL_POSITION, pos_cam); // from camera
-    glLightfv(GL_LIGHT1, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, spec);
+	glLightfv(GL_LIGHT1, GL_POSITION, pos_cam); // from camera
+	glLightfv(GL_LIGHT1, GL_AMBIENT, none);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, none);
 }
 
 
@@ -1422,66 +1423,11 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 
 
 	if( key == 'g' ) {
-		std::cout<<"group"<<std::endl;
-
-		std::vector<object *> newGroup;
-
-		//ungroup all grouped objects that are selected
-		int i = 0;
-		for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
-			if ( (*it)->isSelected  == 1)
-			{
-				std::cout<<"ungrouping "<<i<<std::endl;
-				std::vector<object *> group = (*it)->ungroup();
-				if (!group.empty()){
-					//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
-					copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world->objectPtrs));
-					it = world->objectPtrs.erase(it++);
-				}
-				else ++it;
-			}
-			else ++it;
-		}
-
-		i = 0;
-		for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
-			if ( (*it)->isSelected  == 1)
-			{
-				std::cout<<"Adding to group "<<i<<std::endl;
-				newGroup.push_back((*it)->clone());
-				//++it;
-				it = world->objectPtrs.erase(it++);
-			}
-			else ++it;
-		}
-
-
-		//multiShape * myMulti = new multiShape(newGroup);
-		world->addObject(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+		group();
 	}
 
 	if( key == 'u' ) {
-		std::cout<<"ungroup"<<std::endl;
-		//if any of the selected objects is a multiShape
-		//take the objects from the shapePtrs vector and put into the world vector
-		//then destroy the multishape
-
-		int i = 0;
-		for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
-			if ( (*it)->isSelected  == 1)
-			{
-				std::cout<<"ungrouping "<<i<<std::endl;
-				std::vector<object *> group = (*it)->ungroup();
-				if (!group.empty()){
-
-					//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
-					copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world->objectPtrs));
-					it = world->objectPtrs.erase(it++);
-				}
-				else ++it;
-			}
-			else ++it;
-		}
+		ungroup();
 	}
 
 	// backspace (8) or delete (46) (seems like GLUT doesn't send 46 through this callback)
@@ -1514,6 +1460,70 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 
 	}
 	*/
+}
+
+void Controller::group() {
+	OutputDebugStr("Group\n");
+
+	std::vector<object *> newGroup;
+
+	//ungroup all grouped objects that are selected
+	int i = 0;
+	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+			std::cout<<"ungrouping "<<i<<std::endl;
+			std::vector<object *> group = (*it)->ungroup();
+			if (!group.empty()){
+				//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
+				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world->objectPtrs));
+				it = world->objectPtrs.erase(it++);
+			}
+			else ++it;
+		}
+		else ++it;
+	}
+
+	i = 0;
+	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+			std::cout<<"Adding to group "<<i<<std::endl;
+			newGroup.push_back((*it)->clone());
+			//++it;
+			it = world->objectPtrs.erase(it++);
+		}
+		else ++it;
+	}
+
+
+	//multiShape * myMulti = new multiShape(newGroup);
+	world->addObject(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+}
+
+void Controller::ungroup() {
+
+	OutputDebugStr("Ungroup\n");
+	//if any of the selected objects is a multiShape
+	//take the objects from the shapePtrs vector and put into the world vector
+	//then destroy the multishape
+
+	int i = 0;
+	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
+		if ( (*it)->isSelected  == 1)
+		{
+			std::cout<<"ungrouping "<<i<<std::endl;
+			std::vector<object *> group = (*it)->ungroup();
+			if (!group.empty()){
+
+				//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
+				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world->objectPtrs));
+				it = world->objectPtrs.erase(it++);
+			}
+			else ++it;
+		}
+		else ++it;
+	}
 }
 
 /**
