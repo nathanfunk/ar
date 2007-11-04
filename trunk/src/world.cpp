@@ -515,44 +515,45 @@ void World::setTexture(const std::string& modelName) {
 object *World::createObject(int objectType) {
 	int nObjects = (int)getNumberOfObjects();
 	object *o;
+	float a = 30.0f;
 
 	switch (objectType) {
 		case ObjectTypes::RECTANGLE:
-			o = new rectangle(nObjects, -10,-10,50, 50, 90);
+			o = new rectangle(nObjects, 0, 0, 2*a, 2*a, 0);
 			break;
 		case ObjectTypes::TRIANGLE:
-			o = new triangle(nObjects, -50,50,-50, -50,-50,50, -50, 0,50, 45);
+			o = new triangle(nObjects, 0,0,0, -a,-a,a, -a, 0,a, 0);
 			break;
 		case ObjectTypes::FILLARC:
 			o = new fillArc(nObjects, -50,-50, 100, 100, 50, 90);
 			break;
 		case ObjectTypes::PARTIALCYLINDER:
-			o = new partialCylinder(nObjects, -50, -50, 100, 100, 0, 180, 0);
+			o = new partialCylinder(nObjects, 0, 0, a, 2*a, 0, 180, 0);
 			break;
 		case ObjectTypes::SPHERE:
-			o = new sphere(nObjects, 0,30,0,30);
+			o = new sphere(nObjects, 0,a,0,a);
 			break;
 		case ObjectTypes::CUBE:
-			o = new cube2(nObjects, 0,15,0,30);
+			o = new cube2(nObjects, 0,a,0,2*a);
 			 //PlaySound("squish.wav", NULL, SND_FILENAME | SND_SYNC);
 			break;
 		case ObjectTypes::TORUS:
-			o = new torus(nObjects, 0,30, 60, 10, 5);
+			o = new torus(nObjects, 0,0,0, a, a);
 			break;
 		case ObjectTypes::WALL:
-			o = new wall(nObjects, 0,30, 60, 30);
+			o = new wall(nObjects, 0, a, 2*a, a);
 			break;
 		case ObjectTypes::CYLINDER:
-			o = new cylinder(nObjects, 30, 60);
+			o = new cylinder(nObjects, a, 2*a);
 			break;
 		case ObjectTypes::CONE:
-			o = new cone(nObjects, 0, 0, 0, 30, 60);
+			o = new cone(nObjects, 0, 0, 0, a, 2*a);
 			break;
 		case ObjectTypes::PYRAMID:
-			o = new pyramid(nObjects, 0, 0, 0, 60);
+			o = new pyramid(nObjects, 0, 0, 0, 2*a);
 			break;
 		case ObjectTypes::LINE:
-			o = new line(nObjects, 0, 0, 30, 30);
+			o = new line(nObjects, 0, 0, a, a);
 			break;
 
 /*
