@@ -456,7 +456,7 @@ int Controller::ar_init(const string &exeDir)
     /* open the video path */
 	if ((error = arVideoOpen(NULL)) < 0) {
 //	if( (error = arVideoOpen(configFile)) < 0 ) {
-        printf("arVideoOpen failed!\n");
+		OutputDebugStr("arVideoOpen failed!\n");
 		return error;
 	}
 //	delete configFile;
@@ -1463,6 +1463,7 @@ void Controller::keyboardCB(unsigned char key_in, int x, int y)
 }
 
 void Controller::group() {
+	ostringstream o;
 	OutputDebugStr("Group\n");
 
 	std::vector<object *> newGroup;
@@ -1472,7 +1473,10 @@ void Controller::group() {
 	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
-			std::cout<<"ungrouping "<<i<<std::endl;
+			o.str("Ungrouping ");
+			o << i << endl;
+			OutputDebugStr(o.str().c_str());
+
 			std::vector<object *> group = (*it)->ungroup();
 			if (!group.empty()){
 				//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
@@ -1488,7 +1492,8 @@ void Controller::group() {
 	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
-			std::cout<<"Adding to group "<<i<<std::endl;
+			o << "Adding to group " << i << std::endl;
+			OutputDebugStr(o.str().c_str());
 			newGroup.push_back((*it)->clone());
 			//++it;
 			it = world->objectPtrs.erase(it++);
