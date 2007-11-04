@@ -4,7 +4,10 @@ public:
 	multiShape(){};
 	multiShape(std::vector<object *> _shapePtrs
 	, float _x, float _y,  float _z, float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ){
-		xOff = _x; yOff = _y;  zOff = _z; 
+
+		tMatrix.loadIdentity();
+		tMatrix.translate(_x, _y, _z);		
+
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ;
 		//shapePtrs = _shapePtrs;
@@ -12,8 +15,8 @@ public:
 		copy(_shapePtrs.begin(), _shapePtrs.end(), std::back_insert_iterator<std::vector<object *> >(shapePtrs));
 		
 
-for (int i = 0 ; i < (int) shapePtrs.size(); i++){
-		shapePtrs[i]->isSelected = 0;
+		for (int i = 0 ; i < (int) shapePtrs.size(); i++){
+			shapePtrs[i]->isSelected = 0;
 
 }
 
@@ -118,8 +121,10 @@ for (int i = 0 ; i < (int) shapePtrs.size(); i++){
 	virtual void	draw(){
 
 
-		glPushMatrix();		
-		glTranslatef(xOff,yOff,zOff);
+		glPushMatrix();
+
+		glMultMatrixf(tMatrix.getMatrix());
+//		glTranslatef(xOff,yOff,zOff);
 		glRotatef(rX,0,1,0);
 		glRotatef(rY,1,0,0);
 		glScalef(sX, sY, sZ);
