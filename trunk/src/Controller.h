@@ -101,6 +101,8 @@ public:
 	bool newWorld(const string &fileName);
 	void setCurrentTool(int tool) {currentTool = tool;}
 	int getCurrentTool() {return currentTool;}
+	void group();
+	void ungroup();
 
 private:
 	void ar_draw( void );

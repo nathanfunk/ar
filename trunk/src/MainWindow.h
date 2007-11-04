@@ -353,7 +353,7 @@ protected:
 			// aboutToolStripMenuItem
 			// 
 			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(115, 22);
 			this->aboutToolStripMenuItem->Text = L"&About...";
 			this->aboutToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::aboutToolStripMenuItem_Click);
 			// 
@@ -551,7 +551,7 @@ protected:
 				this->tsbRotate, this->tsbScale, this->toolStripSeparator1, this->tsbColor, this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
 			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(407, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(438, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbMove
@@ -622,6 +622,7 @@ protected:
 			this->tsbGroup->Name = L"tsbGroup";
 			this->tsbGroup->Size = System::Drawing::Size(40, 22);
 			this->tsbGroup->Text = L"Group";
+			this->tsbGroup->Click += gcnew System::EventHandler(this, &MainWindow::tsbGroup_Click);
 			// 
 			// tsbUngroup
 			// 
@@ -952,6 +953,9 @@ private:
 private: System::Void aboutToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 AboutDialog^ a = gcnew AboutDialog;
 			 a->ShowDialog();
+		 }
+private: System::Void tsbGroup_Click(System::Object^  sender, System::EventArgs^  e) {
+			 controller->group();
 		 }
 };
 }
