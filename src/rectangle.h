@@ -8,10 +8,18 @@ public:
 	rectangle(int _name, float _x1, float _y1,  float _x2,float _y2,float _r)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
-		xOff = 0; yOff = 0; zOff = 0;
+		name = _name;
+		x1 = _x1; y1 = _y1;
+		x2 = _x2; y2 = _y2;
+		rX = 0;
+		sX = 1; sY = 1; sZ= 1;
+		isVisible = 1;
+		rY = _r;
+//		xOff = 0; yOff = 0; zOff = 0;
+		
 		tMatrix.loadIdentity();
 	}
+
 	rectangle(int _name, float _xOff, float _yOff, float _zOff, 
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
 		float _x1, float _y1,  float _x2,float _y2)//:
@@ -20,7 +28,7 @@ public:
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ; isVisible = 1; 
-		xOff = _xOff; yOff = _yOff; zOff = _zOff;
+//		xOff = _xOff; yOff = _yOff; zOff = _zOff;
 
 		tMatrix.loadIdentity();
 		tMatrix.translate(_xOff, _yOff, _zOff);
@@ -33,14 +41,14 @@ public:
 
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"RECTANGLE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2;	
+		data<<"RECTANGLE "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2;	
 		return data.str(); 
 	}
 
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"0\"> "<<std::endl;
-		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<position x=\""<<xOff()/100<<"\" y=\""<<yOff()/100<<"\" z=\""<<zOff()/100<<"\">"<<std::endl;
 		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
 		data<<"<size x=\""<<(x2-x1)*sX/100<<"\" y=\""<<(y2-y1)*sY/100<<"\" z=\""<<0.0001<<"\">"<<std::endl;
 		return data.str(); 
@@ -104,7 +112,7 @@ void setWinCoords(){
 
 }
 
-
+/*
 	virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
 		//int specialKey = glutGetModifiers();
 		double xNew, yNew;
@@ -170,7 +178,7 @@ void setWinCoords(){
 
 		notifyObservers();
 	}
-
+*/
 	void	draw(){
 glBegin( GL_POLYGON );
 glVertex3f( x1, y1, 0.0f );

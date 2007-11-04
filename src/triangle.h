@@ -11,7 +11,8 @@ public:
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
 		x3 = _x3; y3 = _y3;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
-		xOff = 0; yOff = 0; zOff = 0; rZ = 0;
+//		xOff = 0; yOff = 0; zOff = 0;
+		rZ = 0;
 
 		XYSize = 1;
 		ZSize = 1;
@@ -26,13 +27,15 @@ public:
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
 		x3 = _x3; y3 = _y3;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
-		xOff = _xOff; yOff = _yOff; zOff = _zOff; rZ = 0;
+		//xOff = _xOff; yOff = _yOff; zOff = _zOff;
+		rZ = 0;
 
 				XYSize = 1;
 		ZSize = 1;
 		tMatrix.loadIdentity();
 		tMatrix.translate(_xOff, _yOff, _zOff);
 	}
+
 	triangle(int _name, float _xOff, float _yOff, float _zOff, 
 		
 		float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ,
@@ -44,11 +47,10 @@ public:
 		sX = _sX; sY = _sY; sZ= _sZ;
 		
 		isVisible = 1; 
-		xOff = _xOff; yOff = _yOff; zOff = _zOff; 
 
 		XYSize = 1;
 		ZSize = 1;
-tMatrix.loadIdentity();
+		tMatrix.loadIdentity();
 		tMatrix.translate(_xOff, _yOff, _zOff);
 	}
 
@@ -59,7 +61,7 @@ tMatrix.loadIdentity();
 	triangle* clone()   { std::cout<<"triangle clone"<<std::endl; return new triangle(*this); }
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"TRIANGLE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<x3<<" "<<y3;	
+		data<<"TRIANGLE "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<x3<<" "<<y3;	
 		return data.str(); 
 	}
 

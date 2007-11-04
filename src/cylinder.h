@@ -23,7 +23,6 @@ public:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; 
-		xOff = _xOff; yOff = _yOff; zOff = _zOff;
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ;
 		rad = _rad; height = _height; isVisible = 1;
@@ -41,14 +40,14 @@ public:
 
 	std::string getDataString(){
 		std::ostringstream data;
-		data<<"CYLINDER "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
+		data<<"CYLINDER "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
 		return data.str(); 
 	}
 
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"1\"> "<<std::endl;
-		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<position x=\""<<xOff()/100<<"\" y=\""<<yOff()/100<<"\" z=\""<<zOff()/100<<"\">"<<std::endl;
 		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
 		data<<"<size x=\""<<rad*sX/100<<"\" y=\""<<rad*sY/100<<"\" z=\""<<height*sZ/100<<"\">"<<std::endl;
 		return data.str(); 

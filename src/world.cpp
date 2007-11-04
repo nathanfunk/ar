@@ -371,7 +371,7 @@ void World::saveWorld(const string &scriptFile){
 	isDirtyFlag = false;
 }
 
-
+/*
 void World::exportSL(const string &scriptFile){
 
 	ofstream outfile(scriptFile.c_str());
@@ -403,7 +403,7 @@ void World::exportSL(const string &scriptFile){
 	}
 
 }
-
+*/
 
 
 void World::draw(){
@@ -530,10 +530,10 @@ object *World::createObject(int objectType) {
 			o = new partialCylinder(nObjects, -50,-50,100, 100, 0,180, 0);
 			break;
 		case ObjectTypes::SPHERE:
-			o = new sphere(nObjects, 0,0,30,30);
+			o = new sphere(nObjects, 0,30,0,30);
 			break;
 		case ObjectTypes::CUBE:
-			o = new cube2(nObjects, 0,0,15,30);
+			o = new cube2(nObjects, 0,15,0,30);
 			 //PlaySound("squish.wav", NULL, SND_FILENAME | SND_SYNC);
 			break;
 		case ObjectTypes::TORUS:
@@ -576,14 +576,13 @@ object *World::createObject(const string &modelName) {
 	int nObjects = (int)getNumberOfObjects();
 	object *o;
 
-	
 	//std::string fullPath("models/");
 
-//fullPath.append(modelName);
-//fullPath.append(".ms3d");
+	//fullPath.append(modelName);
+	//fullPath.append(".ms3d");
 
-o = new myModel(nObjects, (char *) modelName.c_str(), 0,0,0,0,1.5);
-//o = new pyramid(nObjects, 0,30,60, 30);
+	o = new myModel(nObjects, (char *) modelName.c_str(), 0,0,0,0,1.5);
+	//o = new pyramid(nObjects, 0,30,60, 30);
 	return o;
 }
 

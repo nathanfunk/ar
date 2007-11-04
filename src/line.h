@@ -11,7 +11,7 @@ public:
 	}
 
 	object* clone()   { return new line(*this); }
-	void move(double patt_trans[3][4],int but, int key, int x, int y){
+/*	void move(double patt_trans[3][4],int but, int key, int x, int y){
 		//int specialKey = glutGetModifiers();
 		if (key == GLUT_ACTIVE_ALT){
 		if (but == GLUT_LEFT_BUTTON){
@@ -48,6 +48,7 @@ public:
 
 		notifyObservers();
 	}
+*/
 	void	draw(){
 	
 glBegin(GL_LINES);

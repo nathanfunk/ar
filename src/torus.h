@@ -8,7 +8,8 @@ public:
 	torus(int _name, float _x, float _y,  float _z, float _radius, float _tubeRad)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 5;sY = 2; sZ= 2; isVisible = 1; rX = 0; rY = 0;
+		name = _name;
+		sX = 5;sY = 2; sZ= 2; isVisible = 1; rX = 0; rY = 0;
 			minI = 0;
 		XYSize = _radius;
 		ZSize = _radius;
@@ -28,7 +29,6 @@ tMatrix.loadIdentity();
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; 
-		xOff = _x; yOff = _y;  zOff = _z; 
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ;
 		minI = 0;
@@ -50,20 +50,20 @@ TorusDL = 0;
 object* clone()   { 
 	
 	//std::cout<<"CLONE PreValues "<<pxOff<<" "<<pyOff<<" "<<pzOff<<std::endl;
-	std::cout<<"CLONE xValues "<<xOff<<" "<<yOff<<" "<<zOff<<std::endl;
+	std::cout<<"CLONE xValues "<<xOff()<<" "<<yOff()<<" "<<zOff()<<std::endl;
 	return new torus(*this); }
 
 
 std::string getDataString(){
 		std::ostringstream data;
-		data<<"TORUS "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<Radius;	
+		data<<"TORUS "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<Radius;	
 		return data.str(); 
 	}
 
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"0\"> "<<std::endl;
-		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<position x=\""<<xOff()/100<<"\" y=\""<<yOff()/100<<"\" z=\""<<zOff()/100<<"\">"<<std::endl;
 		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\" s =\"1.0\""<<">"<<std::endl;
 		data<<"<size x=\""<<Radius*sX/100<<"\" y=\""<<Radius*sY/100<<"\" z=\""<<Radius*sZ/100<<"\">"<<std::endl;
 		return data.str(); 

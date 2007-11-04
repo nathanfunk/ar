@@ -9,10 +9,11 @@ public:
 	partialCylinder(int _name, float _x, float _y,  float _rad,float _height, float _startAngle, float _arcAngle, float _r)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  radius= _rad; height = _height;
+		name = _name; 
+		radius= _rad; height = _height;
 		startAngle = PI/180*_startAngle; arcAngle = PI/180*_arcAngle;
 		rX = 0; sX = 1; sY = 1; sZ= 1; isVisible = 1; rY = _r;
-		zOff = 0; rZ = 0;
+		rZ = 0;
 
 
 		XYSize = _rad;
@@ -30,7 +31,6 @@ public:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; 
-		xOff = _xOff; yOff = _yOff;  zOff = _zOff;
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ;
 		radius= _rad; height = _height;
@@ -52,7 +52,7 @@ public:
 
 	std::string getDataString(){
 		std::ostringstream data;
-		data<<"PARTIALCYLINDER "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius<<" "<<height<<" "<<startAngle<<" "<<arcAngle;	
+		data<<"PARTIALCYLINDER "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<radius<<" "<<height<<" "<<startAngle<<" "<<arcAngle;	
 		//data<<"PARTIALCYLINDER "<<getGlobalDataString<<"LOCAL "<<radius<<" "<<height<<" "<<startAngle<<" "<<arcAngle;	
 		return data.str(); 
 	}
@@ -60,7 +60,7 @@ public:
 	virtual std::string getSLDataString(){
 		std::ostringstream data;
 		data<<"<type val=\"6\"> "<<std::endl;
-		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<"\">"<<std::endl;
+		data<<"<position x=\""<<xOff()/100<<"\" y=\""<<yOff()/100<<"\" z=\""<<zOff()/100<<"\">"<<std::endl;
 		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<"\">"<<std::endl;
 		data<<"<size x=\""<<radius*sX/100<<"\" y=\""<<radius*sY/100<<"\" z=\""<<height*sZ/100<<"\">"<<std::endl;
 		return data.str(); 

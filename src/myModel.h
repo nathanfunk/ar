@@ -15,36 +15,35 @@ class myModel:public object{
 public:
 	myModel(){		
 		pModel = new MilkshapeModel();
-		xOff = 0; yOff = 0; zOff = 0; rX = 0; rY=0; sX = 1;sY = 1; sZ = 1;  //offsets, rotation,scale
+		rX = 0; rY=0; sX = 1;sY = 1; sZ = 1;  //offsets, rotation,scale
 
 		timeStep = 0; actionStep = 0; isSelected = 0; isVisible = 1; velocity = 10; rotVel = 10;
 
 		std::vector<float> initial; 
-		initial.push_back(xOff);initial.push_back(yOff);initial.push_back(zOff);
+		initial.push_back(0);initial.push_back(0);initial.push_back(0);
 		initial.push_back(rX);initial.push_back(sX);initial.push_back(0); //timestep
 		script.push_back(initial);
 
-tMatrix.loadIdentity();
-		//tMatrix.translate(_xOff, _yOff, _zOff);
+		tMatrix.loadIdentity();
 
-		}
+	}
+	
 	myModel(int _name, char *modelFile, float x, float y, float z, float r, float s){
 		name = _name;  
 		modelFileName = modelFile;
 		pModel = new MilkshapeModel();
 		init(modelFile);
-		xOff = x; yOff = y; zOff = z; rX = r; rY=0;sX = s; sY = s; sZ = s;
+		rX = r; rY=0;sX = s; sY = s; sZ = s;
 		timeStep = 0; actionStep = 0; isSelected = 0; isVisible = 1;velocity = 10;rotVel = 10;
 
-
 		std::vector<float> initial; 
-		initial.push_back(xOff);initial.push_back(yOff);initial.push_back(zOff);
+		initial.push_back(x);initial.push_back(y);initial.push_back(z);
 		initial.push_back(rX);initial.push_back(sX);initial.push_back(0); //timestep
 		script.push_back(initial);
 		//initial[3] = 15; initial[5] = 20; script.push_back(initial);
 		//initial[3] = 30;initial[5] = 2;script.push_back(initial);
 
-tMatrix.loadIdentity();
+		tMatrix.loadIdentity();
 		tMatrix.translate(x, y, z);
 	}
 
@@ -56,17 +55,17 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 		pModel = new MilkshapeModel();
 
 		init(modelFile); 
-		xOff = _xOff; yOff = _yOff; zOff = _zOff; rX = _rX; rY=_rY; rZ = _rZ; sX = _sX; sY = _sY; sZ = _sZ;
+		rX = _rX; rY=_rY; rZ = _rZ; sX = _sX; sY = _sY; sZ = _sZ;
 		timeStep = 0; actionStep = 0; isSelected = 0; isVisible = 1;velocity = 10;rotVel = 10;
 
 
 		std::vector<float> initial; 
-		initial.push_back(xOff);initial.push_back(yOff);initial.push_back(zOff);
+		initial.push_back(_xOff);initial.push_back(_yOff);initial.push_back(_zOff);
 		initial.push_back(rX);initial.push_back(sX);initial.push_back(0); //timestep
 		script.push_back(initial);
 		//initial[3] = 15; initial[5] = 20; script.push_back(initial);
 		//initial[3] = 30;initial[5] = 2;script.push_back(initial);
-tMatrix.loadIdentity();
+		tMatrix.loadIdentity();
 		tMatrix.translate(_xOff, _yOff, _zOff);
 
 	}
@@ -84,12 +83,12 @@ tMatrix.loadIdentity();
 
 		pModel = new MilkshapeModel();
 		init(modelFile);
-		xOff = x; yOff = y; zOff = z; rX = r; rY=0;sX = s; sY = s; sZ = s;
+		rX = r; rY=0;sX = s; sY = s; sZ = s;
 		timeStep = 0; actionStep = 0; isSelected = 0; isVisible = 1;velocity = 10;rotVel = 10;
 		loadScript(scriptFile);	
 
 		///setGoal(-100,-100, 180, 1, 1);
-tMatrix.loadIdentity();
+		tMatrix.loadIdentity();
 		tMatrix.translate(x, y, z);
 
 	}
@@ -98,7 +97,7 @@ tMatrix.loadIdentity();
 	
 	std::string getDataString(){
 		std::ostringstream data;
-		data<<"MS3D "<<modelFileName<<" "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ;	
+		data<<"MS3D "<<modelFileName<<" "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ;	
 		return data.str(); 
 	}
 
@@ -155,7 +154,7 @@ tMatrix.loadIdentity();
 	void setGoal(float xGoal, float zGoal, float rGoal, float pDelta, float rDelta){
 		//plan a path, put in into the motion script
 		std::vector<float> pos; 
-		pos.push_back(xOff);pos.push_back(yOff);pos.push_back(zOff);
+		pos.push_back(xOff());pos.push_back(yOff());pos.push_back(zOff());
 		pos.push_back(rX);pos.push_back(sX);pos.push_back(0);
 
 		
@@ -211,11 +210,10 @@ tMatrix.loadIdentity();
 
 
 	void setPosition(float x, float y, float z, float r, float s){
-		xOff = x;
-		yOff = y;
-		zOff = z;
 		rX = r;
 		sX = s; sY = s; sZ = s;//sOff = s;
+		float tm[3] = {x, y, z};
+		tMatrix.setTranslation(tm);
 	}
 
 	void advanceScript(){

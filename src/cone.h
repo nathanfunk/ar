@@ -6,7 +6,8 @@ public:
 	cone(int _name, float _x, float _y,  float _z, float _rad, float _height)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; sX = 1;sY = 1; sZ= 1; rad= _rad; height = _height; isVisible = 1; rX = 0; rY = 0;rZ = 0;
+		name = _name;
+		sX = 1;sY = 1; sZ= 1; rad= _rad; height = _height; isVisible = 1; rX = 0; rY = 0;rZ = 0;
 		
 		XYSize = _rad;
 		ZSize = _height;
@@ -21,7 +22,7 @@ public:
 		float _rad, float _height)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
-		name = _name; xOff = _x; yOff = _y;  zOff = _z; 
+		name = _name;
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ = _sZ; 
 		rad= _rad; height = _height; isVisible = 1;
@@ -38,7 +39,7 @@ public:
 
 	std::string getDataString(){
 		std::ostringstream data;
-		data<<"CONE "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
+		data<<"CONE "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<rad<<" "<<height;	
 		return data.str(); 
 	}
 
