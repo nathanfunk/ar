@@ -1,9 +1,13 @@
+#ifndef MULTISHAPE_H
+#define MULTISHAPE_H
 
 class multiShape:public object{
 public:
-	multiShape(){};
-	multiShape(std::vector<object *> _shapePtrs
-	, float _x, float _y,  float _z, float _rX, float _rY, float _rZ, float _sX, float _sY, float _sZ){
+	multiShape(){};	
+	multiShape(std::vector<object *> _shapePtrs,
+		float _x, float _y,  float _z, 
+		float _rX, float _rY, float _rZ,
+		float _sX, float _sY, float _sZ){
 
 		tMatrix.loadIdentity();
 		tMatrix.translate(_x, _y, _z);		
@@ -14,46 +18,52 @@ public:
 		//copy(_shapePtrs.begin(), _shapePtrs.end(), shapePtrs.begin());
 		copy(_shapePtrs.begin(), _shapePtrs.end(), std::back_insert_iterator<std::vector<object *> >(shapePtrs));
 		
-
-		for (int i = 0 ; i < (int) shapePtrs.size(); i++){
+		for (int i = 0 ; i < (int) shapePtrs.size(); i++) {
 			shapePtrs[i]->isSelected = 0;
-
-}
+		}
 
 		centroid.x = 0; centroid.y = 0; centroid.z = 0;
 		calcCentroid();
-
 	};
 
-object* clone()   { return new multiShape(*this); }
-
-std::vector<object *> ungroup(){
-	return shapePtrs;
-}
-
-
-
-void calcCentroid(){
-	
-	float x, y, z;
-	x = 0; y = 0; z = 0;
-	if (shapePtrs.size() == 0) return;
-
-	for (int i = 0 ; i < (int) shapePtrs.size(); i++){
-		x+= shapePtrs[i]->tMatrix.m_matrix[12];
-		y+= shapePtrs[i]->tMatrix.m_matrix[13];
-		z+= shapePtrs[i]->tMatrix.m_matrix[14];
+	/*
+	Destructor. Free up memory for all group members
+	*/
+	~multiShape() {
+		OutputDebugStr("multiShape destructor\n");
+		for (int i = 0; i < (int) shapePtrs.size(); i++) {
+			OutputDebugStr("  Deleting object from multiShape\n");
+			delete shapePtrs[i];
+		}
 	}
 
-	centroid.x = x/ shapePtrs.size();
-	centroid.y = y/ shapePtrs.size();
-	centroid.z = z/ shapePtrs.size();
+	object* clone()   { return new multiShape(*this); }
 
-	std::cout<<"Centroid: "<<centroid.x<<" "<<centroid.y<<" "<<centroid.z<<std::endl;
-}
+	std::vector<object *> getObjects(){
+		return shapePtrs;
+	}
+
+	void calcCentroid(){
+		
+		float x, y, z;
+		x = 0; y = 0; z = 0;
+		if (shapePtrs.size() == 0) return;
+
+		for (int i = 0 ; i < (int) shapePtrs.size(); i++){
+			x+= shapePtrs[i]->tMatrix.m_matrix[12];
+			y+= shapePtrs[i]->tMatrix.m_matrix[13];
+			z+= shapePtrs[i]->tMatrix.m_matrix[14];
+		}
+
+		centroid.x = x/ shapePtrs.size();
+		centroid.y = y/ shapePtrs.size();
+		centroid.z = z/ shapePtrs.size();
+
+		std::cout<<"Centroid: "<<centroid.x<<" "<<centroid.y<<" "<<centroid.z<<std::endl;
+	}
 
 
-virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
+	virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 		
 		double xNew, yNew;
 			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
@@ -154,12 +164,22 @@ for (int i = 0 ; i < (int) shapePtrs.size(); i++){
 		glPopMatrix();
 	}
 
-
+	/*
+	Removes all items from the group without freeing their memory. This is necessary for the
+	ungrouping functionality. Objects are moved to the world and need to be detached from
+	the multiShape so their memory is not freed when the multiShape is deleted.
+	*/
+	void detachObjects() {
+		shapePtrs.clear();
+	}
 	
-
+	// The objects that are part of the group
 	std::vector<object *> shapePtrs;
+
+	// The centroid vertex of the group
 	vertex centroid;
 	
 };
 
 
+#endif

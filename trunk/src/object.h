@@ -131,7 +131,10 @@ public:
 		std::memcpy(&tMatrix, &_tMatrix, sizeof(objTrans));
 	}
 
-	object::~object(){ gluDeleteQuadric(quadratic);}
+	virtual object::~object() {
+		OutputDebugStr("Inside object destructor\n");
+		gluDeleteQuadric(quadratic);
+	}
 
 
 	virtual object * clone(){
@@ -206,14 +209,6 @@ public:
 			//std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
 			return 1;
 	}
-
-
-
-	virtual std::vector<object *> ungroup() {
-		std::vector<object *> emptyVec;
-		notifyObservers();
-		return emptyVec;
-	};
 
 
 /*

@@ -600,10 +600,13 @@ void World::update(const ISubject &subject) {
  */
 void World::removeSelected() {
 	isDirtyFlag = true;
+	
 	for (std::vector<object *>::iterator it = objectPtrs.begin(); it!=objectPtrs.end();) {
 
 		if ((*it)->isSelected == 1) {
-			it = objectPtrs.erase(it++);
+			OutputDebugStr("  Deleting object from world\n");
+			delete *it;
+			it = objectPtrs.erase(it);
 		} else {
 			++it;
 		}
