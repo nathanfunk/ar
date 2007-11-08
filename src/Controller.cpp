@@ -154,11 +154,12 @@ Controller::Controller(bool useGLUTGUI) {
 	drawVideo = true;
 	currentTool = 0;
 	gotImage = 0;
+
 }
 
 void Controller::LoadWorld(){
-world->loadWorld("myworld.txt");
-world->loadTextures("blah.txt");
+	world->loadWorld("myworld.txt");
+	world->loadTextures("blah.txt");
 }
 
 
@@ -1459,64 +1460,92 @@ void Controller::group() {
 
 	//ungroup all grouped objects that are selected
 	int i = 0;
-	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
+/*	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
-			o.str("Ungrouping ");
+			o.str("Ungrouping elements inside inner group ");
 			o << i << endl;
 			OutputDebugStr(o.str().c_str());
 
-			std::vector<object *> group = (*it)->ungroup();
+			std::vector<object *> group = (*it)->getObjects();
 			if (!group.empty()){
 				//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
 				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world->objectPtrs));
-				it = world->objectPtrs.erase(it++);
+				it = world->objectPtrs.erase(it);
 			}
 			else ++it;
 		}
 		else ++it;
 	}
-
+*/
 	i = 0;
-	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
+	std::vector<object *>::iterator it;
+	// add selected items to newGroup vector
+	for (it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
-			o << "Adding to group " << i << std::endl;
+			o.str("");
+			o << "Adding to group " << (*it)->getDataString() << std::endl;
 			OutputDebugStr(o.str().c_str());
 			newGroup.push_back((*it)->clone());
-			//++it;
-			it = world->objectPtrs.erase(it++);
+			it = world->objectPtrs.erase(it);
 		}
 		else ++it;
 	}
 
-
-	//multiShape * myMulti = new multiShape(newGroup);
-	world->addObject(new multiShape(newGroup, 0,0,0,0,0,0,1,1,1));
+	// create a new multiShape and add it to the world
+	world->addObject(new multiShape(newGroup, 0,0,0, 0,0,0, 1,1,1));
 }
 
+/*
+Ungroups objects
+It skips over selected non-group objects. It also only ungroups the upper level - 
+so a group in a group is not ungrouped, only the outer group is ungrouped.
+
+*/
 void Controller::ungroup() {
 
 	OutputDebugStr("Ungroup\n");
+
 	//if any of the selected objects is a multiShape
 	//take the objects from the shapePtrs vector and put into the world vector
 	//then destroy the multishape
-
 	int i = 0;
-	for (std::vector<object *>::iterator it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
+	// iterate through all objects
+	vector<object *>::iterator it;
+	vector<object *> buffer;
+	for (it = world->objectPtrs.begin(); it!=world->objectPtrs.end();) {
 		if ( (*it)->isSelected  == 1)
 		{
-			std::cout<<"ungrouping "<<i<<std::endl;
-			std::vector<object *> group = (*it)->ungroup();
-			if (!group.empty()){
-
-				//std::back_insert_iterator<std::vector<object *> >(world->objectPtrs)
-				copy(group.begin(), group.end(), std::back_insert_iterator<std::vector<object *> >(world->objectPtrs));
-				it = world->objectPtrs.erase(it++);
+			//object is selected, check if it's a multiShape
+			multiShape *ms = dynamic_cast<multiShape *>(*it);
+			if (ms) { //object is a multiShape
+				std::vector<object *> objects = ms->getObjects();
+				if (!objects.empty()) {
+					// copy all objects from group into buffer
+					// (can't copy them to the world without resetting the iterator)
+					copy(objects.begin(), objects.end(),
+						std::back_insert_iterator<std::vector<object *> >(buffer));
+					// remove objects from multishape before deleting multishape
+					// (otherwise they get deleted as well)
+					ms->detachObjects();
+					// free multishape memory
+					delete ms;
+					// erase group from world and set it to next object
+					it = world->objectPtrs.erase(it);
+				}
+				else ++it; // group empty, so move along
 			}
-			else ++it;
+			else ++it; //object isn't multiShape, so move along
 		}
-		else ++it;
+		else ++it; // object isn't selected, so move along
+	}
+	// add all the objects from the buffer to the world
+	if (!buffer.empty()) {
+		for (it = buffer.begin(); it != buffer.end(); it++) {
+			world->addObject(*it);
+			(*it)->isSelected = 1;
+		}
 	}
 }
 

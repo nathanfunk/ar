@@ -632,6 +632,7 @@ protected:
 			this->tsbUngroup->Name = L"tsbUngroup";
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
+			this->tsbUngroup->Click += gcnew System::EventHandler(this, &MainWindow::tsbUngroup_Click);
 			// 
 			// MainWindow
 			// 
@@ -956,6 +957,9 @@ private: System::Void aboutToolStripMenuItem_Click(System::Object^  sender, Syst
 		 }
 private: System::Void tsbGroup_Click(System::Object^  sender, System::EventArgs^  e) {
 			 controller->group();
+		 }
+private: System::Void tsbUngroup_Click(System::Object^  sender, System::EventArgs^  e) {
+			 controller->ungroup();
 		 }
 };
 }
