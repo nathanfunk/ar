@@ -325,6 +325,10 @@
 				</File>
 			</File>
 			<File
+				RelativePath=".\src\multiShape.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\myModel.h"
 				>
 			</File>
