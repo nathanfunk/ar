@@ -191,6 +191,9 @@ void Controller::InitGL ( GLvoid )     // Create Some Everyday Functions
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glEnable(GL_COLOR_MATERIAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glEnable(GL_NORMALIZE);								// normalizes normals to length 1
+														// necessary since scaling objects affects the normals
+														// supposedly slows down rendering (but not noticable)
 
 	glInitNames(); //init the name stack for selection
 
