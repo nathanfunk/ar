@@ -30,16 +30,19 @@ public:
 	Destructor. Free up memory for all group members
 	*/
 	~multiShape() {
+		ostringstream o;
 		OutputDebugStr("multiShape destructor\n");
 		for (int i = 0; i < (int) shapePtrs.size(); i++) {
-			OutputDebugStr("  Deleting object from multiShape\n");
+			o.str("");
+			o << "Deleting object " << i << " from multiShape: " << shapePtrs[i]->getDataString() << endl;
+			OutputDebugStr(o.str().c_str());
 			delete shapePtrs[i];
 		}
 	}
 
 	object* clone()   { return new multiShape(*this); }
 
-	std::vector<object *> getObjects(){
+	std::vector<object *> getObjects() {
 		return shapePtrs;
 	}
 
