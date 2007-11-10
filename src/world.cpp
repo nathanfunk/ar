@@ -44,8 +44,10 @@ World::World(string scriptFile) {
 	isDirtyFlag = false;
 }*/
 
-World::~World(){ 
-	for (int i = 0; i < (int) getNumberOfObjects(); i++){
+World::~World() {
+	OutputDebugStr("Inside World destructor\n");
+	for (int i = 0; i < (int) getNumberOfObjects(); i++) {
+		OutputDebugStr("Deleting object from world\n");
 		delete getObject(i);
 	}
 
@@ -522,10 +524,10 @@ object *World::createObject(int objectType) {
 			o = new rectangle(nObjects, 0, 0, 2*a, 2*a, 0);
 			break;
 		case ObjectTypes::TRIANGLE:
-			o = new triangle(nObjects, 0,0,0, -a,-a,a, -a, 0,a, 0);
+			o = new triangle(nObjects, 0,0,0, -a,0, a,0, 0,2*a, 0);
 			break;
 		case ObjectTypes::FILLARC:
-			o = new fillArc(nObjects, -50,-50, 100, 100, 50, 90);
+			o = new fillArc(nObjects, 0, 0, 2*a, 0, 90, 3*a);
 			break;
 		case ObjectTypes::PARTIALCYLINDER:
 			o = new partialCylinder(nObjects, 0, 0, a, 2*a, 0, 180, 0);
