@@ -112,89 +112,24 @@ void setWinCoords(){
 
 }
 
-/*
-	virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
-		//int specialKey = glutGetModifiers();
-		double xNew, yNew;
+void draw() {
+	glNormal3f(0.0, 0.0, 1.0);
+	glBegin( GL_POLYGON );
+	glVertex3f( x1, y1, 0.0f );
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex3f(  x1, y2, 0.0f );
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex3f(  x2,  y2, 0.0f );
+	glTexCoord2f( 1.0f, 1.0f );
+	glVertex3f( x2,  y1, 0.0f );
+	glTexCoord2f( 0.0f, 1.0f );
+	glEnd();
+}
 
-		double xGrow, yGrow;
-			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
+float x1, y1,  x2, y2;
 
-			std::cout<<"rect rz: "<<rZ<<std::endl;
-		getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
-
-			//if (key ==(GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT)){
-		if (key == GLUT_ACTIVE_ALT){
-		if (but == GLUT_LEFT_BUTTON){
-		sX += (float)x / 25; sZ -= (float)y / 25; //yOff += y;
-		}
-		else if (but == GLUT_RIGHT_BUTTON){
-		 sY -= (float)y / 25;
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 //sX -= (float)y / 25; sZ -= (float)y / 25;
-			sY -= (float)y / 25;
-		}
-		}
-	 else if (key == GLUT_ACTIVE_CTRL){
-		if (but == GLUT_LEFT_BUTTON){
-		rX += x; 
-		////rY+=y; //yOff += y;
-		}
-		else if (but == GLUT_RIGHT_BUTTON){
-		rY += x;
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		rX+=x;
-		}
-		}
-		//	}
-
-		else{
-		if (but == GLUT_LEFT_BUTTON){
-		
-			if (min > 10){
-			xOff += xNew; zOff += yNew;
-			}
-
-			else{
-
-		if (min == d1){x1 += xGrow; y1+= yGrow;}
-		else if (min == d2){x1+=xGrow/2; y2+=yGrow/2; }
-		else if (min == d3){x2+=xGrow/2; y2+=yGrow/2; }
-		else if (min == d4){x2+=xGrow/2; y1+=yGrow/2; }
-			}
-
-
-
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 yOff -= y;
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 rX += x; rY+= y;//sOff += y;
-		}
-		}
-
-		notifyObservers();
-	}
-*/
-	void	draw(){
-glBegin( GL_POLYGON );
-glVertex3f( x1, y1, 0.0f );
-   glTexCoord2f( 0.0f, 0.0f );
-   glVertex3f(  x1, y2, 0.0f );
-   glTexCoord2f( 1.0f, 0.0f );
-   glVertex3f(  x2,  y2, 0.0f );
-   glTexCoord2f( 1.0f, 1.0f );
-   glVertex3f( x2,  y1, 0.0f );
-   glTexCoord2f( 0.0f, 1.0f );
-  glEnd();
-	}
-	float x1, y1,  x2, y2;
-
-		float d1, d2, d3, d4, min;
-	GLdouble winX1, winY1, winX2, winY2, winX3, winY3, winX4, winY4;
+float d1, d2, d3, d4, min;
+GLdouble winX1, winY1, winX2, winY2, winX3, winY3, winX4, winY4;
 
 
 };

@@ -67,54 +67,6 @@ public:
 	}
 
 
-/*
-virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
-		
-		double xNew, yNew;
-			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
-
-
-
-		if (key == GLUT_ACTIVE_ALT){
-		if (but == GLUT_LEFT_BUTTON){
-		sX += (float)x / 25; sZ -= (float)y / 25; //yOff += y;
-		}
-
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 //sX -= (float)y / 25; sZ -= (float)y / 25; 
-			sY += (float) y/ 15;
-			arcAngle -= (float)x / 15;
-		}
-		}
-	else if (key == GLUT_ACTIVE_CTRL){
-		if (but == GLUT_LEFT_BUTTON){
-		rX += x; rY-=y; //yOff += y;
-		}
-
-		else if (but == GLUT_MIDDLE_BUTTON){
-		rY-=y;rZ+=x;
-		}
-		}
-
-
-		else{
-
-
-		if (but == GLUT_LEFT_BUTTON){
-		xOff += xNew; zOff += yNew;
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 yOff -= y;
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 rX += x; rY+= y;//sOff += y;
-		}
-		}
-
-	}
-*/
-
-
 	void draw(){	
 		int n = 20;
 		int stack;
@@ -150,7 +102,7 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 		//std::cout<<"DRAW "<<std::endl;
 
-		for(stack=0; stack<stacks ; ++stack) {
+		for(stack=0; stack < stacks; ++stack) {
 			glBegin(GL_QUAD_STRIP);
 			/*for(slice=0; slice<=slices; ++slice) {
 			glNormal3d(normCo*sin(RADIANS(dangle*slice)),normCo*cos(RADIANS(dangle*slice)),normZ);
@@ -165,8 +117,9 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 			int sliceNum = 0;
 
-			for (pheta = startAngle; pheta - (startAngle + arcAngle)
-				< 0.001; pheta += angle_increment)
+			for (pheta = startAngle;
+				pheta < startAngle + arcAngle + 0.001;
+				pheta += angle_increment)
 			{
 				//x = width/2 * cos (pheta);
 				//y = height/2 * sin (pheta);
@@ -174,10 +127,12 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 				float x = topR * cos(pheta);
 				float y = topR * sin(pheta);
 
-				glVertex3f(x,y,  stack   *dheight);
-				glTexCoord2f(  (stack-1)*xTexInc, sliceNum*yTexInc);
-				glVertex3f(x,y, (stack+1)*dheight);
-				glTexCoord2f(   stack*xTexInc , sliceNum*yTexInc);
+				glNormal3f(cos(pheta), sin(pheta), 0.0);
+
+				glVertex3f(x, y,  stack*dheight);
+				glTexCoord2f((stack-1)*xTexInc, sliceNum*yTexInc);
+				glVertex3f(x, y, (stack+1)*dheight);
+				glTexCoord2f(stack*xTexInc, sliceNum*yTexInc);
 
 				// std::cout<<"["<<x<<" "<<y<<" "<<stack   *dheight<<"] ";
 				//std::cout<<"["<<stack*xTexInc<<" "<<sliceNum*yTexInc<<"] "<<"["<<(stack+1)*xTexInc<<" "<<sliceNum*yTexInc<<"] "<<std::endl;

@@ -2,9 +2,10 @@
 
 class triangle:public object{
 public:
-	triangle(){ 
+	triangle() { 
 	
 	};
+
 	triangle(int _name, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
@@ -21,7 +22,11 @@ public:
 		
 
 	}
-	triangle(int _name, float _xOff, float _yOff, float _zOff, float _x1, float _y1,  float _x2,float _y2, float _x3, float _y3, float _r)//:
+
+	triangle(int _name, float _xOff, float _yOff, float _zOff,
+		float _x1, float _y1, 
+		float _x2,float _y2, 
+		float _x3, float _y3, float _r)//:
 		//object(_name, _x1, _y1, _x2, _y2, _r)
 	{
 		name = _name; x1 = _x1; y1 = _y1;  x2 = _x2; y2 = _y2; 
@@ -56,10 +61,13 @@ public:
 
 
 
+	triangle* clone() 
+	{
+		std::cout<<"triangle clone"<<std::endl;
+		return new triangle(*this);
+	}
 
-
-	triangle* clone()   { std::cout<<"triangle clone"<<std::endl; return new triangle(*this); }
-std::string getDataString(){
+	std::string getDataString(){
 		std::ostringstream data;
 		data<<"TRIANGLE "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<x3<<" "<<y3;	
 		return data.str(); 
@@ -67,28 +75,25 @@ std::string getDataString(){
 
 
 
-void initHandles(){
+	void initHandles(){
 
-	handles.clear();
-	handles.push_back(vertex(x1, y1, 0));
-	handles.push_back(vertex(x2, y2, 0));
-	handles.push_back(vertex(x3, y3, 0));
-}
-
-
+		handles.clear();
+		handles.push_back(vertex(x1, y1, 0));
+		handles.push_back(vertex(x2, y2, 0));
+		handles.push_back(vertex(x3, y3, 0));
+	}
 
 
 	void	draw(){
-
+		glNormal3f(0.0, 0.0, 1.0);
 		glBegin(GL_TRIANGLES);		// Drawing Using Triangles
-		   glTexCoord2f( 0.0f, 0.0f );
+		glTexCoord2f( 0.0f, 0.0f );
 		glVertex3f( x3, y3, 0.0f);		// Top
-			glTexCoord2f( 1.0f, 0.0f );
+		glTexCoord2f( 1.0f, 0.0f );
 		glVertex3f(x1,y1, 0.0f);		// Bottom Left
-		 glTexCoord2f( 0.0f, 1.0f );
+		glTexCoord2f( 0.0f, 1.0f );
 		glVertex3f( x2,y2, 0.0f);		// Bottom Right
-		 glEnd();			
-
+		glEnd();			
 	}
-	float x1, y1,  x2, y2, x3, y3, rZ;
+	float x1, y1,  x2, y2, x3, y3;
 };
