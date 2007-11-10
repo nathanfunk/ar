@@ -104,37 +104,39 @@ virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
 
 
 	void	draw(){
-	
-	int n = 50;
-	float pheta, angle_increment;
-    float x1, y1, x2, y2;
 
-    if (n <= 0)
-        n = 1;
+		int n = 50;
+		float pheta, angle_increment;
+		float x1, y1, x2, y2;
 
-    angle_increment = PI_2 / n;
-	int stacks = 20;
-	float radIncrement = radius/stacks;
+		if (n <= 0)
+			n = 1;
 
-for (int stack = 0; stack <stacks ; stack++){
+		angle_increment = PI_2 / n;
+		int stacks = 20;
+		float radIncrement = radius/stacks;
 
-	glBegin (GL_QUAD_STRIP);
-    for (pheta = startAngle; pheta - (startAngle + arcAngle)
-                          < 0.001; pheta += angle_increment)
-    {
-        x1 = stack*radIncrement * cos (pheta);
-        y1 = stack*radIncrement * sin (pheta);
+		glNormal3f(0, 0, 1.0);
 
-        x2 = (stack+1)*radIncrement * cos (pheta);
-        y2 = (stack+1)*radIncrement * sin (pheta);
-        glVertex2f (x1, y1);
-		glVertex2f (x2, y2);
+		for (int stack = 0; stack <stacks ; stack++){
 
-    }
-	 glEnd ();
-}
+			glBegin (GL_QUAD_STRIP);
+			for (pheta = startAngle;
+				pheta - (startAngle + arcAngle) < 0.001;
+				pheta += angle_increment)
+			{
+				x1 = stack*radIncrement * cos (pheta);
+				y1 = stack*radIncrement * sin (pheta);
 
+				x2 = (stack+1)*radIncrement * cos (pheta);
+				y2 = (stack+1)*radIncrement * sin (pheta);
+				glVertex2f (x1, y1);
+				glVertex2f (x2, y2);
+			}
+			glEnd ();
+		}
 	}
+
 	float radius, startAngle, arcAngle, thickness;
 };
 
