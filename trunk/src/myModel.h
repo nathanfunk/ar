@@ -8,9 +8,6 @@
 /* Wrapper around Portalib milkshape model loader 
 Farooq Ahmad 2006
 */
-
-
-
 class myModel:public object{
 public:
 	myModel(){		
@@ -48,7 +45,7 @@ public:
 	}
 
 
-myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff, 
+	myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff, 
 		float _rX,float _rY,float _rZ, float _sX, float _sY, float _sZ){
 		name = _name;  
 		modelFileName = modelFile;
@@ -97,7 +94,10 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 	
 	std::string getDataString(){
 		std::ostringstream data;
-		data<<"MS3D "<<modelFileName<<" "<<xOff()<<" "<<yOff()<<" "<<zOff()<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ;	
+		data << "MS3D " << modelFileName << endl 
+			<< xOff() << " " << yOff() << " " << zOff() << " "
+			<< rX << " " << rY << " " << rZ << " "
+			<< sX << " " << sY << " " << sZ;	
 		return data.str(); 
 	}
 
@@ -128,7 +128,7 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 		}
 		inFile.close();
 
-			return 0;
+		return 0;
 	};
 
 	int init(char *modelFile){
@@ -144,7 +144,7 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 	}
 
 	void reload(){
-	pModel->reloadTextures();
+		pModel->reloadTextures();
 	}
 
 	float distance(float x1, float y1,  float x2, float y2){
@@ -232,26 +232,16 @@ myModel(int _name, char *modelFile, float _xOff, float _yOff, float _zOff,
 
 	}
 
+	void draw(){
+		//advanceScript();
+
+		glEnable( GL_TEXTURE_2D );
+		pModel->draw(1);
+	}
+
 	int actionStep;
 	int timeStep;
 	std::vector <std::vector <float> > script; //x,y,z  timedelayAfter ///x, y, z, rx, ry, rz, anBegin, anEnd;
-
-
-
-
-
-
-
-
-	void draw(){
-
-	//advanceScript();
-
-	glEnable( GL_TEXTURE_2D );
-	pModel->draw(1);
-	
-	
-	}
 
 	int name;
 	Model *pModel;
