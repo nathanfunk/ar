@@ -250,20 +250,34 @@ void World::initMenu(){
  */
 bool World::loadWorld(const string &scriptFile){
 	ifstream fin(scriptFile.c_str());
-	string line;
+	string line, temp;
+	ostringstream o;
 
 	while ( getline(fin,line) )
 	{
-
 		istringstream iss(line);
 		string type;	
-		iss>>type;
+		iss >> type;
 		if (type == "MS3D") {
 			string filename;
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
-			iss>>filename>>xOff>>yOff>>zOff>>rX>>rY>>rZ>>sX>>sY>>sZ;
-			cout<<filename<<xOff<<yOff<<zOff<<rX<<sX<<endl;
-			addObject(new myModel((int) getNumberOfObjects(), (char *) filename.c_str(), xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
+
+			// file name starts after a space
+			// and goes to end of line
+			filename = line.substr(line.find(" ")+1);
+
+			// move on to next line for rest of data
+			getline(fin, line);
+			iss.str(line);
+			iss >> xOff >> yOff >> zOff 
+				>> rX >> rY >> rZ 
+				>> sX >> sY >> sZ;
+			o << "Load " << filename << endl;
+			o << "   with xOff, yOff, zOff, rX, sX: "
+				<< xOff << ", " << yOff << ", " <<zOff << ", " << rX << ", " << sX << endl;
+			OutputDebugStr(o.str().c_str());
+			addObject(new myModel((int) getNumberOfObjects(), (char *) filename.c_str(),
+				xOff,yOff,zOff,rX,rY,rZ,sX,sY,sZ));
 		}
 		else if (type == "RECTANGLE"){
 			float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ, x1, y1, x2, y2;
@@ -484,6 +498,8 @@ void World::addObject(int objectType) {
 
 	// add the object
 	addObject(createObject(objectType));
+
+	OutputDebugStr("Added an object\n");
 }
 
 /**
@@ -492,6 +508,9 @@ void World::addObject(int objectType) {
 void World::addObject(const std::string& modelName) {
 	// set dirty flag
 	isDirtyFlag = true;
+
+	string temp = "Adding " + modelName + "\n";
+	OutputDebugString(temp.c_str());
 
 	// add the object
 	addObject(createObject(modelName));
