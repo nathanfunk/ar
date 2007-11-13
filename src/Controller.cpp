@@ -1292,14 +1292,13 @@ void Controller::mouseCBwithModifier(int button, int state, int x, int y, int mo
 		// a mouse button has been pressed
 		OutputDebugStr("Mouse down\n");
 
-		//if (selectRectDefined == 0){
-		for (int i =0; i < (int) world->getNumberOfObjects(); i++){
-			world->getObject(i)->isSelected = 0;
+		if (!(modifier & GLUT_ACTIVE_SHIFT)) {
+			for (int i=0; i < (int) world->getNumberOfObjects(); i++){
+				world->getObject(i)->isSelected = 0;
+			}
 		}
 		world->isSelected = 0;
-		//}
 
-		std::cout << "Clicked " << x << " " << y << endl;
 		selection(modifier, x, y);
 		initDrag(button, x, y);
 	}
