@@ -114,16 +114,18 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 	void initHandles(){
 
 		handles.clear();
-		handles.push_back(vertex(-rad, -rad, 0));
-		handles.push_back(vertex(-rad, rad, 0));
-		handles.push_back(vertex(rad, rad, 0));
-		handles.push_back(vertex(rad, -rad, 0));
+		handles.push_back(vertex(-rad, 0, -rad));
+		handles.push_back(vertex(-rad, 0, rad));
+		handles.push_back(vertex(rad, 0, rad));
+		handles.push_back(vertex(rad, 0, -rad));
 
-		handles.push_back(vertex(0, 0, height));
+		handles.push_back(vertex(0, height, 0));
 	}
 
 
-
+	/*
+	Draws a cylinder with its axis along the y-axis
+	*/
 	void draw() {
 		glPushMatrix();
 		glRotatef(-90, 1, 0, 0);
@@ -137,5 +139,6 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 
 		glPopMatrix();
 	}
+
 	float rad, height;
 };
