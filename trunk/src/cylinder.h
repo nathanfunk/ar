@@ -114,12 +114,15 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 	void initHandles(){
 
 		handles.clear();
-		handles.push_back(vertex(-rad, 0, -rad));
-		handles.push_back(vertex(-rad, 0, rad));
-		handles.push_back(vertex(rad, 0, rad));
-		handles.push_back(vertex(rad, 0, -rad));
+		handles.push_back(vertex(0, 0, -rad));
+		handles.push_back(vertex(0, 0, rad));
+		handles.push_back(vertex(rad, 0, 0));
+		handles.push_back(vertex(-rad, 0, 0));
 
-		handles.push_back(vertex(0, height, 0));
+		handles.push_back(vertex(0, height, -rad));
+		handles.push_back(vertex(0, height, rad));
+		handles.push_back(vertex(rad, height, 0));
+		handles.push_back(vertex(-rad, height, 0));
 	}
 
 

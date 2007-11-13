@@ -62,6 +62,7 @@ int World::drawGroundGrid( int divisions, float x, float y, float height)
 	float x0,x1,y0,y1;
 	float deltaX, deltaY;
 
+	glNormal3f(0, 0, 1);
 	glColor3f(1, 0, 0);
 	//draw thick line around grid
 	glLineWidth(2.0);
@@ -165,18 +166,17 @@ void World::move(double patt_trans[3][4],int but, int key, int x, int y){
 			zOff -= y;
 		}
 	}
-
 }
 
 
 void World::loadTextures(char *textureFile){
 
-//if (LoadTGA(&texture[0], "Textures/Uncompressed.tga") &&
+	//if (LoadTGA(&texture[0], "Textures/Uncompressed.tga") &&
 	//	LoadTGA(&texture[1], "Textures/Compressed.tga"))
 
-//{
-	std::cout<<"Loading Textures "<<std::endl;
-//}
+	//{
+	std::cout << "Loading Textures " << std::endl;
+	//}
 	///textureIndex.push_back(LoadGLTextureRepeat("steel01.bmp"));
 
 	///GLuint blah = LoadGLTextureRepeat("cement.bmp");
@@ -186,58 +186,47 @@ void World::loadTextures(char *textureFile){
 
 	//cout<<LoadGLTextureRepeat("steel01.bmp")<<endl;
 
-
 	ifstream fin(textureFile);
 	string line;
 	int i = 0;
 	while ( getline(fin,line) )
 	{
+		istringstream iss(line);
+		string type;	
+		iss >> type;
+		if (type == "TGA") {
+			string filename;
+			iss>>filename;
+			cout<<filename<<endl;
+			//Texture *tex = LoadTGA((char *) filename.c_str());
+			/////GLuint texNo = LoadTGA((char *) filename.c_str());
+			////if (texNo){
+			///	textureIndex.push_back(texNo);
+			///}
+			//texturePtrs.push_back(tex);
+			//cout<<"texture loaded successfully"<<std::endl;
+			/*
+			glGenTextures(1, &(texture->texID));				// Create The Texture ( CHANGE )
+			glBindTexture(GL_TEXTURE_2D, texture->texID);
+			glTexImage2D(GL_TEXTURE_2D, 0, texture->bpp / 8, texture->width, texture->height, 0, texture->type, GL_UNSIGNED_BYTE, texture->imageData);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			//if (texture->imageData)						// If Texture Image Exists ( CHANGE )
+			//{
+			//	free(texture->imageData);					// Free The Texture Image Memory ( CHANGE )
+			//}
+			*/
 
-	istringstream iss(line);
-	string type;	
-	iss>>type;
-	if (type == "TGA") {
-	string filename;
-	iss>>filename;
-	cout<<filename<<endl;
-	//Texture *tex = LoadTGA((char *) filename.c_str());
-	/////GLuint texNo = LoadTGA((char *) filename.c_str());
-	////if (texNo){
-	///	textureIndex.push_back(texNo);
-	///}
-	//texturePtrs.push_back(tex);
-	//cout<<"texture loaded successfully"<<std::endl;
-/*
-	glGenTextures(1, &(texture->texID));				// Create The Texture ( CHANGE )
-	glBindTexture(GL_TEXTURE_2D, texture->texID);
-	glTexImage2D(GL_TEXTURE_2D, 0, texture->bpp / 8, texture->width, texture->height, 0, texture->type, GL_UNSIGNED_BYTE, texture->imageData);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	//if (texture->imageData)						// If Texture Image Exists ( CHANGE )
-	//{
-	//	free(texture->imageData);					// Free The Texture Image Memory ( CHANGE )
-	//}
-*/
+			//}
+			//	else std::cout<<"Bad Texture"<<std::endl;
 
-
-
-
-
-
-
-	//}
-//	else std::cout<<"Bad Texture"<<std::endl;
-
-
-	//LoadTGA(&texturePtrs[texturePtrs.size()], filename.c_str()));
+			//LoadTGA(&texturePtrs[texturePtrs.size()], filename.c_str()));
+		}
 	}
-	}
-	
-
-	}
+}
 
 
-void World::initMenu(){
+void World::initMenu() {
 }
 
 
@@ -452,23 +441,11 @@ void World::draw(){
 	glRotatef(90,1,0,0);
 
 	//draw the models
-	for (int i = 0; i < (int) getNumberOfObjects(); i++){
-		if (getObject(i)->drawMode == NORMAL||getObject(i)->drawMode == WIREFRAME||getObject(i)->drawMode == OUTLINE){
-			//push i onto namestack
-			glPushName(i);
-			getObject(i)->drawTopLevel(5,5,5);
-			glPopName();
-		}
-
-	}
-
-	for (int i = 0; i < (int) getNumberOfObjects(); i++){
-		if (getObject(i)->drawMode == TRANSPARENT){
-			//push i onto namestack
-			glPushName(i);
-			getObject(i)->drawTopLevel(5,5,5);
-			glPopName();
-		}
+	for (int i = 0; i < (int) getNumberOfObjects(); i++) {
+		//push i onto namestack
+		glPushName(i);
+		getObject(i)->drawTopLevel(5,5,5);
+		glPopName();
 	}
 
 	glPopMatrix();
