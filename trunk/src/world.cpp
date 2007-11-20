@@ -30,6 +30,7 @@ World::World() {
 	sX = 1; sY = 1; sZ = 1;
 	isSelected = 0;
 	isDirtyFlag = false;
+	drawGrid = true;
 }
 /*
 Got rid of this because loading from a file can potentially fail.
@@ -423,11 +424,9 @@ void World::draw(){
 
 	glPushName(-100);
 
-	//glTranslatef(0,0,-20);
-	drawGroundGrid( 20, 100.0f, 100.0f, 0.0f);
-	//glRotatef(90,1,0,0);
-	//glTranslatef(-50,150,-100);
-	//drawGroundGrid( 10, 100.0f, 100.0f, 0.0f);
+	if (drawGrid) {
+		drawGroundGrid( 20, 100.0f, 100.0f, 0.0f);
+	}
 	/*
 	glTranslatef(0,0,-20);
 	glRectf(-100,-100,100,100);
