@@ -100,6 +100,8 @@ namespace ms3dglut {
 	private: System::Windows::Forms::ToolStripMenuItem^  editToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator3;
 	private: System::Windows::Forms::ToolStripMenuItem^  selectAllToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripButton^  tsbHideGrid;
+
 
 
 	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
@@ -190,6 +192,7 @@ protected:
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbHideGrid = (gcnew System::Windows::Forms::ToolStripButton());
 			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
@@ -360,11 +363,12 @@ protected:
 			// standardToolStrip
 			// 
 			this->standardToolStrip->Dock = System::Windows::Forms::DockStyle::None;
-			this->standardToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->newToolStripButton, 
-				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo});
+			this->standardToolStrip->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(7) {this->newToolStripButton, 
+				this->openToolStripButton, this->saveToolStripButton, this->toolStripSeparator7, this->helpToolStripButton, this->tsbHideVideo, 
+				this->tsbHideGrid});
 			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
 			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(169, 25);
+			this->standardToolStrip->Size = System::Drawing::Size(254, 25);
 			this->standardToolStrip->TabIndex = 0;
 			this->standardToolStrip->Text = L"toolStrip1";
 			// 
@@ -551,7 +555,7 @@ protected:
 				this->tsbRotate, this->tsbScale, this->toolStripSeparator1, this->tsbColor, this->tsbTransparency, this->tsbGroup, this->tsbUngroup});
 			this->propertiesToolStrip->Location = System::Drawing::Point(3, 74);
 			this->propertiesToolStrip->Name = L"propertiesToolStrip";
-			this->propertiesToolStrip->Size = System::Drawing::Size(438, 25);
+			this->propertiesToolStrip->Size = System::Drawing::Size(407, 25);
 			this->propertiesToolStrip->TabIndex = 2;
 			// 
 			// tsbMove
@@ -633,6 +637,17 @@ protected:
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
 			this->tsbUngroup->Click += gcnew System::EventHandler(this, &MainWindow::tsbUngroup_Click);
+			// 
+			// tsbHideGrid
+			// 
+			this->tsbHideGrid->CheckOnClick = true;
+			this->tsbHideGrid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbHideGrid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbHideGrid.Image")));
+			this->tsbHideGrid->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbHideGrid->Name = L"tsbHideGrid";
+			this->tsbHideGrid->Size = System::Drawing::Size(54, 22);
+			this->tsbHideGrid->Text = L"Hide Grid";
+			this->tsbHideGrid->Click += gcnew System::EventHandler(this, &MainWindow::tsbHideGrid_Click);
 			// 
 			// MainWindow
 			// 
@@ -961,6 +976,10 @@ private: System::Void tsbGroup_Click(System::Object^  sender, System::EventArgs^
 private: System::Void tsbUngroup_Click(System::Object^  sender, System::EventArgs^  e) {
 			 controller->ungroup();
 		 }
+private: System::Void tsbHideGrid_Click(System::Object^  sender, System::EventArgs^  e) {
+			 controller->getWorld()->setDrawGrid(!tsbHideGrid->Checked);
+		 }
+	
 };
 }
 

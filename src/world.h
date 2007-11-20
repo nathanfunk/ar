@@ -19,6 +19,7 @@ class World : public IObserver {
 private:
 	string fileName;
 	bool isDirtyFlag; // true if world has been edited since last save
+	bool drawGrid;
 
 public:
 	vector<object *> objectPtrs;
@@ -26,11 +27,9 @@ public:
 	//std::vector <myModel> modelVec;
 	vector <GLuint> textureIndex;
 
-Texture texture[2];
-
+	Texture texture[2];
 
 	vector<Texture *> texturePtrs;
-
 
 	float xOff, yOff, zOff, rX, rY, rZ, sX, sY, sZ;
 	int isSelected;
@@ -62,6 +61,7 @@ Texture texture[2];
 	bool hasFileName() {return !fileName.empty();}
 	void update(const ISubject &subject);
 	void removeSelected();
+	void setDrawGrid(bool value) {drawGrid = value;}
 };
 }
 #endif
