@@ -105,6 +105,7 @@ public:
 	void ungroup();
 
 private:
+	string buildConfigString(bool showDialog, bool setRes, int resX, int resY);
 	void ar_draw( void );
 	int selection(int key, int mouse_x, int mouse_y);
 	int selectionRect(int key);

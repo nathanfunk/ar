@@ -440,6 +440,7 @@ void Controller::arrowKeysCB( int a_keys, int x, int y )  // Create Special Func
  */
 int Controller::ar_init(const string &exeDir)
 {
+	ostringstream o;
     ARParam  wparam;
 	int error;
 	string temp;
@@ -457,19 +458,24 @@ int Controller::ar_init(const string &exeDir)
 	char *patt_name = new char[temp.size()+1];
 	strcpy_s(patt_name, temp.size()+1, temp.c_str());
 
-    /* open the video path */
-	if ((error = arVideoOpen(NULL)) < 0) {
-//	if( (error = arVideoOpen(configFile)) < 0 ) {
+	temp = buildConfigString(false, true, 640, 480); // default to 640 x 480 and don't show dialog
+	char *configStr = new char[temp.size()+1];
+	strcpy_s(configStr, temp.size()+1, temp.c_str());
+	
+	/* open the video stream */
+	if ((error = arVideoOpen(configStr)) < 0) {
 		OutputDebugStr("arVideoOpen failed!\n");
 		return error;
 	}
-//	delete configFile;
+	delete configStr;
 
     /* find the size of the window */
 	if( (error = arVideoInqSize(&video_w, &video_h)) < 0 ) {
 		return error;
 	}
-    printf("Image size (x,y) = (%d,%d)\n", video_w, video_h);
+
+	o << "Image size (x,y): " << video_w << ", " << video_h << endl;
+	OutputDebugStr(o.str().c_str());
 
     /* set the initial camera parameters */
 	
@@ -514,7 +520,21 @@ int Controller::ar_init(const string &exeDir)
 	return 0;
 }
 
-
+string Controller::buildConfigString(bool showDialog, bool setRes, int resX, int resY)
+{
+	ostringstream config;
+	config << "<?xml version=\"1.0\" encoding=\"UTF-8\"?><dsvl_input>";
+	config << "<camera show_format_dialog=\"";
+	config << showDialog ? "true" : "false";
+	config << "\" ";
+	config << "friendly_name=\"\" ";
+	if (setRes && resX > 0 && resY > 0) {
+		config << "frame_width=\"" << resX << "\" ";
+		config << "frame_height=\"" << resY << "\">";
+	}
+	config << "<pixel_format><RGB32 flip_h=\"false\" flip_v=\"true\"/></pixel_format></camera></dsvl_input>";
+	return config.str();
+}
 
 /* Allow picking with the mouse
    Picking code from http://www.hitlabnz.org/forum/archive/index.php/t-55.html
