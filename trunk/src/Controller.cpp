@@ -82,15 +82,12 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
 	glutInit(&argc, argv);
 	controller->InitGL();
 
-	
-
-	controller->ar_init();
+	controller->ar_init(".");
 	controller->initMenu();
 
-controller->LoadWorld();
+	controller->LoadWorld();
 
-
-Console::WriteLine(Environment::CurrentDirectory );
+	Console::WriteLine(Environment::CurrentDirectory );
 
 	//GLUT callbacks
 	glutMotionFunc(motionCB);
@@ -100,6 +97,8 @@ Console::WriteLine(Environment::CurrentDirectory );
 	glutDisplayFunc(displayCB);
 	glutReshapeFunc(reshapeCB);
 	glutIdleFunc(idleCB);
+	
+	motionCB(0, 0);
 
 	arVideoCapStart();
 
@@ -152,6 +151,8 @@ Controller::Controller(bool useGLUTGUI) {
 	//world->loadWorld("myworld.txt");
 	
 	drawVideo = true;
+	selectionBoxMode = false;
+	nothingSelected = true;
 	currentTool = 0;
 	gotImage = 0;
 
@@ -243,8 +244,8 @@ void Controller::ar_draw( void )
 	// Display the world
 	world->draw();
 
-	if (nothingSelected)
-		drawSelectionRect();
+	// draw the selection rect
+	if (selectionBoxMode) drawSelectionRect();
 }
 
 void Controller::displayCB(void)
@@ -412,17 +413,9 @@ void Controller::arrowKeysCB( int a_keys, int x, int y )  // Create Special Func
 	case GLUT_KEY_UP:     // When Up Arrow Is Pressed...
 		//glutFullScreen ( ); // Go Into Full Screen Mode
 		//glutReshapeWindow ( 352, 288 );
-
-
-
-
-
 		break;
 	case GLUT_KEY_DOWN:               // When Down Arrow Is Pressed...
 		//glutReshapeWindow ( 320, 240 ); // Go Into A 500 By 500 Window
-
-
-
 		break;
 	default:
 		break;
@@ -1092,7 +1085,7 @@ void Controller::fileMenuCB(int item)
 		 	world->saveWorld("myworld.txt");
             break;
       case 2:
-		 	world->exportSL("SLFile.txt");
+		 	//world->exportSL("SLFile.txt");
             break;
 	  default:
 			break;
@@ -1150,30 +1143,28 @@ int Controller::initDrag(int button, int x, int y){
 	lastX = x;
 	lastY = y;
 	lastButton = button;
-	float pos[3];
+	//float pos[3];
 
-	GetOGLPos(x, y, pos);
-	std::cout << "Drag Started at : [" << x << " " << y << "] "
-		      << pos[0] << " " << pos[1] << " " << pos[2] <<std::endl;
-
+	// get the 3d position of the mouse down, store in pos
+	//GetOGLPos(x, y, pos);
 
 	// check if anything is selected
 	nothingSelected = true;
 	for (int i=0; i < (int) world->getNumberOfObjects(); i++) {
 		if (world->getObject(i)->isSelected == 1) {
-			//std::cout<<"Object "<<i<<" selected:"<<" moving "<<xMove<<" "<<yMove<<std::endl;
-
 			// initialize selection for this item
-			world->getObject(i)->initSelection(lastButton, specialKey, x,y);
+			world->getObject(i)->initSelection(lastButton, specialKey, x, y);
 			// nothingSelected is false
 			nothingSelected = false;
 		}
 	}
+	if (world->isSelected) nothingSelected = false;
 
 	// if nothing is selected, initialize selection box
 	if (nothingSelected) {
 			x1Rect = x;	y1Rect = y;
 			x2Rect = x;	y2Rect = y;
+			selectionBoxMode = true;
 	}
 
 	return 1;
@@ -1186,8 +1177,8 @@ int Controller::initDrag(int button, int x, int y){
  */
 int Controller::endDrag(int button, int x, int y){
 	OutputDebugStr("Inside endDrag -----------\n");
-
 	selectionRect(specialKey);
+	selectionBoxMode = false;
 	OutputDebugStr("Exiting endDrag -----------\n");
 
 	return 0;
@@ -1237,8 +1228,10 @@ void Controller::motionCB(int x, int y)
 	y2Rect = y;
 }
 
-
-void Controller::drawSelectionRect(){
+/*
+Draws the rubber band box around when dragging the mouse over a region
+*/
+void Controller::drawSelectionRect() {
 
 	GLint viewport[4];
 	glGetIntegerv( GL_VIEWPORT, viewport );
