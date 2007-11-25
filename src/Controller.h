@@ -45,7 +45,8 @@ private:
 	int		thresh;
 	int		ar_count;				// counter for determining FPS
 	int		fps;					// last calculated FPS value
-	bool	nothingSelected;
+	bool	nothingSelected;		// flag whether any object is selected
+	bool	selectionBoxMode;		// true if currently dragging a selection box around objects
 
 	ARUint8					*ARTImage;		// current image
 	ARParam					 cparam;		// camera parameters
