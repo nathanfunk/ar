@@ -2,10 +2,10 @@
 #define OBJECT_H
 
 
-#define NORMAL 0
-#define TRANSPARENT 1
-#define WIREFRAME 2
-#define OUTLINE 3
+#define NORMAL 0		// draws objects as solids
+#define TRANSPARENT 1	// makes objects transparent
+#define WIREFRAME 2		// draws only the wireframe lines of the object
+#define OUTLINE 3		// draws the solid object plus wireframe
 /*
 ARMOUSEHOUSE Augmented Reality Mouse House
 Created by Farooq Ahmad Sept. 2006
@@ -70,7 +70,7 @@ public:
 
 class object : public ISubject {
 public:
-	object(){
+	object() {
 //		xOff = 0; yOff = 0; zOff = 0;
 		rX = 0; rY = 0; rZ = 0;
 		sX = 1; sY = 1; sZ = 1;
@@ -95,7 +95,7 @@ public:
 	};
 
 	object(float _xOff, float _yOff, float _zOff, float _rX, float _rY, float _rZ, 
-		float _sX, float _sY, float _sZ){
+		float _sX, float _sY, float _sZ) {
 		//xOff = _xOff; yOff = _yOff;  zOff = _zOff; 
 		rX = _rX; rY = _rY; rZ = _rZ;
 		sX = _sX; sY = _sY; sZ= _sZ;
@@ -119,13 +119,13 @@ public:
 		//scale(_sX,_sY, _sZ);
 	}
 
-	object(GLfloat _objTrans[16]){
+	object(GLfloat _objTrans[16]) {
 		//objTrans = _objTrans;
 
 		std::memcpy(&objTrans, &_objTrans, sizeof(objTrans));
 	}
 
-	object(PL3D::Matrix _tMatrix){
+	object(PL3D::Matrix _tMatrix) {
 		//objTrans = _objTrans;
 
 		std::memcpy(&tMatrix, &_tMatrix, sizeof(objTrans));
@@ -137,8 +137,7 @@ public:
 	}
 
 
-	virtual object * clone(){
-
+	virtual object * clone() {
 		std::cout<<" OBJECT CLONE "<<std::endl;
 		return new object(*this);
 	};
@@ -156,7 +155,7 @@ public:
 		return matrix[14];
 	}
 
-	static void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]){
+	static void getRotFromTrans(double patt_trans[3][4], double (&rotMat)[3][3]) {
 		for (int i = 0; i < 3; i++){
 			for (int j = 0; j < 3; j++){
 				rotMat[i][j]  = patt_trans[i][j];
@@ -164,7 +163,8 @@ public:
 		}
 	}
 
-	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew){
+	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, double &xNew, double &yNew)
+	{
 		//		double wa, wb, wc;
 		double rotMat[3][3];
 
@@ -227,31 +227,31 @@ public:
 
 	int getTransformedMotion( double patt_trans[3][4], int but, int key,int x, int y, 
 		float _rZ, double &xNew, double &yNew){
-			double wa, wb, wc;
-			double rotMat[3][3];
-			getRotFromTrans(patt_trans, rotMat);
-			arGetAngle(rotMat, &wa, &wb, &wc);
+		double wa, wb, wc;
+		double rotMat[3][3];
+		getRotFromTrans(patt_trans, rotMat);
+		arGetAngle(rotMat, &wa, &wb, &wc);
 
-			float rzRad = RADIANS(_rZ);
+		float rzRad = RADIANS(_rZ);
 
 
-			std::cout<<"Total angle :"<<180/PI*wc<< " + "<<_rZ<< " = "<<180/PI*wc + _rZ;
-			//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
-			//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
+		std::cout<<"Total angle :"<<180/PI*wc<< " + "<<_rZ<< " = "<<180/PI*wc + _rZ;
+		//std::cout<<"Angles "<<180/3.14159*wa<<" "<<180/3.14159*wb<<" "<<180/3.14159*wc;
+		//std::cout<<" Pos: "<<patt_trans[0][3]<<" "<<patt_trans[1][3]<<" "<<patt_trans[2][3]<<std::endl;
 
-			//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
-			xNew = 1*(x*cos(wc+rzRad) - y * sin(wc+rzRad));
-			yNew = 1*(x*sin(wc+rzRad) + y * cos(wc+rzRad));
-			std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
-			return 1;
+		//std::cout<<x<<" "<<y<<" "<<180/3.14159*wc;	
+		xNew = 1*(x*cos(wc+rzRad) - y * sin(wc+rzRad));
+		yNew = 1*(x*sin(wc+rzRad) + y * cos(wc+rzRad));
+		std::cout<<"new: "<<xNew<<" "<<yNew<<"sin(wc)"<<sin(wc)<<std::endl;	
+		return 1;
 	}
 
 
 	/**
 	Sets the color of the object, while preserving the alpha value.
 	*/
-	void setColors(GLfloat c1, GLfloat c2, GLfloat c3){
-
+	void setColors(GLfloat c1, GLfloat c2, GLfloat c3)
+	{
 		std::cout<<"Setting colors "<<std::endl;
 		mat_ambient[0] = c1;  mat_ambient[1] = c2; mat_ambient[2] = c3;
 		notifyObservers();
@@ -274,26 +274,52 @@ public:
 		notifyObservers();
 	}
 
-	void drawTopLevel(float snapPos, float snapRot, float snapScale){
-
-		glPushMatrix();		
-
+	/**
+	Draws the object with all its appearance settings applied.
+	*/
+	virtual void drawTopLevel(float snapPos, float snapRot, float snapScale)
+	{
 		glEnable(GL_DEPTH_TEST);
-		if (drawMode == TRANSPARENT){
-			glEnable (GL_BLEND); 
-			glColor4f(0.85, 0.1, 0.1, 0.4f);
-			glBlendFunc (GL_SRC_ALPHA, GL_ONE);
+		//set up appearance
+		applyAppearanceSettings();
+
+		// call normal draw
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0, 1.0);
+		drawTransformed();
+		glDisable(GL_POLYGON_OFFSET_FILL);
+
+		// also draw outline if in outline mode
+		if (drawMode == OUTLINE) {
+			//draw wireframe
+			glDisable(GL_LIGHTING);
+			glColor3f (1.0, 1.0, 1.0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			drawTransformed();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glEnable(GL_LIGHTING);
 		}
 
-		if (drawMode == WIREFRAME){
+		glDisable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);	
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	/*
+	Sets up the OpenGL settings for drawing the object with the
+	appearance options such as colour, transparency, and textures.
+	*/
+	void applyAppearanceSettings()
+	{
+		if (drawMode == TRANSPARENT) {
+			glEnable(GL_BLEND); 
+			glColor4f(0.85, 0.1, 0.1, 0.4f);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		}
+
+		if (drawMode == WIREFRAME) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
-
-		if (isSelected == 1){
-			highlight();
-
-		}
-		//startLighting(mat_ambient);
 
 		if (texture != 0) {	
 			glEnable( GL_TEXTURE_2D );	
@@ -314,297 +340,277 @@ public:
 			glMaterialfv( GL_FRONT, GL_SPECULAR, specular);
 			glMaterialf( GL_FRONT, GL_SHININESS, 0.0);
 		}
+	}
 
-		glPushMatrix();
+	/*
+	Applies the transformations associated with the object by loading the transformation
+	matrix and scaling by sX, sY, sZ
+	*/
+	virtual void applyTransform()
+	{
+		// apply t matrix
 		glMultMatrixf(tMatrix.getMatrix());
-
 		// apply scaling
 		glScalef(sX, sY, sZ);
+	}
 
-		// call normal draw
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0, 1.0);
+	/*
+	Draws the object with transformations applied, but without any appearance settings
+	applied.
+	*/
+	virtual void drawTransformed()
+	{
+		glPushMatrix();
+		applyTransform();
 		draw();
-		glDisable(GL_POLYGON_OFFSET_FILL);
-
-		// draw outline if selected
-		if (isSelected == 1||drawMode == OUTLINE){
-			//draw wireframe
-			glDisable(GL_LIGHTING);
-			glColor3f (1.0, 1.0, 1.0);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			draw();
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glEnable(GL_LIGHTING);
-		}
-
-
-		glPopMatrix();
-
-		glDisable(GL_BLEND);
-		//glDisable ( GL_LIGHTING ) ;
-		glDisable( GL_TEXTURE_2D );	
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//if (snap_to_grid == 1)
-		snap(snapPos, snapRot, snapScale);
 		glPopMatrix();
 	}
 
-
-		virtual void snap(float snapPos, float snapRot, float snapScale){
-			/*if (snapPos >0){
-			xOff = (int) (xOff / snapPos) * snapPos;
-			yOff = (int) (yOff / snapPos) * snapPos;
-			zOff = (int) (zOff / snapPos) * snapPos;
-			}
-				if (snapScale >0){
-			sX= (int) (sX/ snapScale) * snapScale;
-			sY = (int) (sY / snapScale) * snapScale;
-			sZ = (int) (sZ / snapScale) * snapScale;
-			}
-			*/
+	virtual void snap(float snapPos, float snapRot, float snapScale) {
+		/*if (snapPos >0){
+		xOff = (int) (xOff / snapPos) * snapPos;
+		yOff = (int) (yOff / snapPos) * snapPos;
+		zOff = (int) (zOff / snapPos) * snapPos;
 		}
-
-
-		virtual void draw() { };
-
-		virtual std::string getDataString(){ 
-			//std::string 
-			return std::string("OBJECT ") + "DERIVED CLASS DATA UNDEFINED";
+			if (snapScale >0){
+		sX= (int) (sX/ snapScale) * snapScale;
+		sY = (int) (sY / snapScale) * snapScale;
+		sZ = (int) (sZ / snapScale) * snapScale;
 		}
+		*/
+	}
 
-/*		object no longer uses xOff, yOff, zOff
-		virtual std::string getSLDataString(){
-			std::ostringstream data;
-			data<<"<type val=\"0\"> "<<std::endl;
-			data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<">"<<std::endl;
-			data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<">"<<std::endl;
-			data<<"<size x=\""<<sX<<"\" y=\""<<sY<<"\" z=\""<<sZ<<">"<<std::endl;
-			return data.str(); 
-		}
+
+	/*
+	Draws the untransformed object.
+	*/
+	virtual void draw() {};
+
+	virtual std::string getDataString() { 
+		//std::string 
+		return std::string("OBJECT ") + "DERIVED CLASS DATA UNDEFINED";
+	}
+
+/*
+	object no longer uses xOff, yOff, zOff
+	virtual std::string getSLDataString(){
+		std::ostringstream data;
+		data<<"<type val=\"0\"> "<<std::endl;
+		data<<"<position x=\""<<xOff/100<<"\" y=\""<<yOff/100<<"\" z=\""<<zOff/100<<">"<<std::endl;
+		data<<"<rotation x=\""<<PI/180*(rX-90)<<"\" y=\""<<PI/180*rY<<"\" z=\""<<PI/180*rZ<<">"<<std::endl;
+		data<<"<size x=\""<<sX<<"\" y=\""<<sY<<"\" z=\""<<sZ<<">"<<std::endl;
+		return data.str(); 
+	}
 */
 /*
-		std::string getGlobalDataString(){
-			std::ostringstream data;
-			data<<"TRANSFORM "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ;	
-			data<<"TEXTURE ";
-			if(texture !=0) { data<<"NONE";} 
-			else {data<<texture;}
-			data<<" COLOR ";
-			data<<mat_ambient[0]<<" "<<mat_ambient[1]<<" "<<mat_ambient[2]<<" "<<mat_ambient[3];
-			return data.str(); 
-		}
+	std::string getGlobalDataString(){
+		std::ostringstream data;
+		data<<"TRANSFORM "<<xOff<<" "<<yOff<<" "<<zOff<<" "<<rX<<" "<<rY<<" "<<rZ<<" "<<sX<<" "<<sY<<" "<<sZ;	
+		data<<"TEXTURE ";
+		if(texture !=0) { data<<"NONE";} 
+		else {data<<texture;}
+		data<<" COLOR ";
+		data<<mat_ambient[0]<<" "<<mat_ambient[1]<<" "<<mat_ambient[2]<<" "<<mat_ambient[3];
+		return data.str(); 
+	}
 */
 
 
+	virtual void highlight() {
+		glPushMatrix();
 
+		glDisable(GL_LIGHTING);
 
+		// draw outline
+		glColor3f(1.0, 1.0, 1.0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		drawTransformed();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		virtual void highlight(){
-			glDisable(GL_LIGHTING);
-			// draw handles for object
-			setHandles();
+		// draw handles for object
+		setHandles();
 
-			glPushMatrix();		
-			//glTranslatef(xOff,0,zOff);
+		// draw the vertical bar
+		glPushMatrix();
 			glMultMatrixf(tMatrix.getMatrix());
 			glPushMatrix();
-			//glTranslatef(0,60,0);
+				glColor3f(0.8, 0.3, 0.3);
+				//glutSolidSphere(3,5,5);
 
-			glColor3f(0.8, 0.3, 0.3);
-			//glutSolidSphere(3,5,5);
-
-			glPushMatrix();
-			glRotatef(-90,1,0,0);
-			//gluDisk(quadratic, 0, rad, 15, 15);
-			gluCylinder(quadratic, 0.5, 0.5,  500, 15, 15);
-			glPopMatrix();
-
-			glRotatef(rX,0,1,0);
-			glRotatef(rY,1,0,0);
-			glScalef(2,0.5,2);
-			//glutWireCube(5);
-			glutSolidCube(5);
-
-			glPopMatrix();
-			glPopMatrix();
-			glEnable(GL_LIGHTING);
-		}
-
-
-		//virtual void initSelection(int but, int key, int x, int y){};
-
-		/**
-		 * Initializes selection of an object. This method is called when
-		 * a mouse down event is recieved in the controller.
-		 */
-		virtual void initSelection(int but, int key, int x, int y){
-
-			GLint vPort[4];
-			glGetIntegerv( GL_VIEWPORT, vPort ); // sets vPort to (x, y, w, h)
-
-			// convert to openGL coordinates (origin at lower left)
-			GLfloat mouseX = (float) lastX;
-			GLfloat mouseY = (float)vPort[3] - (float) lastY;
-
-			// check if window coordinates of handles are set
-			if (winCoords.empty()) {
-				std::cout<<"winCoords empty "<<std::endl;	
-				return;
-			}
-
-			// get distance to first handle and assume it is closest 
-			// to the click point
-			min = distance((float) mouseX, (float) mouseY, 
-				(float) winCoords[0].x, (float) winCoords[0].y);
-			minI = 0;
-
-			// check other handles to find the one closest to the mouse click point
-			for (int i = 1; i < (int) winCoords.size(); i++){
-				float dist = distance((float) mouseX, (float) mouseY, 
-					(float) winCoords[i].x, (float) winCoords[i].y);
-				if (dist < min){
-					minI = i;		
-					min = dist;
-				}
-			}
-			
-			std::cout<<"min is "<<min<<" best point is "<<minI<<std::endl;
-			std::cout<<"Current pos: "<<getDataString();
-		}
-
-
-		void setHandles(){
-			initHandles();
-			if (handles.empty()) {return;}
-			//set the position of each corner handle
-			highlightCorners(); //draw each handle and set the window coordinates
-			setWinCoords();
-		}
-
-
-
-
-		virtual void initHandles(){};
-
-		void highlightCorners(){
-			glPushMatrix();
-//			glTranslatef(xOff,yOff,zOff);
-			glMultMatrixf(tMatrix.getMatrix());
-			//glRotatef(rX,0,1,0);
-			//glRotatef(rY,1,0,0);
-			glScalef(sX, sY, sZ);
-
-			glColor3f(0.85, 0.1, 0.1);
-
-
-			for (int i = 0; i < (int) handles.size(); i++){
 				glPushMatrix();
-				glTranslatef(handles[i].x, handles[i].y, handles[i].z);
-				glScalef(1/sX, 1/sY, 1/sZ);
-				glutSolidCube(5);
+					glRotatef(-90,1,0,0);
+					//gluDisk(quadratic, 0, rad, 15, 15);
+					gluCylinder(quadratic, 0.5, 0.5,  500, 15, 15);
+					glPopMatrix();
+
+					glRotatef(rX,0,1,0);
+					glRotatef(rY,1,0,0);
+					glScalef(2,0.5,2);
+					//glutWireCube(5);
+					glutSolidCube(5);
 				glPopMatrix();
-
-			}
 			glPopMatrix();
+		glPopMatrix();
+		glEnable(GL_LIGHTING);
+	}
 
+
+	//virtual void initSelection(int but, int key, int x, int y){};
+
+	/**
+	 * Initializes selection of an object. This method is called when
+	 * a mouse down event is recieved in the controller.
+	 */
+	virtual void initSelection(int but, int key, int x, int y){
+
+		GLint vPort[4];
+		glGetIntegerv( GL_VIEWPORT, vPort ); // sets vPort to (x, y, w, h)
+
+		// convert to openGL coordinates (origin at lower left)
+		GLfloat mouseX = (float) lastX;
+		GLfloat mouseY = (float)vPort[3] - (float) lastY;
+
+		// check if window coordinates of handles are set
+		if (winCoords.empty()) {
+			std::cout<<"winCoords empty "<<std::endl;	
+			return;
 		}
 
-		void setWinCoords(){
-			GLint vPort[4];
-			GLdouble mMatrix[16];
-			GLdouble pMatrix[16];
-			//GLdouble winX, winY, winZ;
-			//	GLdouble  winZ;
+		// get distance to first handle and assume it is closest 
+		// to the click point
+		min = distance((float) mouseX, (float) mouseY, 
+						(float) winCoords[0].x, (float) winCoords[0].y);
+		minI = 0;
 
+		// check other handles to find the one closest to the mouse click point
+		for (int i = 1; i < (int) winCoords.size(); i++){
+			float dist = distance((float) mouseX, (float) mouseY, 
+									(float) winCoords[i].x, (float) winCoords[i].y);
+			if (dist < min){
+				minI = i;		
+				min = dist;
+			}
+		}
+		
+		std::cout<<"min is "<<min<<" best point is "<<minI<<std::endl;
+		std::cout<<"Current pos: "<<getDataString();
+	}
+
+
+	void setHandles() {
+		initHandles();
+		if (handles.empty()) {return;}
+		//set the position of each corner handle
+		highlightCorners(); //draw each handle and set the window coordinates
+		setWinCoords();
+	}
+
+
+	virtual void initHandles() {};
+
+	void highlightCorners(){
+		glPushMatrix();
+		applyTransform();
+		glColor3f(0.85, 0.1, 0.1);
+
+		for (int i = 0; i < (int) handles.size(); i++){
 			glPushMatrix();
-			glMultMatrixf(tMatrix.getMatrix());
-			//glTranslatef(xOff,yOff,zOff);
-			//glRotatef(rX,0,1,0);
-			//glRotatef(rY,1,0,0);
-			glScalef(sX, sY, sZ);
-
-
-			glGetDoublev( GL_MODELVIEW_MATRIX, mMatrix);
-			glGetDoublev( GL_PROJECTION_MATRIX, pMatrix);
-			glGetIntegerv( GL_VIEWPORT, vPort );
-			//std::cout<<"Closest vertex is "<<
-
-			GLfloat mouseX = (float) lastX;
-			GLfloat mouseY = (float)vPort[3] - (float) lastY;
-
-
-
-			winCoords.clear();
-			for (int i = 0; i < (int) handles.size(); i++){
-				GLdouble winX, winY, winZ;
-				gluProject(handles[i].x, handles[i].y, handles[i].z,
-					mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
-				winCoords.push_back(vertex((float) winX, (float) winY, (float) winZ));
-			}
-
+			glTranslatef(handles[i].x, handles[i].y, handles[i].z);
+			glScalef(1/sX, 1/sY, 1/sZ);
+			glutSolidCube(5);
 			glPopMatrix();
 
+		}
+		glPopMatrix();
+	}
 
-		};
+	void setWinCoords() {
+		GLint vPort[4];
+		GLdouble mMatrix[16];
+		GLdouble pMatrix[16];
+		//GLdouble winX, winY, winZ;
+		//	GLdouble  winZ;
 
+		glPushMatrix();
+		applyTransform();
 
-		void scaleXY(float xGrow, float yGrow, float oSize){
-			//after scaling, center of cube must be moved so that only one corner is dragged
-			//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
-			//of the new larger/smaller shape, and convert back to world coordinates
-			//(rotation matrix with r = -rotation of object
-			float rzRad = RADIANS(rX);
-			std::cout<<"rX : "<<rX<<"oSize "<<oSize<<std::endl;
+		glGetDoublev( GL_MODELVIEW_MATRIX, mMatrix);
+		glGetDoublev( GL_PROJECTION_MATRIX, pMatrix);
+		glGetIntegerv( GL_VIEWPORT, vPort );
+		//std::cout<<"Closest vertex is "<<
 
-			float xScaleInc = xGrow/20;float yScaleInc = yGrow / 20;
-			float xOffInc = xScaleInc*oSize/2*cos(-rzRad) - yScaleInc*oSize/2*sin(-rzRad);
-			float yOffInc = xScaleInc*oSize/2*sin(-rzRad) + yScaleInc*oSize/2*cos(-rzRad);
+		GLfloat mouseX = (float) lastX;
+		GLfloat mouseY = (float)vPort[3] - (float) lastY;
 
-			if (handles[minI].x < 0) xScaleInc *=-1;
-			if (handles[minI].z < 0) yScaleInc *=-1;
-			sX += xScaleInc; sZ+= yScaleInc;
-			//xOff+= xOffInc; zOff += yOffInc;
-			tMatrix.translate(xOffInc, 0, yOffInc);
-
-			notifyObservers();
+		winCoords.clear();
+		for (int i = 0; i < (int) handles.size(); i++) {
+			GLdouble winX, winY, winZ;
+			gluProject(handles[i].x, handles[i].y, handles[i].z,
+				mMatrix, pMatrix, vPort,&winX, &winY, &winZ);
+			winCoords.push_back(vertex((float) winX, (float) winY, (float) winZ));
 		}
 
+		glPopMatrix();
 
-		void scaleX(float xGrow, float oSize){
-			//after scaling, center of cube must be moved so that only one corner is dragged
-			//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
-			//of the new larger/smaller shape, and convert back to world coordinates
-			//(rotation matrix with r = -rotation of object
-			float rzRad = RADIANS(rX);
-			std::cout<<"rX : "<<rX<<std::endl;
-
-			float xScaleInc = xGrow/20;
-			float xOffInc = xScaleInc*oSize/2*cos(-rzRad) ;
-			float yOffInc = xScaleInc*oSize/2*sin(-rzRad) ;
-
-			if (handles[minI].x < 0) xScaleInc *=-1;
-			sX += xScaleInc; 
-			//xOff+= xOffInc; zOff += yOffInc;
-			//move(xOffInc, 0, yOffInc);
-			tMatrix.translate(xOffInc, 0, yOffInc);
-
-			notifyObservers();
-		}
+	};
 
 
+	void scaleXY(float xGrow, float yGrow, float oSize){
+		//after scaling, center of cube must be moved so that only one corner is dragged
+		//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+		//of the new larger/smaller shape, and convert back to world coordinates
+		//(rotation matrix with r = -rotation of object
+		float rzRad = RADIANS(rX);
+		std::cout<<"rX : "<<rX<<"oSize "<<oSize<<std::endl;
 
-		void scaleZ(float y, float oSize){
-			float yScaleInc = - (float)y / 25;
-			float yOffInc = yScaleInc*oSize/2;
-			if (handles[minI].y < 0) yScaleInc *=-1;
-			sY += yScaleInc;
-			//yOff += yOffInc;
-			//move(0, yOffInc, 0);
-			tMatrix.translate(0, yOffInc, 0);
+		float xScaleInc = xGrow/20;float yScaleInc = yGrow / 20;
+		float xOffInc = xScaleInc*oSize/2*cos(-rzRad) - yScaleInc*oSize/2*sin(-rzRad);
+		float yOffInc = xScaleInc*oSize/2*sin(-rzRad) + yScaleInc*oSize/2*cos(-rzRad);
 
-			notifyObservers();
-		}
+		if (handles[minI].x < 0) xScaleInc *=-1;
+		if (handles[minI].z < 0) yScaleInc *=-1;
+		sX += xScaleInc; sZ+= yScaleInc;
+		//xOff+= xOffInc; zOff += yOffInc;
+		tMatrix.translate(xOffInc, 0, yOffInc);
+
+		notifyObservers();
+	}
+
+
+	void scaleX(float xGrow, float oSize){
+		//after scaling, center of cube must be moved so that only one corner is dragged
+		//determine xOff and yOff changes by finding the x and y differences (in object coordinates)
+		//of the new larger/smaller shape, and convert back to world coordinates
+		//(rotation matrix with r = -rotation of object
+		float rzRad = RADIANS(rX);
+		std::cout<<"rX : "<<rX<<std::endl;
+
+		float xScaleInc = xGrow/20;
+		float xOffInc = xScaleInc*oSize/2*cos(-rzRad) ;
+		float yOffInc = xScaleInc*oSize/2*sin(-rzRad) ;
+
+		if (handles[minI].x < 0) xScaleInc *=-1;
+		sX += xScaleInc; 
+		//xOff+= xOffInc; zOff += yOffInc;
+		//move(xOffInc, 0, yOffInc);
+		tMatrix.translate(xOffInc, 0, yOffInc);
+
+		notifyObservers();
+	}
+
+
+
+	void scaleZ(float y, float oSize){
+		float yScaleInc = - (float)y / 25;
+		float yOffInc = yScaleInc*oSize/2;
+		if (handles[minI].y < 0) yScaleInc *=-1;
+		sY += yScaleInc;
+		//yOff += yOffInc;
+		//move(0, yOffInc, 0);
+		tMatrix.translate(0, yOffInc, 0);
+
+		notifyObservers();
+	}
 
 
 /*
@@ -625,186 +631,183 @@ public:
 */
 
 
-		//virtual void move(float x, float y, float z){
-			//xOff += x;
-			//yOff += y;
-			//zOff += z;
+	//virtual void move(float x, float y, float z){
+		//xOff += x;
+		//yOff += y;
+		//zOff += z;
 
-			//tMatrix.translate(x, y, z);
-		//}
+		//tMatrix.translate(x, y, z);
+	//}
 
-		//rotate rX degrees around x axis, rY degrees around y axis..etc
-		void rotate(float _rX, float _rY, float _rZ){
-			//set the rotation matrix
-			rotMat.setRotationDegrees(_rX, _rY,_rZ);
-			//multiply by tmatrix.
-			///tMatrix.postMultiply(rotMat);
-			rotMat.postMultiply(tMatrix);
-			tMatrix.set(rotMat.getMatrix());
+	//rotate rX degrees around x axis, rY degrees around y axis..etc
+	void rotate(float _rX, float _rY, float _rZ){
+		//set the rotation matrix
+		rotMat.setRotationDegrees(_rX, _rY,_rZ);
+		//multiply by tmatrix.
+		///tMatrix.postMultiply(rotMat);
+		rotMat.postMultiply(tMatrix);
+		tMatrix.set(rotMat.getMatrix());
 
-			notifyObservers();
-		}
+		notifyObservers();
+	}
 
-		void scale(float _sX, float _sY, float _sZ){
-			scaleMat.loadIdentity();
-			scaleMat.setScale(_sX, _sY, _sZ);
-			scaleMat.postMultiply(tMatrix);
-			tMatrix.set(scaleMat.getMatrix());
+	void scale(float _sX, float _sY, float _sZ){
+		scaleMat.loadIdentity();
+		scaleMat.setScale(_sX, _sY, _sZ);
+		scaleMat.postMultiply(tMatrix);
+		tMatrix.set(scaleMat.getMatrix());
 
-			notifyObservers();
-		}
+		notifyObservers();
+	}
 
 
+	//rotate theta degrees around axis defined by (x,y,z) at point(xOff,yOff,zOff)
+	void rotate(float theta, float x, float y, float z){
+		
+		rX+=theta;
+		rotMat.loadIdentity();
+		//rotMat.setRotationDegrees(theta,x,y,z);
+		rotMat.setRotationDegrees(theta, tMatrix.m_matrix[12], tMatrix.m_matrix[13], 
+			tMatrix.m_matrix[14], x, y, z);
 
+		rotMat.postMultiply(tMatrix);
+		tMatrix.set(rotMat.getMatrix());
+		//tMatrix.postMultiply(rotMat);
+
+		notifyObservers();
+	}
+
+
+			//rotate theta degrees around axis defined by (x,y,z) at point(a,b,c)
+	void rotate(float theta, float a, float b, float c, float x, float y, float z){
+		
+		std::cout<<"Rotate around "<<a<<" "<<b<<" "<<c<<std::endl;
+		rX+=theta;
+		rotMat.loadIdentity();
+		//rotMat.setRotationDegrees(theta,x,y,z);
+		rotMat.setRotationDegrees(theta, a, b, 
+			c, x, y, z);
+
+		rotMat.postMultiply(tMatrix);
+		tMatrix.set(rotMat.getMatrix());
+		//tMatrix.postMultiply(rotMat);
+
+		notifyObservers();
+	}
 
 	
-		//rotate theta degrees around axis defined by (x,y,z) at point(xOff,yOff,zOff)
-		void rotate(float theta, float x, float y, float z){
-			
-			rX+=theta;
-			rotMat.loadIdentity();
-			//rotMat.setRotationDegrees(theta,x,y,z);
-			rotMat.setRotationDegrees(theta, tMatrix.m_matrix[12], tMatrix.m_matrix[13], 
-				tMatrix.m_matrix[14], x, y, z);
 
-			rotMat.postMultiply(tMatrix);
-			tMatrix.set(rotMat.getMatrix());
-			//tMatrix.postMultiply(rotMat);
 
-			notifyObservers();
+
+
+	virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
+		//int specialKey = glutGetModifiers();
+		double xNew, yNew;
+		getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
+
+		double xGrow, yGrow;
+		getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
+
+
+
+		//if (key ==(GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT)){
+		if (key == GLUT_ACTIVE_ALT){
+			if (but == GLUT_LEFT_BUTTON){
+				sX += (float)x / 25; sZ -= (float)y / 25; //yOff += y;
+			}
+			else if (but == GLUT_MIDDLE_BUTTON){
+				//sX -= (float)y / 25; sZ -= (float)y / 25;
+				sY -= (float)y / 25;
+			}
 		}
+		else if (key == GLUT_ACTIVE_CTRL){
+			if (but == GLUT_LEFT_BUTTON){
+				//rX += x; 
 
+				std::cout<<"ROTATING"<<std::endl;
+				rotate(x, 0, 1, 0);
+				//rotate(0, x, 0);
 
-				//rotate theta degrees around axis defined by (x,y,z) at point(a,b,c)
-		void rotate(float theta, float a, float b, float c, float x, float y, float z){
-			
-			std::cout<<"Rotate around "<<a<<" "<<b<<" "<<c<<std::endl;
-			rX+=theta;
-			rotMat.loadIdentity();
-			//rotMat.setRotationDegrees(theta,x,y,z);
-			rotMat.setRotationDegrees(theta, a, b, 
-				c, x, y, z);
-
-			rotMat.postMultiply(tMatrix);
-			tMatrix.set(rotMat.getMatrix());
-			//tMatrix.postMultiply(rotMat);
-
-			notifyObservers();
+				////rY+=y; //yOff += y;
+			}
+			else if (but == GLUT_MIDDLE_BUTTON){
+				//rX+=x;
+				////rotate(x,0,y);
+				rotate(x,1,0,0);
+				rotate(y,0,0,1);
+			}
 		}
+		//	}
 
-		
+		else{
+			if (but == GLUT_LEFT_BUTTON){
 
+				if (min > 10 || handles.empty()){
+					//xOff += xNew; zOff += yNew;
+					//move(xNew, 0, yNew);
+					tMatrix.translate(xNew, 0, yNew);
 
-
-
-		virtual void move(double patt_trans[3][4], int but, int key, int x, int y){
-			//int specialKey = glutGetModifiers();
-			double xNew, yNew;
-			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
-
-			double xGrow, yGrow;
-			getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
-
-
-
-			//if (key ==(GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT)){
-			if (key == GLUT_ACTIVE_ALT){
-				if (but == GLUT_LEFT_BUTTON){
-					sX += (float)x / 25; sZ -= (float)y / 25; //yOff += y;
 				}
-				else if (but == GLUT_MIDDLE_BUTTON){
-					//sX -= (float)y / 25; sZ -= (float)y / 25;
-					sY -= (float)y / 25;
+				else{
+					std::cout<<"--------------SCALING------------------"<<std::endl;
+					scaleXY(xGrow, yGrow, XYSize);
+				}
+
+
+
+			}
+			else if (but == GLUT_MIDDLE_BUTTON){
+				if (min > 10||handles.empty()){
+					//yOff -= y;
+					//move(0, -y, 0);
+				tMatrix.translate(0, -y, 0);
+
+				}
+				else{
+					scaleZ(y, ZSize);
+
 				}
 			}
-			else if (key == GLUT_ACTIVE_CTRL){
-				if (but == GLUT_LEFT_BUTTON){
-					//rX += x; 
-
-					std::cout<<"ROTATING"<<std::endl;
-					rotate(x, 0, 1, 0);
-					//rotate(0, x, 0);
-
-					////rY+=y; //yOff += y;
-				}
-				else if (but == GLUT_MIDDLE_BUTTON){
-					//rX+=x;
-					////rotate(x,0,y);
-					rotate(x,1,0,0);
-					rotate(y,0,0,1);
-				}
-			}
-			//	}
-
-			else{
-				if (but == GLUT_LEFT_BUTTON){
-
-					if (min > 10 || handles.empty()){
-						//xOff += xNew; zOff += yNew;
-						//move(xNew, 0, yNew);
-						tMatrix.translate(xNew, 0, yNew);
-
-					}
-					else{
-						std::cout<<"--------------SCALING------------------"<<std::endl;
-						scaleXY(xGrow, yGrow, XYSize);
-					}
-
-
-
-				}
-				else if (but == GLUT_MIDDLE_BUTTON){
-					if (min > 10||handles.empty()){
-						//yOff -= y;
-						//move(0, -y, 0);
-					tMatrix.translate(0, -y, 0);
-
-					}
-					else{
-						scaleZ(y, ZSize);
-
-					}
-				}
-			}
-			notifyObservers();
 		}
+		notifyObservers();
+	}
 
 
-		//used by shapes to find closest corner to mouse click
-		float distance(float x1, float y1, float x2, float y2){
-			return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
-		}
+	//used by shapes to find closest corner to mouse click
+	float distance(float x1, float y1, float x2, float y2){
+		return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+	}
 
 
-		int name;
-		int isSelected; int isVisible;
-		GLfloat  objTrans[16];
+	int name;
+	int isSelected; int isVisible;
+	GLfloat  objTrans[16];
 
-		//float xOff, yOff, zOff;	// offset
-		float rX, rY, rZ;
-		float sX, sY, sZ; //x1, y1, x2, y2;
-		GLfloat   mat_ambient[4];   //  = {0.2, 0.3, 0.5, 1.0};
-		GLUquadricObj *quadratic;
+	//float xOff, yOff, zOff;	// offset
+	float rX, rY, rZ;
+	float sX, sY, sZ; //x1, y1, x2, y2;
+	GLfloat   mat_ambient[4];   //  = {0.2, 0.3, 0.5, 1.0};
+	GLUquadricObj *quadratic;
 
-		//float m_shininess;
-		GLuint texture;
-		std::string textureFilename;
+	//float m_shininess;
+	GLuint texture;
+	std::string textureFilename;
 
-		std::vector<vertex> vertices;  //all vertices used for drawing (rel to object center)
-		std::vector<vertex> handles;  //handles for resizing, stretching etc. (rel to object center)
-		std::vector<vertex> winCoords; //window coordinates of each handles
-		int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
+	std::vector<vertex> vertices;  //all vertices used for drawing (rel to object center)
+	std::vector<vertex> handles;  //handles for resizing, stretching etc. (rel to object center)
+	std::vector<vertex> winCoords; //window coordinates of each handles
+	int shapeType; //GL_QUAD_STRIP, GL_TRIANGLE_FAN, GL_QUAD, etc.
 
-		int drawMode;
-		int minI; 
-		float min;
+	int drawMode;
+	int minI; 
+	float min;
 
-		float XYSize, ZSize;
-		PL3D::Matrix tMatrix; 
+	float XYSize, ZSize;
+	PL3D::Matrix tMatrix; 
 
-		PL3D::Matrix rotMat;
+	PL3D::Matrix rotMat;
 
-		PL3D::Matrix scaleMat;
+	PL3D::Matrix scaleMat;
 
 };
 
