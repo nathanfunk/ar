@@ -441,9 +441,15 @@ void World::draw(){
 
 	//draw the models
 	for (int i = 0; i < (int) getNumberOfObjects(); i++) {
-		//push i onto namestack
+		// push i onto namestack
 		glPushName(i);
+		// draw the object
 		getObject(i)->drawTopLevel(5,5,5);
+		// highlight corners if selected
+		if (getObject(i)->isSelected == 1) {
+			getObject(i)->highlight();
+		}
+
 		glPopName();
 	}
 

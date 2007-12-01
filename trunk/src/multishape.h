@@ -66,104 +66,126 @@ public:
 	}
 
 
-	virtual void move(double patt_trans[3][4],int but, int key, int x, int y){
-		
+	virtual void move(double patt_trans[3][4],int but, int key, int x, int y)
+	{	
 		double xNew, yNew;
-			getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
+		getTransformedMotion(patt_trans, but, key, x, y, xNew, yNew);
 
 		if (key == GLUT_ACTIVE_ALT){
 			if (but == GLUT_LEFT_BUTTON){
-			sX += (float)x / 25; 
-			sY -= (float)y / 25;
-			////sZ -= (float)y / 25; 
+				sX += (float)x / 25; 
+				sY -= (float)y / 25;
+				////sZ -= (float)y / 25; 
 			}
-		else if (but == GLUT_MIDDLE_BUTTON){
-			sZ -= (float)y / 25; 
-			///sY -= (float)y / 25;
+			else if (but == GLUT_MIDDLE_BUTTON){
+				sZ -= (float)y / 25; 
+				///sY -= (float)y / 25;
 			}
 		}
-		else if (key == GLUT_ACTIVE_CTRL){
-			if (but == GLUT_LEFT_BUTTON){
-			//rX += x; 
-			//rotate each object about the centroid
-			for (int i = 0 ; i < (int) shapePtrs.size(); i++){
-				
+		else if (key == GLUT_ACTIVE_CTRL)
+		{
+			if (but == GLUT_LEFT_BUTTON)
+			{
+				//rX += x; 
+				//rotate each object about the centroid
+				for (int i = 0 ; i < (int) shapePtrs.size(); i++)
+				{
 					shapePtrs[i]->rotate(x, centroid.x, centroid.y, centroid.z, 0, 1, 0);
-			//x+= shapePtrs[i]->xOff;
-			//y+= shapePtrs[i]->yOff;
-			//z+= shapePtrs[i]->zOff;
+					//x+= shapePtrs[i]->xOff;
+					//y+= shapePtrs[i]->yOff;
+					//z+= shapePtrs[i]->zOff;
+				}
+				calcCentroid();
+				////rY-=y; //yOff += y;
 			}
-			calcCentroid();
-		////rY-=y; //yOff += y;
+
+			else if (but == GLUT_MIDDLE_BUTTON)
+			{
+				rX+=x;
+			}
+		}
+		else
+		{
+
+			if (but == GLUT_LEFT_BUTTON){
+
+				//xOff += xNew; zOff += yNew;
+				for (int i = 0 ; i < (int) shapePtrs.size(); i++){
+					shapePtrs[i]->tMatrix.translate(xNew, 0, yNew);
+				}
+				calcCentroid();
+			}
+			else if (but == GLUT_MIDDLE_BUTTON){
+				//yOff -= y;
+				for (int i = 0 ; i < (int) shapePtrs.size(); i++){
+					shapePtrs[i]->tMatrix.translate(0, -y, 0);
+				}
+
+			}
 		}
 
-		else if (but == GLUT_MIDDLE_BUTTON){
-		rX+=x;
-		}
-		}
-
-
-		else{
-
-
-		if (but == GLUT_LEFT_BUTTON){
-		
-			//xOff += xNew; zOff += yNew;
-	for (int i = 0 ; i < (int) shapePtrs.size(); i++){
-			shapePtrs[i]->tMatrix.translate(xNew, 0, yNew);
-		}
-			calcCentroid();
-		}
-		else if (but == GLUT_MIDDLE_BUTTON){
-		 //yOff -= y;
-for (int i = 0 ; i < (int) shapePtrs.size(); i++){
-			shapePtrs[i]->tMatrix.translate(0, -y, 0);
-		}
-
-		}
-		}
-		
 		notifyObservers();
-
 	}
 
-
-
-
-
-	virtual void	draw(){
-
-
+	/*
+	Applies the transformations and draws each object within the multiShape using
+	its drawTopLevel method
+	*/
+	virtual void drawTopLevel(float snapPos, float snapRot, float snapScale) {
 		glPushMatrix();
 
+		applyTransform();
+
+		for (int i = 0; i < (int) shapePtrs.size(); i++)
+		{		
+			shapePtrs[i]->drawTopLevel(snapPos, snapRot, snapScale);
+		}
+
+		glPopMatrix();
+	}
+
+	/*
+	Draws the multiShape with all transformations of the individual objects as well as
+	the group transformation applied.
+	*/
+	virtual void drawTransformed()
+	{
+		glPushMatrix();
+		applyTransform();
+
+		// draw each object in the multishape
+		for (int i = 0; i < (int) shapePtrs.size(); i++)
+		{		
+			shapePtrs[i]->drawTransformed();
+		}
+
+		glPopMatrix();
+	}
+
+	/*
+	Applies the transformations associated with the object by loading the transformation
+	matrix and scaling by sX, sY, sZ
+	*/
+	virtual void applyTransform()
+	{
+		// move the entire group
 		glMultMatrixf(tMatrix.getMatrix());
-//		glTranslatef(xOff,yOff,zOff);
 		glRotatef(rX,0,1,0);
 		glRotatef(rY,1,0,0);
 		glScalef(sX, sY, sZ);
+	}
 
-
-
-		for (int i = 0; i < (int) shapePtrs.size(); i++){
-			if (shapePtrs[i]->drawMode == NORMAL||shapePtrs[i]->drawMode == WIREFRAME||shapePtrs[i]->drawMode == OUTLINE){
-			//push i onto namestack
-			//glPushName(i);
-				shapePtrs[i]->drawTopLevel(5,5,5);
-			//glPopName();
-			}
-
+	/*
+	Highlights the group.
+	*/
+	virtual void highlight() {
+		glPushMatrix();
+		applyTransform();
+		// draw each object in the multishape
+		for (int i = 0; i < (int) shapePtrs.size(); i++)
+		{		
+			shapePtrs[i]->highlight();
 		}
-		for (int i = 0; i < (int) shapePtrs.size(); i++){
-			if (shapePtrs[i]->drawMode == TRANSPARENT){
-			//push i onto namestack
-			//glPushName(i);
-			shapePtrs[i]->drawTopLevel(5,5,5);
-			//glPopName();
-			}
-
-
-		}
-
 		glPopMatrix();
 	}
 
