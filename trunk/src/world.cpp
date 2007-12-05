@@ -64,7 +64,7 @@ int World::drawGroundGrid( int divisions, float x, float y, float height)
 	float deltaX, deltaY;
 
 	glNormal3f(0, 0, 1);
-	glColor3f(1, 0, 0);
+	glColor3f(.2, .2, .2);
 	//draw thick line around grid
 	glLineWidth(2.0);
 	glBegin(GL_LINE_LOOP);
