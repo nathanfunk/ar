@@ -1241,34 +1241,41 @@ void Controller::drawSelectionRect() {
 	float winX2 = (float)x2Rect;
 	float winY2 = (float)viewport[3] - (float)y2Rect;
 
-	glMatrixMode (GL_PROJECTION); glPushMatrix (); glLoadIdentity ();
-	// Viewing transformation.
-	glOrtho(0.0,   // left
-			1.0,   // right
-			0.0,   // bottom
-			1.0,   // top
-			1.0,  // near
-			-1.0);  // far
-	glMatrixMode (GL_MODELVIEW); glPushMatrix (); glLoadIdentity ();
-	//std::cout<<"Selection RECt: "<<winX1/viewport[2]<<" "<<winY1/viewport[3]
-	//<<" "<<winX2/viewport[2]<<" "<<winY2/viewport[3]<<std::endl;
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glRectf(winX1/viewport[2], winY1/viewport[3],winX2/viewport[2], winY2/viewport[3]);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//  glBegin(GL_POLYGON);
-	//  glVertex2d(0.25, 0.25);
-	// glVertex2d(0.75, 0.25);
-	// glVertex2d(0.75, 0.75);
-	// glVertex2d(0.25, 0.75);
-	//glEnd();
-	glMatrixMode (GL_MODELVIEW);
-	glPopMatrix();
+	// set color
+	glDisable(GL_LIGHTING);
+	glColor3f(0.2, 0.2, 0.2);
 
 	glMatrixMode (GL_PROJECTION);
-	glPopMatrix();
+	glPushMatrix ();
+		glLoadIdentity ();
+		// Viewing transformation.
+		glOrtho(0.0,   // left
+				1.0,   // right
+				0.0,   // bottom
+				1.0,   // top
+				1.0,  // near
+				-1.0);  // far
+		glMatrixMode (GL_MODELVIEW);
+		glPushMatrix ();
+			glLoadIdentity ();
+			//std::cout<<"Selection RECt: "<<winX1/viewport[2]<<" "<<winY1/viewport[3]
+			//<<" "<<winX2/viewport[2]<<" "<<winY2/viewport[3]<<std::endl;
 
-				 
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glRectf(winX1/viewport[2], winY1/viewport[3],winX2/viewport[2], winY2/viewport[3]);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			//  glBegin(GL_POLYGON);
+			//  glVertex2d(0.25, 0.25);
+			// glVertex2d(0.75, 0.25);
+			// glVertex2d(0.75, 0.75);
+			// glVertex2d(0.25, 0.75);
+			//glEnd();
+			glMatrixMode (GL_MODELVIEW);
+		glPopMatrix();
+
+	glMatrixMode (GL_PROJECTION);
+	glPopMatrix();		 
+	glEnable(GL_LIGHTING);
 }
 
 /**

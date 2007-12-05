@@ -322,9 +322,10 @@ public:
 		}
 
 		if (texture != 0) {	
-			glEnable( GL_TEXTURE_2D );	
+			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, texture);
 		} else {
+			glDisable( GL_TEXTURE_2D );
 			glColor4f(mat_ambient[0], 
 				mat_ambient[1], 
 				mat_ambient[2], 
