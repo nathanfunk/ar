@@ -22,13 +22,14 @@ namespace ms3dglut {
 ref class OGLControl : public UserControl
 {
 private:
-	System::Windows::Forms::Timer	^timer;
+	System::Windows::Forms::Timer	^m_timer;
 //	CWnd    *hWnd;
-	HDC     hdc;
-	HGLRC   hrc;
+	HDC     m_hdc;
+	HGLRC   m_hrc;
+	HFONT   m_font;
 	int     m_nPixelFormat;
-	Graphics ^g;
-	Controller	*controller;
+	Graphics ^m_g;
+	Controller	*m_controller;
 public:
 	OGLControl(void);
 	virtual void OnPaint(PaintEventArgs ^e) override;
@@ -39,12 +40,13 @@ public:
 	virtual void OnMouseMove(MouseEventArgs ^e) override;
 	virtual void OnKeyDown(KeyEventArgs ^e) override;
 	void OnTick(Object ^sender, EventArgs ^e);
-	void setController(Controller *controller) {this->controller = controller;}
-	void resizeViewport() {if (controller) controller->reshapeCB(Width, Height);}
+	void setController(Controller *controller) {m_controller = controller;}
+	void resizeViewport() {if (m_controller) m_controller->reshapeCB(Width, Height);}
 	virtual ~OGLControl(void);
 private:
 	int getGLUTButton(System::Windows::Forms::MouseButtons b);
 	int getModifierKeys();
+	void drawBranding();
 };
 
 }

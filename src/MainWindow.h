@@ -171,6 +171,7 @@ protected:
 			this->toolStripSeparator7 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->helpToolStripButton = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbHideVideo = (gcnew System::Windows::Forms::ToolStripButton());
+			this->tsbHideGrid = (gcnew System::Windows::Forms::ToolStripButton());
 			this->objectsToolStrip = (gcnew System::Windows::Forms::ToolStrip());
 			this->tsbCube = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbCylinder = (gcnew System::Windows::Forms::ToolStripButton());
@@ -192,7 +193,6 @@ protected:
 			this->tsbTransparency = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbGroup = (gcnew System::Windows::Forms::ToolStripButton());
 			this->tsbUngroup = (gcnew System::Windows::Forms::ToolStripButton());
-			this->tsbHideGrid = (gcnew System::Windows::Forms::ToolStripButton());
 			this->toolStripContainer->BottomToolStripPanel->SuspendLayout();
 			this->toolStripContainer->TopToolStripPanel->SuspendLayout();
 			this->toolStripContainer->SuspendLayout();
@@ -338,13 +338,14 @@ protected:
 			// toolStripSeparator3
 			// 
 			this->toolStripSeparator3->Name = L"toolStripSeparator3";
-			this->toolStripSeparator3->Size = System::Drawing::Size(114, 6);
+			this->toolStripSeparator3->Size = System::Drawing::Size(149, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this->selectAllToolStripMenuItem->Name = L"selectAllToolStripMenuItem";
-			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(117, 22);
+			this->selectAllToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->selectAllToolStripMenuItem->Text = L"Select &All";
+			this->selectAllToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::selectAllToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -368,7 +369,7 @@ protected:
 				this->tsbHideGrid});
 			this->standardToolStrip->Location = System::Drawing::Point(3, 24);
 			this->standardToolStrip->Name = L"standardToolStrip";
-			this->standardToolStrip->Size = System::Drawing::Size(254, 25);
+			this->standardToolStrip->Size = System::Drawing::Size(223, 25);
 			this->standardToolStrip->TabIndex = 0;
 			this->standardToolStrip->Text = L"toolStrip1";
 			// 
@@ -426,6 +427,17 @@ protected:
 			this->tsbHideVideo->Size = System::Drawing::Size(61, 22);
 			this->tsbHideVideo->Text = L"Hide Video";
 			this->tsbHideVideo->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::tsbHideVideo_CheckedChanged);
+			// 
+			// tsbHideGrid
+			// 
+			this->tsbHideGrid->CheckOnClick = true;
+			this->tsbHideGrid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->tsbHideGrid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbHideGrid.Image")));
+			this->tsbHideGrid->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->tsbHideGrid->Name = L"tsbHideGrid";
+			this->tsbHideGrid->Size = System::Drawing::Size(54, 22);
+			this->tsbHideGrid->Text = L"Hide Grid";
+			this->tsbHideGrid->Click += gcnew System::EventHandler(this, &MainWindow::tsbHideGrid_Click);
 			// 
 			// objectsToolStrip
 			// 
@@ -637,17 +649,6 @@ protected:
 			this->tsbUngroup->Size = System::Drawing::Size(52, 22);
 			this->tsbUngroup->Text = L"Ungroup";
 			this->tsbUngroup->Click += gcnew System::EventHandler(this, &MainWindow::tsbUngroup_Click);
-			// 
-			// tsbHideGrid
-			// 
-			this->tsbHideGrid->CheckOnClick = true;
-			this->tsbHideGrid->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
-			this->tsbHideGrid->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"tsbHideGrid.Image")));
-			this->tsbHideGrid->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->tsbHideGrid->Name = L"tsbHideGrid";
-			this->tsbHideGrid->Size = System::Drawing::Size(54, 22);
-			this->tsbHideGrid->Text = L"Hide Grid";
-			this->tsbHideGrid->Click += gcnew System::EventHandler(this, &MainWindow::tsbHideGrid_Click);
 			// 
 			// MainWindow
 			// 
@@ -980,6 +981,9 @@ private: System::Void tsbHideGrid_Click(System::Object^  sender, System::EventAr
 			 controller->getWorld()->setDrawGrid(!tsbHideGrid->Checked);
 		 }
 	
+private: System::Void selectAllToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 controller->selectAll();
+		 }
 };
 }
 

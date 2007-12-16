@@ -219,35 +219,6 @@ void Controller::InitGL ( GLvoid )     // Create Some Everyday Functions
 	glLightfv(GL_LIGHT1, GL_SPECULAR, none);
 }
 
-
-void Controller::ar_draw( void )
-{
-	double    p[16];
-	double    m[16];
-
-	// Projection transformation.
-	arglCameraFrustum(&cparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(p);
-	glMatrixMode(GL_MODELVIEW);
-	// Viewing transformation.
-	glLoadIdentity();
-
-	glClearDepth( 1.0 );
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	/* load the camera transformation matrix */
-	arglCameraView(patt_trans, m, VIEW_SCALEFACTOR); //gsub_lite.h - TODO: check scale factor
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(m);
-
-	// Display the world
-	world->draw();
-
-	// draw the selection rect
-	if (selectionBoxMode) drawSelectionRect();
-}
-
 void Controller::displayCB(void)
 {
 	if (useGLUTGUI) {
@@ -280,6 +251,40 @@ void Controller::displayCB(void)
 		glutSwapBuffers();
 	}
 }
+
+
+
+
+void Controller::ar_draw( void )
+{
+	double    p[16];
+	double    m[16];
+
+	// Projection transformation.
+	arglCameraFrustum(&cparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(p);
+	glMatrixMode(GL_MODELVIEW);
+	// Viewing transformation.
+	glLoadIdentity();
+
+	glClearDepth( 1.0 );
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	/* load the camera transformation matrix */
+	arglCameraView(patt_trans, m, VIEW_SCALEFACTOR); //gsub_lite.h - TODO: check scale factor
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(m);
+
+	// Display the world
+	world->draw();
+
+	// draw the selection rect
+	if (selectionBoxMode) drawSelectionRect();
+
+}
+
+
 
 /**
 Idle callback. Is called before the GUI goes into idle state.
@@ -1264,6 +1269,9 @@ void Controller::drawSelectionRect() {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glRectf(winX1/viewport[2], winY1/viewport[3],winX2/viewport[2], winY2/viewport[3]);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+
 			//  glBegin(GL_POLYGON);
 			//  glVertex2d(0.25, 0.25);
 			// glVertex2d(0.75, 0.25);
@@ -1589,4 +1597,12 @@ bool Controller::newWorld(const string& fileName) {
 	world = new World();
 	// TODO: add code for checking if unsuccessful
 	return world->loadWorld(fileName);
+}
+
+
+void Controller::selectAll()
+{
+	for (int i=0; i < (int) world->getNumberOfObjects(); i++) {
+		world->getObject(i)->isSelected = 1;
+	}
 }
