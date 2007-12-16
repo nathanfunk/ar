@@ -104,6 +104,7 @@ public:
 	int getCurrentTool() {return currentTool;}
 	void group();
 	void ungroup();
+	void selectAll();
 
 private:
 	string buildConfigString(bool showDialog, bool setRes, int resX, int resY);
