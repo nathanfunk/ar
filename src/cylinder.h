@@ -133,8 +133,13 @@ getTransformedMotion(patt_trans, but, key, x, y,rX, xGrow, yGrow);
 		glPushMatrix();
 		glRotatef(-90, 1, 0, 0);
 
-		gluDisk(quadratic, 0, rad, 15, 15);
 		gluCylinder(quadratic, rad, rad,  height, 15, 15);
+		// bottom face
+		glPushMatrix();
+			glRotatef(-180, 1, 0, 0);
+			gluDisk(quadratic, 0, rad, 15, 15);
+		glPopMatrix();
+		// top face
 		glPushMatrix();
 			glTranslatef(0,0,height);
 			gluDisk(quadratic, 0, rad, 15, 15);
